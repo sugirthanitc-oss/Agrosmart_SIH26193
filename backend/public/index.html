@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AgriSmart - Intelligent Agricultural Operations Platform</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Agritech Dark-Green Style CSS -->
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Desktop Left Sidebar (>= 992px) -->
+    <aside class="desktop-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-title">
+          <span>🌿</span>
+          <span>AgriSmart</span>
+        </div>
+        <span class="brand-badge">Enterprise Platform</span>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav-container">
+        <!-- Dynamically rendered per role without overlapping legacy menus -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <div class="user-avatar" id="sidebar-user-avatar">A</div>
+          <div style="flex:1; min-width:0;">
+            <div id="sidebar-user-name" style="font-size:13px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Arumugam Sundaram</div>
+            <div id="sidebar-user-role" style="font-size:10px; color:var(--mint-light); font-weight:700;">Farmer • TN-FARM-8492</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="main-workspace">
+      <!-- Top System Status Bar -->
+      <header class="top-system-bar">
+        <div class="top-bar-left"></div>
+
+        <!-- Role Switcher Pills -->
+        <div class="role-pills">
+          <button class="role-pill-btn active" data-role="farmer" onclick="switchRole('farmer')">🌾 <span id="role-label-farmer" data-i18n="role_farmer">Farmer</span></button>
+          <button class="role-pill-btn" data-role="agent" onclick="switchRole('agent')">🔍 <span id="role-label-agent" data-i18n="role_agent">Agent</span></button>
+          <button class="role-pill-btn" data-role="exporter" onclick="switchRole('exporter')">🚢 <span id="role-label-exporter" data-i18n="role_exporter">Exporter</span></button>
+          <button class="role-pill-btn" data-role="shop_owner" onclick="switchRole('shop_owner')">🏪 <span id="role-label-shop_owner" data-i18n="role_shop">Shop</span></button>
+        </div>
+
+        <div class="top-bar-right" style="display:flex; align-items:center; gap:8px;">
+          <!-- Global Language Switcher -->
+          <button id="global-lang-switcher" class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch Language / மொழியை மாற்றுக">
+            🌐 <span id="current-lang-label">தமிழ் (TA)</span>
+          </button>
+          <button onclick="openAuthModal()" class="agro-btn-secondary" style="font-size:11px; padding:6px 12px;">
+            👤 <span id="top-auth-btn-label" data-i18n="switch_account">Switch Account</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Dynamic Content Area -->
+      <main id="app-body" class="content-area">
+        <div style="padding: 40px; text-align: center; color: var(--slate);">
+          Loading AgriSmart Operations Workspace...
+        </div>
+      </main>
+
+      <!-- Floating Action Button (+) for Farmer Land Registration -->
+      <button id="fab-add-land" class="fab-btn" title="Register Land Parcel" onclick="openLandModal()">+</button>
+
+      <!-- Mobile Bottom Navigation Bar (< 992px) -->
+      <nav class="mobile-bottom-bar">
+        <button class="mobile-nav-btn active" data-nav="menu" onclick="switchNavTab('menu')">
+          <span class="icon">📂</span>
+          <span id="mob-nav-menu">Menu</span>
+        </button>
+        <button class="mobile-nav-btn" data-nav="analytics" onclick="switchNavTab('analytics')">
+          <span class="icon">📊</span>
+          <span id="mob-nav-analytics">Analytics</span>
+        </button>
+        <button class="mobile-nav-btn" data-nav="history" onclick="switchNavTab('history')">
+          <span class="icon">📜</span>
+          <span id="mob-nav-history">History</span>
+        </button>
+        <button class="mobile-nav-btn" onclick="openEditProfileModal()">
+          <span class="icon">👤</span>
+          <span id="mob-nav-profile">Profile</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- JavaScript Client Engine -->
+  <script src="/app.js"></script>
+</body>
+</html>

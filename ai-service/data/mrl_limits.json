@@ -1,0 +1,64 @@
+{
+  "standard": "Codex Alimentarius & APEDA India Export Limits",
+  "version": "2025.2",
+  "limits_ppm": {
+    "Paddy (Basmati)": {
+      "Tricyclazole": 0.01,
+      "Buprofezin": 0.5,
+      "Chlorpyrifos": 0.01,
+      "Acephate": 0.02,
+      "Thiamethoxam": 0.05,
+      "Carbendazim": 0.01
+    },
+    "Paddy (Common)": {
+      "Tricyclazole": 0.05,
+      "Chlorpyrifos": 0.05,
+      "Acephate": 0.1
+    },
+    "Cotton": {
+      "Chlorpyrifos": 0.05,
+      "Monocrotophos": 0.01,
+      "Imidacloprid": 0.2
+    },
+    "Soybean": {
+      "Chlorpyrifos": 0.01,
+      "Profenofos": 0.05
+    },
+    "Wheat": {
+      "Chlorpyrifos": 0.05,
+      "Mancozeb": 0.2
+    },
+    "Onion": {
+      "Chlorpyrifos": 0.05,
+      "Profenofos": 0.1,
+      "Mancozeb": 0.5
+    }
+  },
+  "blocked_for_export": [
+    "Monocrotophos",
+    "Carbofuran",
+    "Phorate"
+  ],
+  "icar_approved_bio_alternatives": {
+    "Tricyclazole": {
+      "alternative": "Pseudomonas fluorescens (Bio-fungicide 2.5 kg/ha) or Trichoderma harzianum",
+      "ic_ref": "ICAR-NRRI Blast Bio-Management Protocol"
+    },
+    "Chlorpyrifos": {
+      "alternative": "Neem Seed Kernel Extract (NSKE 5%) or Azadirachtin 1500 ppm (2.5 ml/L)",
+      "ic_ref": "ICAR-IARI IPM Advisory"
+    },
+    "Acephate": {
+      "alternative": "Beauveria bassiana (Bio-pesticide 2 kg/ha) or Neem oil spray",
+      "ic_ref": "ICAR-CICR Sucking Pest Advisory"
+    },
+    "Monocrotophos": {
+      "alternative": "Pheromone traps (12/ha) + Neem formulation 10,000 ppm",
+      "ic_ref": "Banned for export produce; ICAR biological control protocol"
+    },
+    "Carbendazim": {
+      "alternative": "Trichoderma viride seed treatment (4g/kg seed)",
+      "ic_ref": "ICAR Safe Seed Protocol"
+    }
+  }
+}

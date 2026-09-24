@@ -1,0 +1,14 @@
+{
+  "name": "agrosmart-monorepo",
+  "version": "1.0.0",
+  "description": "AgroSmart - AI-Driven Agricultural Supply Chain Platform (SIH 2026, PS ID SIH26193, Team HACKNOVA)",
+  "scripts": {
+    "test:backend": "npm --prefix backend test",
+    "test:ai": "cd ai-service && .\\venv\\Scripts\\python.exe -m pytest tests",
+    "test": "npm run test:backend && npm run test:ai",
+    "backend": "npm --prefix backend start",
+    "mobile": "npm --prefix mobile run dev",
+    "ai": "cd ai-service && .\\venv\\Scripts\\python.exe -m uvicorn app.main:app --port 8000 --reload",
+    "host": "node host.js"
+  }
+}

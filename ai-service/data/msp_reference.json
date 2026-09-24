@@ -1,0 +1,62 @@
+{
+  "currency": "INR",
+  "unit": "Quintal",
+  "year": "2025-26",
+  "source": "Government of India (farmer.gov.in)",
+  "crops": {
+    "Paddy (Basmati)": {
+      "season": "kharif",
+      "msp_per_quintal": 4850,
+      "typical_yield_quintal_per_ha": 45.0,
+      "cost_of_cultivation_per_ha": 55000
+    },
+    "Paddy (Common)": {
+      "season": "kharif",
+      "msp_per_quintal": 2300,
+      "typical_yield_quintal_per_ha": 50.0,
+      "cost_of_cultivation_per_ha": 42000
+    },
+    "Cotton": {
+      "season": "kharif",
+      "msp_per_quintal": 7121,
+      "typical_yield_quintal_per_ha": 22.0,
+      "cost_of_cultivation_per_ha": 62000
+    },
+    "Soybean": {
+      "season": "kharif",
+      "msp_per_quintal": 4892,
+      "typical_yield_quintal_per_ha": 25.0,
+      "cost_of_cultivation_per_ha": 38000
+    },
+    "Maize": {
+      "season": "kharif",
+      "msp_per_quintal": 2225,
+      "typical_yield_quintal_per_ha": 55.0,
+      "cost_of_cultivation_per_ha": 39000
+    },
+    "Wheat": {
+      "season": "rabi",
+      "msp_per_quintal": 2425,
+      "typical_yield_quintal_per_ha": 48.0,
+      "cost_of_cultivation_per_ha": 41000
+    },
+    "Mustard": {
+      "season": "rabi",
+      "msp_per_quintal": 5950,
+      "typical_yield_quintal_per_ha": 20.0,
+      "cost_of_cultivation_per_ha": 32000
+    },
+    "Gram (Chickpea)": {
+      "season": "rabi",
+      "msp_per_quintal": 5650,
+      "typical_yield_quintal_per_ha": 22.0,
+      "cost_of_cultivation_per_ha": 35000
+    },
+    "Onion": {
+      "season": "rabi",
+      "msp_per_quintal": 2100,
+      "typical_yield_quintal_per_ha": 180.0,
+      "cost_of_cultivation_per_ha": 110000
+    }
+  }
+}

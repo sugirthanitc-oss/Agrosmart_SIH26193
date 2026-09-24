@@ -1,0 +1,169 @@
+:root {
+  --indigo-deep:  #3C22B8;   /* screen background gradient start */
+  --indigo:       #4F31D6;   /* primary buttons, hero background */
+  --indigo-light: #6C4CF5;   /* secondary accents, progress fill */
+  --coral:        #FF6B5B;   /* urgent items: pest alerts, reminders */
+  --coral-deep:   #F44B3D;
+  --sky:          #3D9DF6;   /* weather, water/irrigation */
+  --sky-light:    #8FC7FF;
+  --ink:          #1F1B3A;   /* body text on white cards */
+  --slate:        #8B87A8;   /* secondary/meta text */
+  --cream:        #FFFFFF;   /* card surfaces */
+  --mist:         #F4F2FC;   /* app background, inactive chips */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(180deg, var(--indigo-deep) 0%, #20126C 100%);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+}
+
+/* Mobile Frame Shell */
+.app-container {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  background-color: var(--mist);
+  position: relative;
+  overflow-x: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cards */
+.agro-card {
+  background: var(--cream);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 25px -5px rgba(60, 34, 184, 0.07), 0 8px 10px -6px rgba(60, 34, 184, 0.04);
+  border: 1px solid rgba(108, 76, 245, 0.08);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+.agro-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -6px rgba(60, 34, 184, 0.12);
+}
+
+/* Antigravity Glassmorphic Surface */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 32px -8px rgba(60, 34, 184, 0.1);
+}
+
+.antigravity-hero {
+  background: linear-gradient(135deg, var(--indigo-deep) 0%, var(--indigo) 60%, var(--indigo-light) 100%);
+  border-radius: 24px;
+  padding: 22px;
+  color: var(--cream);
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -10px rgba(60, 34, 184, 0.4);
+}
+
+.antigravity-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(143, 199, 255, 0.3) 0%, rgba(143, 199, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Primary Button */
+.agro-btn-primary {
+  background: var(--indigo);
+  color: var(--cream);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.agro-btn-primary:active {
+  transform: scale(0.98);
+  background: var(--indigo-deep);
+}
+
+.agro-btn-secondary {
+  background: var(--mist);
+  color: var(--indigo);
+  border: 1px solid rgba(79, 49, 214, 0.2);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Badges */
+.badge-grade-a {
+  background: #EBF9F1;
+  color: #10B981;
+  border: 1px solid #A7F3D0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.badge-grade-b {
+  background: #EFF6FF;
+  color: #3B82F6;
+  border: 1px solid #BFDBFE;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.badge-coral {
+  background: #FFF1F0;
+  color: var(--coral-deep);
+  border: 1px solid #FFCCC7;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: agrosmart
+    env: node
+    plan: free
+    buildCommand: npm --prefix backend install && npm --prefix backend run build
+    startCommand: npm --prefix backend start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+    healthCheckPath: /health

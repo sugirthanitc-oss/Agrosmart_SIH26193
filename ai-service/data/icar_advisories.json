@@ -1,0 +1,151 @@
+{
+  "authority": "Indian Council of Agricultural Research (ICAR)",
+  "advisory_year": "2025-2026",
+  "crop_guidelines": {
+    "Paddy (Basmati)": {
+      "season": "kharif",
+      "sowing_window": "June 15 - July 10",
+      "states_allowed": ["Punjab", "Haryana", "Western Uttar Pradesh", "Uttarakhand", "Himachal Pradesh", "Jammu & Kashmir", "Delhi"],
+      "soil_ph_optimal": [6.0, 7.5],
+      "n_range_kg_ha": [90, 120],
+      "p_range_kg_ha": [30, 40],
+      "k_range_kg_ha": [40, 50],
+      "zinc_critical_ppm": 0.6,
+      "water_requirement_mm": [1100, 1400],
+      "prohibited_conditions": ["Severe water scarcity zone without canal/tube-well irrigation", "Saline soils EC > 4.0 dS/m"],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Seed treatment with Trichoderma & nursery sowing", "category": "pest"},
+        {"day": 25, "stage": "Vegetative", "activity": "Transplanting seedlings into puddled field (2-3 seedlings/hill)", "category": "visit"},
+        {"day": 40, "stage": "Vegetative", "activity": "First split Nitrogen top-dressing + Weed scouting", "category": "fertilizer"},
+        {"day": 65, "stage": "Flowering", "activity": "Second Nitrogen top-dressing + Water level maintenance (5cm)", "category": "irrigation"},
+        {"day": 85, "stage": "Flowering", "activity": "Monitor for blast/stem borer — Neem spray if required", "category": "pest"},
+        {"day": 120, "stage": "Harvest", "activity": "Drain field 10 days prior; Harvest when 80% panicles turn golden", "category": "visit"}
+      ]
+    },
+    "Paddy (Common)": {
+      "season": "kharif",
+      "sowing_window": "June 1 - July 15",
+      "states_allowed": ["Punjab", "Haryana", "Uttar Pradesh", "Bihar", "West Bengal", "Odisha", "Andhra Pradesh", "Tamil Nadu", "Telangana", "Chhattisgarh"],
+      "soil_ph_optimal": [5.5, 7.8],
+      "n_range_kg_ha": [100, 150],
+      "p_range_kg_ha": [40, 60],
+      "k_range_kg_ha": [40, 60],
+      "water_requirement_mm": [1000, 1300],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Direct seeding / nursery bed preparation", "category": "visit"},
+        {"day": 30, "stage": "Vegetative", "activity": "Transplanting and basal dose application", "category": "fertilizer"},
+        {"day": 60, "stage": "Vegetative", "activity": "Mid-tillering irrigation & fertilizer top-dressing", "category": "irrigation"},
+        {"day": 90, "stage": "Flowering", "activity": "Panicle initiation pest check", "category": "pest"},
+        {"day": 125, "stage": "Harvest", "activity": "Harvesting and threshing", "category": "visit"}
+      ]
+    },
+    "Cotton": {
+      "season": "kharif",
+      "sowing_window": "April 15 - May 30 (North) / June 15 - July 15 (Central/South)",
+      "states_allowed": ["Gujarat", "Maharashtra", "Telangana", "Andhra Pradesh", "Madhya Pradesh", "Punjab", "Haryana", "Rajasthan"],
+      "soil_ph_optimal": [6.5, 8.2],
+      "n_range_kg_ha": [80, 120],
+      "p_range_kg_ha": [40, 60],
+      "k_range_kg_ha": [40, 60],
+      "prohibited_conditions": ["Water-logged or low-lying poorly drained clay soils"],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Sowing on ridges with pre-emergence weed control", "category": "visit"},
+        {"day": 35, "stage": "Vegetative", "activity": "First square formation inspection & micronutrient spray", "category": "fertilizer"},
+        {"day": 75, "stage": "Flowering", "activity": "Boll formation irrigation & pink bollworm pheromone traps", "category": "pest"},
+        {"day": 150, "stage": "Harvest", "activity": "First picking of mature open bolls in dry sunny weather", "category": "visit"}
+      ]
+    },
+    "Soybean": {
+      "season": "kharif",
+      "sowing_window": "June 20 - July 10",
+      "states_allowed": ["Madhya Pradesh", "Maharashtra", "Rajasthan", "Karnataka", "Telangana", "Gujarat"],
+      "soil_ph_optimal": [6.0, 7.5],
+      "n_range_kg_ha": [20, 30],
+      "p_range_kg_ha": [60, 80],
+      "k_range_kg_ha": [40, 60],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Seed treatment with Rhizobium culture and broad-bed furrow sowing", "category": "visit"},
+        {"day": 30, "stage": "Vegetative", "activity": "Interculture weeding and soil loosening", "category": "visit"},
+        {"day": 55, "stage": "Flowering", "activity": "Flowering stage critical irrigation if dry spell occurs", "category": "irrigation"},
+        {"day": 95, "stage": "Harvest", "activity": "Harvest when pods turn golden-yellow and moisture drops to 14%", "category": "visit"}
+      ]
+    },
+    "Maize": {
+      "season": "kharif",
+      "sowing_window": "June 15 - July 15",
+      "states_allowed": ["Karnataka", "Madhya Pradesh", "Bihar", "Tamil Nadu", "Telangana", "Maharashtra", "Rajasthan", "Uttar Pradesh"],
+      "soil_ph_optimal": [5.8, 7.5],
+      "n_range_kg_ha": [120, 150],
+      "p_range_kg_ha": [50, 60],
+      "k_range_kg_ha": [40, 50],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Seed sowing with basal NPK application", "category": "fertilizer"},
+        {"day": 30, "stage": "Vegetative", "activity": "Knee-high stage top dressing and Fall Armyworm check", "category": "pest"},
+        {"day": 60, "stage": "Flowering", "activity": "Tasseling and silking stage irrigation", "category": "irrigation"},
+        {"day": 105, "stage": "Harvest", "activity": "Harvest when husk leaves turn straw color", "category": "visit"}
+      ]
+    },
+    "Wheat": {
+      "season": "rabi",
+      "sowing_window": "November 1 - November 25",
+      "states_allowed": ["Punjab", "Haryana", "Uttar Pradesh", "Madhya Pradesh", "Rajasthan", "Bihar", "Gujarat"],
+      "soil_ph_optimal": [6.0, 7.8],
+      "n_range_kg_ha": [120, 150],
+      "p_range_kg_ha": [50, 60],
+      "k_range_kg_ha": [40, 60],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Zero-till or conventional drill sowing with basal fertilizer", "category": "fertilizer"},
+        {"day": 21, "stage": "Vegetative", "activity": "Crown Root Initiation (CRI) first critical irrigation", "category": "irrigation"},
+        {"day": 50, "stage": "Vegetative", "activity": "Tillering stage second irrigation & top-dressing", "category": "irrigation"},
+        {"day": 85, "stage": "Flowering", "activity": "Boot leaf / heading stage irrigation & yellow rust check", "category": "pest"},
+        {"day": 130, "stage": "Harvest", "activity": "Combine harvest when grain hardens", "category": "visit"}
+      ]
+    },
+    "Mustard": {
+      "season": "rabi",
+      "sowing_window": "October 1 - October 25",
+      "states_allowed": ["Rajasthan", "Haryana", "Madhya Pradesh", "Uttar Pradesh", "West Bengal", "Gujarat"],
+      "soil_ph_optimal": [6.0, 7.5],
+      "n_range_kg_ha": [60, 80],
+      "p_range_kg_ha": [30, 40],
+      "k_range_kg_ha": [20, 30],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Seed sowing with sulphur application (20-40 kg/ha)", "category": "fertilizer"},
+        {"day": 30, "stage": "Vegetative", "activity": "Thinning and first irrigation", "category": "irrigation"},
+        {"day": 60, "stage": "Flowering", "activity": "Aphid monitoring — spray bio-neem if threshold > 10 aphids/twig", "category": "pest"},
+        {"day": 110, "stage": "Harvest", "activity": "Harvest when 75% of siliquae turn yellow", "category": "visit"}
+      ]
+    },
+    "Gram (Chickpea)": {
+      "season": "rabi",
+      "sowing_window": "October 15 - November 15",
+      "states_allowed": ["Madhya Pradesh", "Maharashtra", "Rajasthan", "Uttar Pradesh", "Karnataka", "Andhra Pradesh"],
+      "soil_ph_optimal": [6.0, 8.0],
+      "n_range_kg_ha": [20, 25],
+      "p_range_kg_ha": [40, 50],
+      "k_range_kg_ha": [20, 30],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Sowing after Rhizobium & PSB seed treatment", "category": "visit"},
+        {"day": 35, "stage": "Vegetative", "activity": "Nipping/branching promotion and pod borer monitoring", "category": "pest"},
+        {"day": 65, "stage": "Flowering", "activity": "Pod initiation light irrigation if required", "category": "irrigation"},
+        {"day": 115, "stage": "Harvest", "activity": "Harvesting upon leaf shedding and pod drying", "category": "visit"}
+      ]
+    },
+    "Onion": {
+      "season": "rabi",
+      "sowing_window": "November 15 - December 31",
+      "states_allowed": ["Maharashtra", "Madhya Pradesh", "Karnataka", "Gujarat", "Bihar", "Andhra Pradesh", "Rajasthan"],
+      "soil_ph_optimal": [6.0, 7.5],
+      "n_range_kg_ha": [100, 150],
+      "p_range_kg_ha": [50, 75],
+      "k_range_kg_ha": [50, 100],
+      "calendar": [
+        {"day": 1, "stage": "Sowing", "activity": "Transplanting 6-7 week old seedlings on raised beds", "category": "visit"},
+        {"day": 30, "stage": "Vegetative", "activity": "Weeding and top dressing with Urea & Potash", "category": "fertilizer"},
+        {"day": 60, "stage": "Vegetative", "activity": "Bulb initiation light irrigation & Thrips scouting", "category": "irrigation"},
+        {"day": 90, "stage": "Flowering", "activity": "Bulb enlargement stage water regulation", "category": "irrigation"},
+        {"day": 120, "stage": "Harvest", "activity": "Neck fall stage; withhold water 10 days before pulling bulbs", "category": "visit"}
+      ]
+    }
+  }
+}

@@ -1,0 +1,1178 @@
+{
+  "users": [
+    {
+      "id": "user-exp-01",
+      "phone": "9842100001",
+      "role": "exporter",
+      "name": "Kongu Agro Global Exports Pvt Ltd",
+      "company_name": "Kongu Agro Global Exports Pvt Ltd",
+      "company_reg_id": "U01100TZ2021PTC036128",
+      "gst_number": "33AAACK7741P1ZB",
+      "export_id": "0485019284",
+      "exporter_code": "EXP-TN-COIMBATORE-101",
+      "region": "Coimbatore, Tamil Nadu",
+      "district": "Coimbatore",
+      "language": "en",
+      "email": "exports@konguagro.in",
+      "exporter_min_bulk_threshold": 200,
+      "created_at": "2026-05-01T08:00:00Z"
+    },
+    {
+      "id": "user-agt-01",
+      "phone": "9842100002",
+      "role": "agent",
+      "name": "Senthil Kumar (Certified Field Inspector)",
+      "region": "Erode, Tamil Nadu",
+      "district": "Erode",
+      "language": "ta",
+      "linked_exporter_id": "user-exp-01",
+      "exporter_code": "EXP-TN-COIMBATORE-101",
+      "created_at": "2026-05-02T08:00:00Z"
+    },
+    {
+      "id": "user-agt-02",
+      "phone": "9842100006",
+      "role": "agent",
+      "name": "Priya Natarajan (Codex Quality Specialist)",
+      "region": "Coimbatore, Tamil Nadu",
+      "district": "Coimbatore",
+      "language": "ta",
+      "linked_exporter_id": "user-exp-01",
+      "exporter_code": "EXP-TN-COIMBATORE-101",
+      "created_at": "2026-05-03T08:00:00Z"
+    },
+    {
+      "id": "user-agt-03",
+      "phone": "9842100007",
+      "role": "agent",
+      "name": "Murugan Thangavel (Soil & Agrochem Auditor)",
+      "region": "Thanjavur, Tamil Nadu",
+      "district": "Thanjavur",
+      "language": "ta",
+      "linked_exporter_id": "user-exp-01",
+      "exporter_code": "EXP-TN-COIMBATORE-101",
+      "created_at": "2026-05-04T08:00:00Z"
+    },
+    {
+      "id": "user-shop-01",
+      "phone": "9842100003",
+      "role": "shop_owner",
+      "name": "Palanisamy Velu",
+      "shop_name": "Meenakshi Wholesale & Retail Mandi",
+      "gst_number": "33AABCM9102K1ZV",
+      "region": "Madurai, Tamil Nadu",
+      "district": "Madurai",
+      "language": "ta",
+      "created_at": "2026-05-05T08:00:00Z"
+    },
+    {
+      "id": "user-frm-01",
+      "phone": "9842100004",
+      "role": "farmer",
+      "name": "Arumugam Sundaram",
+      "farmer_id_code": "TN-FARM-8492",
+      "region": "Thanjavur, Tamil Nadu",
+      "district": "Thanjavur",
+      "language": "ta",
+      "linked_agent_id": "user-agt-01",
+      "linked_exporter_id": "user-exp-01",
+      "created_at": "2026-05-10T08:00:00Z"
+    },
+    {
+      "id": "user-frm-02",
+      "phone": "9842100005",
+      "role": "farmer",
+      "name": "Muthuvel Karuppan",
+      "farmer_id_code": "TN-FARM-5120",
+      "region": "Erode, Tamil Nadu",
+      "district": "Erode",
+      "language": "ta",
+      "linked_agent_id": "user-agt-01",
+      "linked_exporter_id": "user-exp-01",
+      "created_at": "2026-05-12T08:00:00Z"
+    },
+    {
+      "id": "user-90abea58",
+      "phone": "9800000004",
+      "role": "farmer",
+      "name": "Rajendra Singh",
+      "region": "Thanjavur, Tamil Nadu",
+      "language": "ta",
+      "farmer_id_code": "TN-FARM-2028",
+      "created_at": "2026-09-23T15:41:54.612Z"
+    }
+  ],
+  "farms": [
+    {
+      "id": "farm-001-rajendra",
+      "farmer_id": "user-frm-01",
+      "farmer_name": "Arumugam Sundaram",
+      "land_name": "Amaravathi Basin Plot A",
+      "district": "Thanjavur Delta",
+      "geo_polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.135,
+              10.785
+            ],
+            [
+              79.141,
+              10.785
+            ],
+            [
+              79.141,
+              10.791
+            ],
+            [
+              79.135,
+              10.791
+            ],
+            [
+              79.135,
+              10.785
+            ]
+          ]
+        ]
+      },
+      "area_acres": 4.5,
+      "area_ha": 1.82,
+      "crop_type": "Ponni Rice (BPT 5204)",
+      "current_stage": "Harvest",
+      "stage_day": 118,
+      "unique_parcel_code": "PARCEL-TN-8492",
+      "immediate_action_prompt": "Irrigation due today — Maintain 3cm standing water for grain filling",
+      "pesticide_fertilizer_dosing": {
+        "mixture": "Neem Seed Kernel Extract (NSKE 5%)",
+        "dosage": "500 ml / Acre in 200L water",
+        "compliance_target": "APEDA Export Zero-Residue Standard",
+        "due_date": "2026-09-12"
+      },
+      "harvest_prediction": {
+        "expected_harvest_date": "2026-10-24",
+        "days_remaining": 45,
+        "predicted_yield_tonnes": 11.2,
+        "predicted_yield_kg": 11200,
+        "grade_a_percentage": 85,
+        "grade_b_c_percentage": 15
+      },
+      "soil_health_card_id": "soil-001",
+      "linked_agent_id": "user-agt-01",
+      "linked_exporter_id": "user-exp-01"
+    },
+    {
+      "id": "farm-001-bhavani",
+      "farmer_id": "user-frm-01",
+      "farmer_name": "Arumugam Sundaram",
+      "land_name": "Bhavani River Turmeric Acres",
+      "district": "Erode",
+      "geo_polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.715,
+              11.339
+            ],
+            [
+              77.719,
+              11.339
+            ],
+            [
+              77.719,
+              11.343
+            ],
+            [
+              77.715,
+              11.343
+            ],
+            [
+              77.715,
+              11.339
+            ]
+          ]
+        ]
+      },
+      "area_acres": 3.2,
+      "area_ha": 1.3,
+      "crop_type": "Erode Turmeric (Curcumin 4.8%)",
+      "current_stage": "Flowering",
+      "stage_day": 110,
+      "immediate_action_prompt": "Organic bio-potash soil drenching scheduled for rhizome enlargement",
+      "pesticide_fertilizer_dosing": {
+        "mixture": "Organic Bio-Potash soil drench & Pseudomonas",
+        "dosage": "2.5 L / Ha root application",
+        "compliance_target": "Codex Alimentarius Export Grade",
+        "due_date": "2026-09-14"
+      },
+      "harvest_prediction": {
+        "expected_harvest_date": "2027-01-15",
+        "days_remaining": 128,
+        "predicted_yield_tonnes": 8.6,
+        "predicted_yield_kg": 8600,
+        "grade_a_percentage": 90,
+        "grade_b_c_percentage": 10
+      },
+      "soil_health_card_id": "soil-002",
+      "linked_agent_id": "user-agt-01",
+      "linked_exporter_id": "user-exp-01"
+    },
+    {
+      "id": "farm-001-cauvery",
+      "farmer_id": "user-frm-01",
+      "farmer_name": "Arumugam Sundaram",
+      "land_name": "Cauvery Delta Organic Paddy",
+      "district": "Thanjavur",
+      "geo_polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              79.145,
+              10.795
+            ],
+            [
+              79.151,
+              10.795
+            ],
+            [
+              79.151,
+              10.801
+            ],
+            [
+              79.145,
+              10.801
+            ],
+            [
+              79.145,
+              10.795
+            ]
+          ]
+        ]
+      },
+      "area_acres": 2.8,
+      "area_ha": 1.13,
+      "crop_type": "Kattuyanam Traditional Red Rice",
+      "current_stage": "Vegetative",
+      "stage_day": 42,
+      "immediate_action_prompt": "Canal water leveling to 3cm & bio-stimulant foliar spray",
+      "pesticide_fertilizer_dosing": {
+        "mixture": "Neem Seed Kernel Extract (NSKE 5%)",
+        "dosage": "500 ml / Acre foliar spray",
+        "compliance_target": "APEDA Zero-Residue Bio Standard",
+        "due_date": "2026-09-12"
+      },
+      "harvest_prediction": {
+        "expected_harvest_date": "2027-02-10",
+        "days_remaining": 154,
+        "predicted_yield_tonnes": 5.9,
+        "predicted_yield_kg": 5900,
+        "grade_a_percentage": 80,
+        "grade_b_c_percentage": 20
+      },
+      "soil_health_card_id": "soil-001",
+      "linked_agent_id": "user-agt-01",
+      "linked_exporter_id": "user-exp-01"
+    },
+    {
+      "id": "farm-002-suresh",
+      "farmer_id": "user-frm-02",
+      "farmer_name": "Muthuvel Karuppan",
+      "land_name": "Bhavani River Turmeric Acres",
+      "district": "Erode",
+      "geo_polygon": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              77.715,
+              11.339
+            ],
+            [
+              77.719,
+              11.339
+            ],
+            [
+              77.719,
+              11.343
+            ],
+            [
+              77.715,
+              11.343
+            ],
+            [
+              77.715,
+              11.339
+            ]
+          ]
+        ]
+      },
+      "area_acres": 3.2,
+      "area_ha": 1.3,
+      "crop_type": "Erode Turmeric (Curcumin 4.5%)",
+      "current_stage": "Flowering",
+      "stage_day": 65,
+      "unique_parcel_code": "PARCEL-TN-5120",
+      "immediate_action_prompt": "Bio-potash soil drenching due in 2 days",
+      "pesticide_fertilizer_dosing": {
+        "mixture": "Pseudomonas fluorescens bio-formulation",
+        "dosage": "2.5 kg / Ha soil application",
+        "compliance_target": "Codex Alimentarius Export Grade",
+        "due_date": "2026-09-15"
+      },
+      "harvest_prediction": {
+        "expected_harvest_date": "2027-01-12",
+        "days_remaining": 125,
+        "predicted_yield_tonnes": 8.4,
+        "predicted_yield_kg": 8400,
+        "grade_a_percentage": 90,
+        "grade_b_c_percentage": 10
+      },
+      "soil_health_card_id": "soil-002",
+      "linked_agent_id": "user-agt-01",
+      "linked_exporter_id": "user-exp-01"
+    }
+  ],
+  "soil_tests": [
+    {
+      "id": "soil-001",
+      "farm_id": "farm-001-rajendra",
+      "pdf_url": "/uploads/soil_thanjavur_ponni.pdf",
+      "ph": 7.15,
+      "ec": 0.38,
+      "organic_carbon": 0.68,
+      "n": 265,
+      "p": 28,
+      "k": 235,
+      "s": 15.2,
+      "zn": 0.92,
+      "b": 0.58,
+      "fe": 7.1,
+      "mn": 4.8,
+      "cu": 1.3,
+      "tested_at": "2026-05-15T10:00:00Z",
+      "source": "Soil Health Card"
+    },
+    {
+      "id": "soil-002",
+      "farm_id": "farm-002-suresh",
+      "pdf_url": "/uploads/soil_erode_turmeric.pdf",
+      "ph": 7.85,
+      "ec": 1.65,
+      "organic_carbon": 0.42,
+      "n": 195,
+      "p": 18,
+      "k": 180,
+      "s": 9.5,
+      "zn": 0.48,
+      "b": 0.35,
+      "fe": 5.2,
+      "mn": 3.2,
+      "cu": 0.9,
+      "tested_at": "2026-05-18T10:00:00Z",
+      "source": "Soil Health Card"
+    }
+  ],
+  "crop_recommendations": [
+    {
+      "id": "rec-001",
+      "farm_id": "farm-001-rajendra",
+      "season": "kharif",
+      "crop": "Ponni Rice (BPT 5204)",
+      "confidence": 0.95,
+      "est_profit_per_ha": 165000,
+      "msp_ref": 4850,
+      "predicted_yield_t_per_ha": 4.6,
+      "model_version": "crop_multi_criteria_v1.0",
+      "created_at": "2026-05-20T11:00:00Z"
+    },
+    {
+      "id": "rec-002",
+      "farm_id": "farm-002-suresh",
+      "season": "kharif",
+      "crop": "Erode Turmeric (Curcumin 4.5%)",
+      "confidence": 0.88,
+      "est_profit_per_ha": 110000,
+      "msp_ref": 3850,
+      "predicted_yield_t_per_ha": 3.8,
+      "model_version": "crop_multi_criteria_v1.0",
+      "created_at": "2026-05-22T11:00:00Z"
+    }
+  ],
+  "field_visits": [
+    {
+      "id": "visit-001",
+      "agent_id": "user-agt-01",
+      "farm_id": "farm-001-rajendra",
+      "visit_date": "2026-07-20T14:30:00Z",
+      "notes": "Cauvery delta soil health verified. Tillering density robust; organic bio-control active.",
+      "irrigation_regularity_score": 0.96,
+      "icar_adherence_score": 0.98,
+      "chemicals_applied": [
+        "Azadirachtin (Neem alkaloid)"
+      ],
+      "weather_snapshot": {
+        "temp_c": 31.5,
+        "rainfall_mm": 2,
+        "condition": "Partly Cloudy"
+      },
+      "submitted_at": "2026-07-20T14:45:00Z",
+      "geofence_verified": true
+    },
+    {
+      "id": "visit-002",
+      "agent_id": "user-agt-01",
+      "farm_id": "farm-002-suresh",
+      "visit_date": "2026-07-25T15:30:00Z",
+      "notes": "Rhizome growth satisfactory. Mild leaf spot noticed; prescribed biological copper solution.",
+      "irrigation_regularity_score": 0.78,
+      "icar_adherence_score": 0.82,
+      "chemicals_applied": [
+        "Copper Oxychloride (Low Concentration)"
+      ],
+      "weather_snapshot": {
+        "temp_c": 33,
+        "rainfall_mm": 0,
+        "condition": "Sunny"
+      },
+      "submitted_at": "2026-07-25T15:50:00Z",
+      "geofence_verified": true
+    }
+  ],
+  "media_captures": [
+    {
+      "id": "media-001",
+      "field_visit_id": "visit-001",
+      "type": "crop_photo",
+      "url": "/uploads/demo_basmati_foliage.jpg",
+      "lat": 10.7872,
+      "lng": 79.1375,
+      "captured_at": "2026-07-20T14:35:12Z",
+      "device_camera_only": true,
+      "signature": "0235b8258abad5cedbcc62b885368736e15369e7db27fb368a63d170828b3cf8"
+    },
+    {
+      "id": "media-002",
+      "field_visit_id": "visit-001",
+      "type": "pesticide_photo",
+      "url": "/uploads/demo_neem_spray.jpg",
+      "lat": 10.7875,
+      "lng": 79.1378,
+      "captured_at": "2026-07-20T14:40:05Z",
+      "device_camera_only": true,
+      "signature": "ccde03df8586d6a7a19f1e193ebe3895d4bc7c339424ef0cb7f1b41421f28cb6"
+    },
+    {
+      "id": "media-003",
+      "field_visit_id": "visit-002",
+      "type": "crop_photo",
+      "url": "/uploads/demo_paddy_common.jpg",
+      "lat": 11.3415,
+      "lng": 77.717,
+      "captured_at": "2026-07-25T15:35:20Z",
+      "device_camera_only": true,
+      "signature": "970f1480edd4e0553071e6f16e8e884ea1810c9d1d382b8601a122e122007a01"
+    },
+    {
+      "id": "media-004",
+      "field_visit_id": "visit-002",
+      "type": "pesticide_photo",
+      "url": "/uploads/demo_pesticide_bottle.jpg",
+      "lat": 11.3418,
+      "lng": 77.7175,
+      "captured_at": "2026-07-25T15:48:10Z",
+      "device_camera_only": true,
+      "signature": "57a585c6c8a07443d4241f769271305b2e5e93f46f4701cb3e0c67194b2d4249"
+    }
+  ],
+  "grading_results": [
+    {
+      "id": "grade-001",
+      "farm_id": "farm-001-rajendra",
+      "crop": "Ponni Rice (BPT 5204)",
+      "grade": "A",
+      "predicted_yield_qty": 245,
+      "mrl_compliant": true,
+      "flags": [
+        "Zero synthetic chemical residue detected",
+        "Complies with APEDA & EU import MRL ceiling"
+      ],
+      "model_version": "grading_v1.0",
+      "created_at": "2026-08-28T10:00:00Z",
+      "traceability_token": "AGRO-CERT-TN-A7F920BC"
+    },
+    {
+      "id": "grade-002",
+      "farm_id": "farm-002-suresh",
+      "crop": "Erode Turmeric (Curcumin 4.5%)",
+      "grade": "B",
+      "predicted_yield_qty": 88,
+      "mrl_compliant": false,
+      "flags": [
+        "Residue within FSSAI domestic limit; suitable for state retail markets"
+      ],
+      "model_version": "grading_v1.0",
+      "created_at": "2026-08-29T10:00:00Z",
+      "traceability_token": "AGRO-CERT-TN-B39E881D"
+    }
+  ],
+  "activities": [
+    {
+      "id": "act-001",
+      "farm_id": "farm-001-rajendra",
+      "type": "irrigation",
+      "title": "Watering & irrigation due today",
+      "stage": "Flowering",
+      "scheduled_at": "2026-09-13T08:01:32.490Z",
+      "status": "pending",
+      "reminder_sent": true,
+      "icar_guideline": "Maintain 3cm standing water for panicle development"
+    },
+    {
+      "id": "act-002",
+      "farm_id": "farm-001-rajendra",
+      "type": "pest",
+      "title": "Neem bio-extract foliar spray due tomorrow",
+      "stage": "Flowering",
+      "scheduled_at": "2026-09-14T08:01:32.492Z",
+      "status": "pending",
+      "reminder_sent": false,
+      "icar_guideline": "Apply 500ml NSKE bio-mixture per acre to protect against leaf folder"
+    }
+  ],
+  "harvest_listings": [
+    {
+      "id": "listing-001-export",
+      "farm_id": "farm-001-rajendra",
+      "farmer_id": "user-frm-01",
+      "crop": "Ponni Rice (BPT 5204)",
+      "quantity": 245,
+      "grade": "A",
+      "available_from": "2026-09-15",
+      "channel": "export",
+      "status": "routed",
+      "created_at": "2026-08-28T10:05:00Z"
+    },
+    {
+      "id": "listing-002-domestic",
+      "farm_id": "farm-002-suresh",
+      "farmer_id": "user-frm-02",
+      "crop": "Erode Turmeric (Curcumin 4.5%)",
+      "quantity": 88,
+      "grade": "B",
+      "available_from": "2026-09-18",
+      "channel": "district",
+      "status": "routed",
+      "created_at": "2026-08-29T10:05:00Z"
+    }
+  ],
+  "shop_requirements": [
+    {
+      "id": "req-001-shop",
+      "shop_owner_id": "user-shop-01",
+      "crop": "Erode Turmeric (Curcumin 4.5%)",
+      "quantity": 80,
+      "region": "Madurai, Tamil Nadu",
+      "needed_by": "2026-09-25",
+      "status": "open",
+      "created_at": "2026-08-15T09:00:00Z"
+    }
+  ],
+  "market_routes": [
+    {
+      "id": "route-001-export",
+      "harvest_listing_id": "listing-001-export",
+      "routed_to": "exporter",
+      "matched_entity_id": "user-exp-01",
+      "routed_at": "2026-08-28T10:06:00Z",
+      "reason": "grade=A, mrl_compliant=true, yield=245.0q >= threshold(200q). Routed to EXPORT channel via linked exporter Kongu Agro Global Exports.",
+      "traceability_record": {
+        "soil_test_id": "soil-001",
+        "crop": "Ponni Rice (BPT 5204)",
+        "grade": "A",
+        "mrl_compliant": true,
+        "predicted_yield_qty": 245,
+        "agent_visit_count": 1,
+        "verified_photos_count": 2,
+        "model_version": "grading_v1.0"
+      }
+    },
+    {
+      "id": "route-002-district",
+      "harvest_listing_id": "listing-002-domestic",
+      "routed_to": "shop",
+      "matched_entity_id": "user-shop-01",
+      "routed_at": "2026-08-29T10:06:00Z",
+      "reason": "grade=B, mrl_compliant=false, yield=88.0q < bulk_threshold(200q). Auto-matched with open shop requirement in Madurai.",
+      "traceability_record": {
+        "soil_test_id": "soil-002",
+        "crop": "Erode Turmeric (Curcumin 4.5%)",
+        "grade": "B",
+        "mrl_compliant": false,
+        "predicted_yield_qty": 88,
+        "agent_visit_count": 1,
+        "verified_photos_count": 2,
+        "model_version": "grading_v1.0"
+      }
+    }
+  ],
+  "orders_ledger": [
+    {
+      "id": "ord-2026-001",
+      "order_number": "ORD-TN-94021",
+      "item_name": "Ponni Rice (BPT-5204) - Lot A1",
+      "item_category": "Harvest Lot",
+      "seller_name": "Arumugam Sundaram (Amaravathi Plot A)",
+      "buyer_name": "Meenakshi Wholesale & Retail Mandi",
+      "quantity_kg": 2500,
+      "unit_price": 48.5,
+      "total_amount": 121250,
+      "advance_paid": 48500,
+      "balance_due": 72750,
+      "gst_amount": 6062.5,
+      "payment_status": "ADVANCE_PAID",
+      "payment_mode": "Escrow UPI",
+      "processing_state": "Dispatched / In-Transit",
+      "delivery_status": "in_transit",
+      "weighbridge_slip_no": "WB-THJ-88219",
+      "dispatched_at": "2026-09-09T08:30:00Z",
+      "created_at": "2026-09-08T11:20:00Z"
+    },
+    {
+      "id": "ord-2026-002",
+      "order_number": "ORD-TN-94018",
+      "item_name": "Neem Seed Kernel Extract (NSKE 5% EC) 200L Drum",
+      "item_category": "Organic Agri-Input",
+      "seller_name": "Meenakshi Agri-Input Depot",
+      "buyer_name": "Arumugam Sundaram (Farmer)",
+      "quantity_kg": 200,
+      "unit_price": 185,
+      "total_amount": 37000,
+      "advance_paid": 37000,
+      "balance_due": 0,
+      "gst_amount": 1850,
+      "payment_status": "PAID",
+      "payment_mode": "Direct Mandi NEFT",
+      "processing_state": "Delivered & Confirmed",
+      "delivery_status": "delivered",
+      "delivery_confirmation_token": "POD-NSKE-849201",
+      "weighbridge_slip_no": "WB-INP-10492",
+      "dispatched_at": "2026-09-06T10:00:00Z",
+      "delivered_at": "2026-09-07T14:30:00Z",
+      "created_at": "2026-09-05T09:15:00Z"
+    },
+    {
+      "id": "ord-2026-003",
+      "order_number": "ORD-TN-93994",
+      "item_name": "Erode Salem Turmeric (Curcumin 4.8%) Dried Fingers",
+      "item_category": "Harvest Lot",
+      "seller_name": "Muthuvel Karuppan (Bhavani Plot)",
+      "buyer_name": "Kongu Agro Global Exports Pvt Ltd",
+      "quantity_kg": 4000,
+      "unit_price": 142,
+      "total_amount": 568000,
+      "advance_paid": 568000,
+      "balance_due": 0,
+      "gst_amount": 0,
+      "payment_status": "PAID",
+      "payment_mode": "Bank Guarantee",
+      "processing_state": "Delivered & Confirmed",
+      "delivery_status": "delivered",
+      "delivery_confirmation_token": "POD-APEDA-EXP-77192",
+      "weighbridge_slip_no": "WB-ERD-44120",
+      "dispatched_at": "2026-09-02T07:00:00Z",
+      "delivered_at": "2026-09-03T16:00:00Z",
+      "created_at": "2026-09-01T14:00:00Z"
+    }
+  ],
+  "agent_forms": [
+    {
+      "id": "form-agt-001",
+      "form_code": "FORM-A102",
+      "title": "Pre-Harvest Residue & Moisture Audit",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "farmer_name": "Arumugam Sundaram",
+      "priority": "URGENT_TODAY",
+      "due_date": "2026-09-09",
+      "status": "PENDING",
+      "fields": [
+        {
+          "field_id": "grain_moisture",
+          "label": "Grain Moisture Level (%)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "brix_index",
+          "label": "Brix Sugar / Starch Index",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "pest_presence",
+          "label": "Stem Borer / Leaf Folder Visual Count",
+          "type": "select",
+          "options": [
+            "None (0%)",
+            "Trace (< 2%)",
+            "Moderate (2-5%)",
+            "Severe (> 5%)"
+          ],
+          "required": true
+        },
+        {
+          "field_id": "mrl_swab_sample",
+          "label": "APVMA Swab Sample Tag ID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "gps_lock",
+          "label": "Hardware GPS Coordinate Lock",
+          "type": "gps",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "form-agt-002",
+      "form_code": "FORM-B204",
+      "title": "Bio-Shield & NSKE Application Verification",
+      "farm_id": "farm-001-cauvery",
+      "farm_name": "Cauvery Delta Organic Paddy",
+      "farmer_name": "Arumugam Sundaram",
+      "priority": "HIGH",
+      "due_date": "2026-09-11",
+      "status": "PENDING",
+      "fields": [
+        {
+          "field_id": "chemical_barcode",
+          "label": "Pesticide Bottle Barcode",
+          "type": "barcode",
+          "required": true
+        },
+        {
+          "field_id": "spray_volume_l",
+          "label": "Total Spray Volume Applied (Liters)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "standing_water_depth_cm",
+          "label": "Standing Canal Water Depth (cm)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "field_photo",
+          "label": "Device On-Site Crop Photo Proof",
+          "type": "photo",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "form-agt-003",
+      "form_code": "FORM-C301",
+      "title": "Soil Micronutrient & Heavy Metal Sampling",
+      "farm_id": "farm-002-suresh",
+      "farm_name": "Bhavani River Turmeric Acres",
+      "farmer_name": "Muthuvel Karuppan",
+      "priority": "NORMAL",
+      "due_date": "2026-09-16",
+      "status": "IN_PROGRESS",
+      "fields": [
+        {
+          "field_id": "core_depth_cm",
+          "label": "Soil Core Depth (cm)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "ph_level",
+          "label": "Field Soil pH",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "ec_salinity",
+          "label": "Electrical Conductivity (dS/m)",
+          "type": "number",
+          "required": true
+        },
+        {
+          "field_id": "lab_token",
+          "label": "Accredited Lab Barcode Slip",
+          "type": "text",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "agent_inspection_history": [
+    {
+      "id": "ins-log-001",
+      "agent_id": "user-agt-01",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "farmer_name": "Arumugam Sundaram",
+      "location_name": "Thanjavur Basin - Canal Sector 4",
+      "gps_lat": 10.7872,
+      "gps_lng": 79.1375,
+      "visited_at": "2026-09-09T10:45:00Z",
+      "is_today": true,
+      "parameters": {
+        "crop": "Ponni Rice (BPT 5204)",
+        "stage": "Harvest",
+        "brix_sugar_index": 22.4,
+        "moisture_percentage": 13.8,
+        "pest_incidence_percent": 0,
+        "mrl_status": "COMPLIANT",
+        "soil_ph": 7.15
+      },
+      "notes": "Grain filling complete. Golden panicle color uniform. Pre-harvest interval (PHI) > 21 days verified with zero synthetic residue.",
+      "tamper_proof_token": "GEO-AUDIT-THJ-891024",
+      "photo_proof_url": "/uploads/field_visit_ponni_01.jpg"
+    },
+    {
+      "id": "ins-log-002",
+      "agent_id": "user-agt-01",
+      "farm_id": "farm-001-bhavani",
+      "farm_name": "Bhavani River Turmeric Acres",
+      "farmer_name": "Arumugam Sundaram",
+      "location_name": "Erode East - Riverbed Sector 2",
+      "gps_lat": 11.3412,
+      "gps_lng": 77.7178,
+      "visited_at": "2026-09-09T08:15:00Z",
+      "is_today": true,
+      "parameters": {
+        "crop": "Erode Turmeric (Curcumin 4.8%)",
+        "stage": "Flowering & Rhizome Growth",
+        "brix_sugar_index": 18.2,
+        "moisture_percentage": 19.5,
+        "pest_incidence_percent": 0,
+        "mrl_status": "COMPLIANT",
+        "soil_ph": 6.8
+      },
+      "notes": "Rhizome enlargement vigorous. Foliar spray of Pseudomonas bio-shield applied correctly. No fungal spore spots detected.",
+      "tamper_proof_token": "GEO-AUDIT-ERD-441920",
+      "photo_proof_url": "/uploads/field_visit_turmeric_01.jpg"
+    },
+    {
+      "id": "ins-log-003",
+      "agent_id": "user-agt-01",
+      "farm_id": "farm-002-suresh",
+      "farm_name": "Bhavani River Turmeric Acres",
+      "farmer_name": "Muthuvel Karuppan",
+      "location_name": "Modakurichi Valley Plot 9",
+      "gps_lat": 11.284,
+      "gps_lng": 77.742,
+      "visited_at": "2026-09-07T15:20:00Z",
+      "is_today": false,
+      "parameters": {
+        "crop": "Erode Turmeric",
+        "stage": "Rhizome Development",
+        "brix_sugar_index": 17.5,
+        "moisture_percentage": 21,
+        "pest_incidence_percent": 1.2,
+        "mrl_status": "COMPLIANT",
+        "soil_ph": 6.9
+      },
+      "notes": "Soil test calibration verified. Liming recommendation adopted by farmer.",
+      "tamper_proof_token": "GEO-AUDIT-ERD-220194"
+    }
+  ],
+  "historical_land_logs": [
+    {
+      "id": "hist-log-001",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "season": "Kharif 2025 (Kuruvai)",
+      "crop_name": "Ponni Rice (BPT 5204)",
+      "botanical_variety": "Oryza sativa var. indica",
+      "acres_cultivated": 4.5,
+      "harvested_yield_tonnes": 24.5,
+      "harvested_yield_quintals": 245,
+      "yield_per_acre": 5.44,
+      "sales_total_inr": 1188250,
+      "rate_per_kg": 48.5,
+      "destination_channel": "APEDA Export Grade A",
+      "compliance_rating": "APEDA Clearance Pass (0.00 ppm)",
+      "harvest_date": "2025-10-18"
+    },
+    {
+      "id": "hist-log-002",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "season": "Rabi 2024-25 (Thaladi)",
+      "crop_name": "Blackgram (VBN-8)",
+      "botanical_variety": "Vigna mungo",
+      "acres_cultivated": 4.5,
+      "harvested_yield_tonnes": 4.2,
+      "harvested_yield_quintals": 42,
+      "yield_per_acre": 0.93,
+      "sales_total_inr": 357000,
+      "rate_per_kg": 85,
+      "destination_channel": "Domestic Mandi Grade B",
+      "compliance_rating": "Zero Synthetic Residue",
+      "harvest_date": "2025-02-22"
+    },
+    {
+      "id": "hist-log-003",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "season": "Kharif 2024 (Samba)",
+      "crop_name": "BPT 5204 Ponni Paddy",
+      "botanical_variety": "Oryza sativa",
+      "acres_cultivated": 4.5,
+      "harvested_yield_tonnes": 23.8,
+      "harvested_yield_quintals": 238,
+      "yield_per_acre": 5.28,
+      "sales_total_inr": 1094800,
+      "rate_per_kg": 46,
+      "destination_channel": "APEDA Export Grade A",
+      "compliance_rating": "APEDA Clearance Pass",
+      "harvest_date": "2024-11-12"
+    },
+    {
+      "id": "hist-log-004",
+      "farm_id": "farm-001-bhavani",
+      "farm_name": "Bhavani River Turmeric Acres",
+      "season": "Full Cycle 2024-25",
+      "crop_name": "Erode Salem Turmeric (PTS-10)",
+      "botanical_variety": "Curcuma longa",
+      "acres_cultivated": 3.2,
+      "harvested_yield_tonnes": 18.2,
+      "harvested_yield_quintals": 182,
+      "yield_per_acre": 5.68,
+      "sales_total_inr": 2548000,
+      "rate_per_kg": 140,
+      "destination_channel": "APEDA Export Grade A",
+      "compliance_rating": "Curcumin 4.9% Certified Pass",
+      "harvest_date": "2025-01-28"
+    }
+  ],
+  "applied_chemicals": [
+    {
+      "id": "chem-log-001",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "crop": "Ponni Rice (BPT 5204)",
+      "product_name": "Neem Seed Kernel Extract (NSKE 5% EC)",
+      "active_ingredient": "Azadirachtin A & B (0.05% w/w)",
+      "chemical_family": "Botanical Bio-Pesticide",
+      "dosage": "500 ml / Acre in 200L canal water",
+      "target_issue": "Yellow Stem Borer & Leaf Folder Control",
+      "application_date": "2026-08-15T07:30:00Z",
+      "pre_harvest_interval_days": 3,
+      "harvest_safety_date": "2026-08-18",
+      "mrl_limit_mg_per_kg": 1,
+      "estimated_residue_at_harvest": 0,
+      "compliance_status": "COMPLIANT (Zero Synthetic Residue)",
+      "applicator_name": "Arumugam Sundaram (Certified Farmer)",
+      "barcode": "8901234567890",
+      "tamper_proof_token": "TAMPER-NSKE-884920"
+    },
+    {
+      "id": "chem-log-002",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "crop": "Ponni Rice (BPT 5204)",
+      "product_name": "Pseudomonas fluorescens 1% WP (Bio-Shield)",
+      "active_ingredient": "Pseudomonas fluorescens strain TNAU-1 (2x10^9 CFU/g)",
+      "chemical_family": "Microbial Antagonist & Probiotic",
+      "dosage": "2.5 kg / Ha soil drenching & root zone wash",
+      "target_issue": "Sheath Blight & Bacterial Leaf Blight Prevention",
+      "application_date": "2026-08-28T08:00:00Z",
+      "pre_harvest_interval_days": 0,
+      "harvest_safety_date": "2026-08-28",
+      "mrl_limit_mg_per_kg": 0,
+      "estimated_residue_at_harvest": 0,
+      "compliance_status": "APEDA & APVMA CERTIFIED PASS",
+      "applicator_name": "Arumugam Sundaram",
+      "barcode": "8909876543210",
+      "tamper_proof_token": "TAMPER-PSEUDO-771920"
+    },
+    {
+      "id": "chem-log-003",
+      "farm_id": "farm-001-rajendra",
+      "farm_name": "Amaravathi Basin Plot A",
+      "crop": "Ponni Rice (BPT 5204)",
+      "product_name": "Bio-Potash & Micronutrient Foliar Spray",
+      "active_ingredient": "Solubilized Potassium Gluconate 15% + Zinc EDTA 12%",
+      "chemical_family": "Organic Mineral Chelates",
+      "dosage": "2.0 L / Acre foliar spray application",
+      "target_issue": "Pre-Harvest Grain Hardening & Resistance Booster",
+      "application_date": "2026-09-02T09:15:00Z",
+      "pre_harvest_interval_days": 3,
+      "harvest_safety_date": "2026-09-05",
+      "mrl_limit_mg_per_kg": 5,
+      "estimated_residue_at_harvest": 0,
+      "compliance_status": "APEDA & APVMA CERTIFIED PASS",
+      "applicator_name": "Arumugam Sundaram",
+      "barcode": "8904561237890",
+      "tamper_proof_token": "TAMPER-POTASH-940212"
+    },
+    {
+      "id": "chem-log-004",
+      "farm_id": "farm-001-bhavani",
+      "farm_name": "Bhavani River Turmeric Acres",
+      "crop": "Erode Turmeric (Curcumin 4.8%)",
+      "product_name": "Trichoderma Viride 1% WP Bio-Fungicide",
+      "active_ingredient": "Trichoderma viride 2x10^6 CFU/g",
+      "chemical_family": "Fungal Bio-Antagonist",
+      "dosage": "1.0 kg / Acre root drenching",
+      "target_issue": "Rhizome Rot Prevention & Root Aeration",
+      "application_date": "2026-08-20T10:00:00Z",
+      "pre_harvest_interval_days": 0,
+      "harvest_safety_date": "2026-08-20",
+      "mrl_limit_mg_per_kg": 0,
+      "estimated_residue_at_harvest": 0,
+      "compliance_status": "COMPLIANT (Zero Synthetic Residue)",
+      "applicator_name": "Arumugam Sundaram",
+      "barcode": "8909876543210",
+      "tamper_proof_token": "TAMPER-TRICHO-339102"
+    }
+  ],
+  "export_requirements": [
+    {
+      "id": "req-exp-001",
+      "exporter_id": "user-exp-01",
+      "exporter_name": "Kongu Agro Global Exports Pvt Ltd",
+      "crop": "Ponni Rice (BPT 5204)",
+      "quantity_tonnes": 150,
+      "target_grade": "Grade A",
+      "destination_country": "Netherlands (EU)",
+      "destination_port": "Port of Rotterdam",
+      "target_delivery_date": "2026-10-15",
+      "offered_price_per_kg": 48.5,
+      "quality_specifications": "APEDA Export Grade A, moisture <= 13.5%, zero synthetic chemical residue, BPT 5204 single-polish",
+      "status": "OPEN",
+      "created_at": "2026-09-05T09:00:00Z"
+    },
+    {
+      "id": "req-exp-002",
+      "exporter_id": "user-exp-01",
+      "exporter_name": "Kongu Agro Global Exports Pvt Ltd",
+      "crop": "Erode Salem Turmeric (Curcumin 4.8%)",
+      "quantity_tonnes": 80,
+      "target_grade": "Grade A",
+      "destination_country": "United Arab Emirates",
+      "destination_port": "Jebel Ali Port, Dubai",
+      "target_delivery_date": "2026-10-30",
+      "offered_price_per_kg": 142,
+      "quality_specifications": "Curcumin >= 4.5%, double-polished fingers, aflatoxin < 4 ppb, zero artificial color",
+      "status": "OPEN",
+      "created_at": "2026-09-07T11:30:00Z"
+    },
+    {
+      "id": "req-exp-003",
+      "exporter_id": "user-exp-01",
+      "exporter_name": "Kongu Agro Global Exports Pvt Ltd",
+      "crop": "Blackgram (VBN-8)",
+      "quantity_tonnes": 50,
+      "target_grade": "Grade A",
+      "destination_country": "Singapore",
+      "destination_port": "Jurong Port, Singapore",
+      "target_delivery_date": "2026-11-15",
+      "offered_price_per_kg": 86,
+      "quality_specifications": "Certified breeder pulse, moisture <= 12%, APVMA export clearance",
+      "status": "OPEN",
+      "created_at": "2026-09-08T14:15:00Z"
+    }
+  ],
+  "export_consignments": [
+    {
+      "id": "csg-2026-001",
+      "consignment_number": "CSG-EU-2026-8819",
+      "exporter_id": "user-exp-01",
+      "crop": "Ponni Rice (BPT 5204)",
+      "variety": "Oryza sativa var. indica",
+      "grade": "Grade A",
+      "quantity_tonnes": 120,
+      "buyer_name": "EuroAgro Import BV",
+      "destination_port": "Port of Rotterdam",
+      "destination_country": "Netherlands (EU)",
+      "shipment_date": "2026-08-12",
+      "delivery_status": "Delivered",
+      "phytosanitary_cert_no": "PHYTO-IN-TN-2026-004921",
+      "mrl_clearance_token": "APEDA-MRL-PASS-09412",
+      "container_number": "MSCU-8492019",
+      "vessel_name": "CMA CGM Jules Verne"
+    },
+    {
+      "id": "csg-2026-002",
+      "consignment_number": "CSG-DXB-2026-9022",
+      "exporter_id": "user-exp-01",
+      "crop": "Erode Salem Turmeric (Curcumin 4.8%)",
+      "variety": "Curcuma longa PTS-10",
+      "grade": "Grade A",
+      "quantity_tonnes": 65,
+      "buyer_name": "Al-Barakah General Trading LLC",
+      "destination_port": "Jebel Ali Port",
+      "destination_country": "UAE",
+      "shipment_date": "2026-08-25",
+      "delivery_status": "Customs Cleared",
+      "phytosanitary_cert_no": "PHYTO-IN-TN-2026-005188",
+      "mrl_clearance_token": "APEDA-MRL-PASS-10294",
+      "container_number": "HLCU-9940122",
+      "vessel_name": "Maersk Mc-Kinney Moller"
+    },
+    {
+      "id": "csg-2026-003",
+      "consignment_number": "CSG-SGP-2026-9410",
+      "exporter_id": "user-exp-01",
+      "crop": "Blackgram (VBN-8)",
+      "variety": "Vigna mungo",
+      "grade": "Grade A",
+      "quantity_tonnes": 40,
+      "buyer_name": "SingAgri Commodities Pte Ltd",
+      "destination_port": "Jurong Port",
+      "destination_country": "Singapore",
+      "shipment_date": "2026-09-02",
+      "delivery_status": "In-Transit",
+      "phytosanitary_cert_no": "PHYTO-IN-TN-2026-005830",
+      "mrl_clearance_token": "APEDA-MRL-PASS-11849",
+      "container_number": "OOCU-7729104",
+      "vessel_name": "ONE Columba"
+    },
+    {
+      "id": "csg-2026-004",
+      "consignment_number": "CSG-REG-2026-7731",
+      "exporter_id": "user-exp-01",
+      "crop": "Erode Turmeric (Domestic Batch B)",
+      "variety": "Curcuma longa",
+      "grade": "Grade B",
+      "quantity_tonnes": 35,
+      "buyer_name": "Lanka Spice Merchants Ltd",
+      "destination_port": "Port of Colombo",
+      "destination_country": "Sri Lanka",
+      "shipment_date": "2026-07-28",
+      "delivery_status": "Delivered",
+      "phytosanitary_cert_no": "PHYTO-IN-TN-2026-003920",
+      "mrl_clearance_token": "FSSAI-MRL-PASS-08819",
+      "container_number": "MEDU-5520194",
+      "vessel_name": "SSL Bharat"
+    },
+    {
+      "id": "csg-2026-005",
+      "consignment_number": "CSG-IND-2026-6612",
+      "exporter_id": "user-exp-01",
+      "crop": "Broken Basmati & Paddy Husk",
+      "variety": "Oryza sativa",
+      "grade": "Grade C",
+      "quantity_tonnes": 50,
+      "buyer_name": "Kaveri Starch & Agro Products Ltd",
+      "destination_port": "Kattupalli Mandi Terminal",
+      "destination_country": "India (Domestic)",
+      "shipment_date": "2026-07-15",
+      "delivery_status": "Delivered",
+      "phytosanitary_cert_no": "STATE-AGRO-QC-1192",
+      "mrl_clearance_token": "IND-STD-PASS-07712",
+      "container_number": "TN-TRK-9921",
+      "vessel_name": "Regional Rail Cargo"
+    }
+  ]
+}
