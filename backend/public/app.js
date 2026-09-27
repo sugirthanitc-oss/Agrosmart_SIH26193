@@ -1740,18 +1740,28 @@ async function renderApp() {
     return;
   }
 
-  if (state.currentRole === 'farmer') {
-    await loadFarmerData();
-    renderFarmerView(appBody);
-  } else if (state.currentRole === 'agent') {
-    await loadAgentData();
-    renderDedicatedFieldAgentView(appBody);
-  } else if (state.currentRole === 'exporter') {
-    await loadExporterData();
-    renderExporterView(appBody);
-  } else if (state.currentRole === 'shop_owner') {
-    await loadShopData();
-    renderShopView(appBody);
+    // STRICT DYNAMIC ROUTING FOR MAIN DASHBOARDS
+    switch (state.currentRole) {
+      case 'farmer':
+        await loadFarmerData();
+        renderFarmerView(appBody);
+        break;
+      case 'agent':
+        await loadAgentData();
+        renderDedicatedFieldAgentView(appBody);
+        break;
+      case 'exporter':
+        await loadExporterData();
+        renderExporterView(appBody);
+        break;
+      case 'shop_owner':
+      case 'shop':
+        await renderMarketplaceView(appBody); // Render new Shop Layout
+        break;
+      default:
+        await loadFarmerData();
+        renderFarmerView(appBody);
+    }
   }
 }
 
@@ -6012,3 +6022,51 @@ function renderMrlAdvisorResults(data, container) {
   container.innerHTML = html;
 }
 
+
+
+function openProductPurchaseFlow() {
+  const modalHtml = `
+    <div class="modal-backdrop" id="checkout-modal" style="z-index:9999;">
+      <div class="modal-content" style="max-width:500px; padding:0; background:#F4F7F6; overflow:hidden;">
+        <header style="background:#FFF; padding:24px 20px; border-bottom:1px solid #E2E8F0; display:flex; align-items:center;">
+          <button onclick="document.getElementById('checkout-modal').remove()" style="margin-right:16px; background:none; border:none; font-size:24px; cursor:pointer;">&larr;</button>
+          <h1 style="font-size:20px; font-weight:bold; color:#2D3748; margin:0;">Select Shop</h1>
+        </header>
+        <div style="padding:24px 20px;">
+          <div style="background:#E2E8F0; padding:20px; border-radius:12px; margin-bottom:24px;">
+            <p style="font-size:14px; color:#718096; margin:0 0 4px 0;">Selected Product:</p>
+            <h2 style="font-size:18px; font-weight:bold; color:#2D3748; margin:0;">Trichoderma Viride</h2>
+          </div>
+          <h3 style="font-size:16px; font-weight:bold; color:#4A5568; margin-bottom:16px;">Available Nearby</h3>
+          
+          <div style="padding:20px; background:#FFF; border:2px solid #E2E8F0; border-radius:12px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+              <div>
+                <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Sri Murugan Agri Clinic</h4>
+                <div style="color:#718096; font-size:13px;">1.2 km away &bull; <span style="color:#38A169;">In Stock</span></div>
+              </div>
+              <div style="font-size:20px; font-weight:bold; color:#2F855A;">₹450</div>
+            </div>
+            <button onclick="confirmPurchase('Sri Murugan Agri Clinic')" style="width:100%; background:#FFF; color:#2F855A; font-weight:bold; padding:12px; border-radius:8px; border:2px solid #2F855A; cursor:pointer; font-size:14px;">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function confirmPurchase(shopName) {
+  const m = document.getElementById('checkout-modal');
+  if (m) m.innerHTML = `
+    <div class="modal-content" style="max-width:500px; padding:32px 24px; text-align:center; background:#FFF;">
+      <h2 style="font-size:24px; font-weight:bold; color:#2F855A; margin:0 0 24px 0;">Order Reserved!</h2>
+      <div style="width:150px; height:150px; background:#EDF2F7; border:1px solid #E2E8F0; margin:0 auto 24px auto; display:flex; align-items:center; justify-content:center; border-radius:12px;">
+        <span style="color:#A0AEC0; font-weight:bold; letter-spacing:1px;">[ QR CODE ]</span>
+      </div>
+      <div style="font-size:32px; font-weight:900; color:#2D3748; letter-spacing:2px; margin-bottom:16px;">#TKN-8492</div>
+      <p style="color:#4A5568; margin-bottom:32px; font-size:14px; line-height:1.5;">Show this token at <strong>${shopName}</strong> to collect your product and pay locally.</p>
+      <button onclick="document.getElementById('checkout-modal').remove()" style="background:#E2E8F0; color:#2D3748; font-weight:bold; padding:16px; width:100%; border-radius:12px; border:none; cursor:pointer; font-size:16px;">Done</button>
+    </div>
+  `;
+}
