@@ -1450,46 +1450,50 @@ function renderRoleSidebar(role) {
           <span>${t('nav_edit_profile', 'Edit Profile')}</span>
         </a>
       `;
-    } else if (role === 'exporter') {
+    } else if (role === 'shop_owner' || role === 'shop') {
       container.innerHTML = `
-        <div class="nav-section-title">${t('nav_export_title', 'Export Operations')}</div>
-        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'menu' ? 'active' : ''}" onclick="switchNavTab('menu')">
-          <span style="font-size:16px;">🌱</span>
-          <span>${t('nav_contracted_lands', 'Contracted Lands')}</span>
-        </a>
-        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'consignments' || state.currentTab === 'history' ? 'active' : ''}" onclick="switchNavTab('consignments')">
+        <div class="nav-section-title">Fertilizer & Pesticide Store</div>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'products' || state.currentTab === 'marketplace' ? 'active' : ''}" onclick="switchNavTab('products')">
           <span style="font-size:16px;">📦</span>
-          <span>${t('nav_consignment_history', 'Consignment Delivery History')}</span>
+          <span>Products (Live Inventory)</span>
         </a>
-        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'agents' ? 'active' : ''}" onclick="switchNavTab('agents')">
-          <span style="font-size:16px;">👨‍🌾</span>
-          <span>${t('nav_agents', 'Agent Management')}</span>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'view_orders' ? 'active' : ''}" onclick="switchNavTab('view_orders')">
+          <span style="font-size:16px;">🛍️</span>
+          <span>View Orders</span>
         </a>
-
-
-
-
-        <div class="nav-section-title" style="margin-top:14px;">${t('nav_account_title', 'Account')}</div>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'order_history' ? 'active' : ''}" onclick="switchNavTab('order_history')">
+          <span style="font-size:16px;">🕒</span>
+          <span>Order History</span>
+        </a>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'sales_report' ? 'active' : ''}" onclick="switchNavTab('sales_report')">
+          <span style="font-size:16px;">📈</span>
+          <span>Sales Report</span>
+        </a>
+        <div class="nav-section-title" style="margin-top:14px;">Store Account</div>
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
-          <span style="font-size:16px;">✏️</span>
-          <span>${t('nav_edit_profile', 'Edit Profile')}</span>
+          <span style="font-size:16px;">👤</span>
+          <span>Edit Profile</span>
         </a>
       `;
-    } else if (role === 'shop_owner') {
+    } else if (role === 'exporter') {
       container.innerHTML = `
-        <div class="nav-section-title">${t('nav_shop_title', 'Mandi Trading Hub')}</div>
-        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'marketplace' ? 'active' : ''}" onclick="switchNavTab('marketplace')">
-          <span style="font-size:16px;">🏪</span>
-          <span>${t('nav_mandi_marketplace', 'Mandi Marketplace')}</span>
+        <div class="nav-section-title">Export Operations</div>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'contracted_lands' || state.currentTab === 'menu' ? 'active' : ''}" onclick="switchNavTab('contracted_lands')">
+          <span style="font-size:16px;">🌾</span>
+          <span>Contracted Lands</span>
         </a>
-        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'user_listings' ? 'active' : ''}" onclick="switchNavTab('user_listings')">
-          <span style="font-size:16px;">📋</span>
-          <span>${t('nav_my_listings', 'Listings')}</span>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'lands_history' ? 'active' : ''}" onclick="switchNavTab('lands_history')">
+          <span style="font-size:16px;">📜</span>
+          <span>Lands History</span>
         </a>
-        <div class="nav-section-title" style="margin-top:14px;">${t('nav_account_title', 'Account')}</div>
+        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'agent_management' || state.currentTab === 'agents' ? 'active' : ''}" onclick="switchNavTab('agent_management')">
+          <span style="font-size:16px;">👥</span>
+          <span>Agent Management</span>
+        </a>
+        <div class="nav-section-title" style="margin-top:14px;">Account</div>
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
-          <span style="font-size:16px;">✏️</span>
-          <span>${t('nav_edit_profile', 'Edit Profile')}</span>
+          <span style="font-size:16px;">👤</span>
+          <span>Edit Profile</span>
         </a>
       `;
     }
@@ -1588,26 +1592,30 @@ function renderMobileBottomBar(role) {
 
 // --- Navigation Tabs (Menu, Analytics, History) ---
 function switchNavTab(tab) {
-  if (state.currentRole === 'farmer' && tab === 'marketplace') {
-    tab = 'menu';
+    if (state.currentRole === 'farmer' && (tab === 'marketplace' || tab === 'products')) {
+      tab = 'menu';
+    }
+    if (state.currentRole === 'shop_owner' || state.currentRole === 'shop') {
+      if (tab === 'marketplace' || tab === 'menu') tab = 'products';
+    }
+    if (state.currentRole === 'exporter') {
+      if (tab === 'menu' || tab === 'consignments') tab = 'contracted_lands';
+      if (tab === 'agents') tab = 'agent_management';
+    }
+    state.currentTab = tab;
+    renderRoleSidebar(state.currentRole);
+    document.querySelectorAll('.mobile-nav-btn').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-nav') === tab);
+    });
+    renderApp();
   }
-  if (state.currentRole === 'shop_owner' && !['marketplace', 'user_listings', 'history'].includes(tab)) {
-    tab = 'marketplace';
-  }
-  state.currentTab = tab;
-  renderRoleSidebar(state.currentRole);
-  document.querySelectorAll('.mobile-nav-btn').forEach(el => {
-    el.classList.toggle('active', el.getAttribute('data-nav') === tab);
-  });
-  renderApp();
-}
 
 // --- Role Switching ---
   async function switchRole(role) {
     // === COMPLETE STATE RESET ===
     // 1. Reset role and default tab atomically
     state.currentRole = role;
-    state.currentTab = role === 'shop_owner' ? 'marketplace' : 'menu';
+    state.currentTab = (role === 'shop_owner' || role === 'shop') ? 'products' : (role === 'exporter' ? 'contracted_lands' : 'menu');
     
     // 2. Reset all role-specific cached data to prevent stale content
     state.farms = [];
@@ -1700,7 +1708,41 @@ async function renderApp() {
       fabLand.style.display = (state.currentRole === 'farmer' && state.currentTab === 'menu') ? 'flex' : 'none';
     }
 
-    // === TAB-SPECIFIC VIEWS (shared across roles) ===
+    // === ROLE SPECIFIC DISPATCHING ===
+
+    // 1. SHOP OWNER / FERTILIZER ROLE
+    if (state.currentRole === 'shop_owner' || state.currentRole === 'shop') {
+      if (state.currentTab === 'view_orders') {
+        renderShopOrdersView(appBody);
+      } else if (state.currentTab === 'order_history') {
+        renderShopOrderHistoryView(appBody);
+      } else if (state.currentTab === 'sales_report') {
+        renderShopSalesReportView(appBody);
+      } else {
+        renderFertilizerShopDashboard(appBody); // Default: Products (Live Inventory)
+      }
+      return;
+    }
+
+    // 2. EXPORTER ROLE
+    if (state.currentRole === 'exporter') {
+      if (state.currentTab === 'lands_history') {
+        renderExporterLandsHistoryView(appBody);
+      } else if (state.currentTab === 'agent_management') {
+        renderExporterAgentManagementView(appBody);
+      } else {
+        renderExporterDashboard(appBody); // Default: Contracted Lands
+      }
+      return;
+    }
+
+    // 3. AGENT ROLE
+    if (state.currentRole === 'agent') {
+      renderAgentDashboard(appBody);
+      return;
+    }
+
+    // 4. FARMER ROLE & SHARED TABS
     if (state.currentTab === 'analytics') {
       await renderAnalyticsView(appBody);
       return;
@@ -1710,45 +1752,13 @@ async function renderApp() {
       return;
     }
     if (state.currentTab === 'history') {
-      if (state.currentRole === 'farmer') {
-        await renderLogListView(appBody);
-      } else if (state.currentRole === 'agent') {
-        renderAgentDashboard(appBody);
-      } else if (state.currentRole === 'shop_owner') {
-        await renderOrdersReceiptsLedgerView(appBody);
-      } else if (state.currentRole === 'exporter') {
-        renderExporterDashboard(appBody);
-      } else {
-        renderHistoryView(appBody);
-      }
-      return;
-    }
-    if (state.currentTab === 'user_listings') {
-      await renderUserListingsView(appBody);
+      await renderLogListView(appBody);
       return;
     }
 
-    // === STRICT ROLE-BASED MAIN DASHBOARD ROUTING ===
-    // This is the ONLY place that decides which dashboard to render.
-    // No fallback to Farmer. Each role gets its own distinct view.
-    switch (state.currentRole) {
-      case 'farmer':
-        await loadFarmerData();
-        renderFarmerView(appBody);
-        break;
-      case 'agent':
-        renderAgentDashboard(appBody);
-        break;
-      case 'exporter':
-        renderExporterDashboard(appBody);
-        break;
-      case 'shop_owner':
-      case 'shop':
-        renderFertilizerShopDashboard(appBody);
-        break;
-      default:
-        appBody.innerHTML = '<div style="padding:40px; text-align:center; color:#718096;">Unknown role. Please select a valid role tab above.</div>';
-    }
+    // Default Farmer View
+    await loadFarmerData();
+    renderFarmerView(appBody);
   }
 
 // =========================================================================
@@ -1815,444 +1825,776 @@ function renderAgentDashboard(container) {
 // =========================================================================
 // EXPORTER DASHBOARD: Global Export Operations View
 // =========================================================================
+
+// =========================================================================
+// SHOP & EXPORTER REACTIVE DATA STORES
+// =========================================================================
+window.SHOP_LIVE_INVENTORY = [
+  { id: 'PROD-101', name: 'Trichoderma Viride Bio-Fungicide', category: 'Bio-Fungicide', stock: 45, price: 450 },
+  { id: 'PROD-102', name: 'DAP High Nitrogen Complex (50kg)', category: 'NPK Fertilizer', stock: 200, price: 1350 },
+  { id: 'PROD-103', name: 'Neem Oil Extract 10,000 PPM', category: 'Organic Pesticide', stock: 78, price: 220 },
+  { id: 'PROD-104', name: 'Urea Granular 46% (50kg)', category: 'NPK Fertilizer', stock: 120, price: 268 },
+  { id: 'PROD-105', name: 'Pseudomonas Fluorescens Seed Tonic', category: 'Seed Treatment', stock: 60, price: 380 }
+];
+
+window.SHOP_ACTIVE_ORDERS = [
+  { id: 'ORD-8492', farmer: 'Arumugam Sundaram', product: 'Trichoderma Viride Bio-Fungicide', qty: 2, total: 900, token: '#TKN-8492', status: 'Pending In-Store Pickup', time: '12 mins ago' },
+  { id: 'ORD-8493', farmer: 'Palanisamy Velu', product: 'Urea Granular 46%', qty: 4, total: 1072, token: '#TKN-8493', status: 'Awaiting Fulfillment', time: '45 mins ago' }
+];
+
+window.SHOP_COMPLETED_ORDERS = [
+  { id: 'ORD-8470', farmer: 'Ramasamy K.', product: 'DAP High Nitrogen Complex', qty: 2, total: 2700, date: 'Yesterday, 4:30 PM', payment: 'Cash at Shop (Verified)' },
+  { id: 'ORD-8468', farmer: 'Senthil Nathan', product: 'Neem Oil Extract', qty: 1, total: 220, date: '25 Sep 2026', payment: 'Online Pre-paid' },
+  { id: 'ORD-8462', farmer: 'Murugesan G.', product: 'Trichoderma Viride', qty: 3, total: 1350, date: '24 Sep 2026', payment: 'Cash at Shop (Verified)' }
+];
+
+window.EXPORTER_CONTRACTED_LANDS = [
+  {
+    id: 'LAND-TN-8492',
+    farmerName: 'Arumugam Sundaram',
+    farmerPhone: '9842100004',
+    parcelName: 'Amaravathi Basin Plot C',
+    crop: 'Bhavani High-Yield Turmeric',
+    area: '4.5 Acres',
+    location: 'Thanjavur, Tamil Nadu',
+    gps: '10.787° N, 79.137° E',
+    mrlStatus: 'APEDA Soil Tested MRL Compliant',
+    expectedYield: '280 Quintals',
+    harvestDate: 'Nov 2026'
+  },
+  {
+    id: 'LAND-TN-5120',
+    farmerName: 'Kavitha Ramachandran',
+    farmerPhone: '9842100018',
+    parcelName: 'Bhavani River Delta Block 2',
+    crop: 'Export Grade Sona Masoori Paddy',
+    area: '3.2 Acres',
+    location: 'Erode, Tamil Nadu',
+    gps: '11.341° N, 77.717° E',
+    mrlStatus: 'Soil & Water Tested Safe',
+    expectedYield: '210 Quintals',
+    harvestDate: 'Oct 2026'
+  }
+];
+
+window.EXPORTER_AGENTS = [
+  { id: 'AGT-TN-101', name: 'Suresh Kumar', phone: '9842100002', region: 'Thanjavur Basin' },
+  { id: 'AGT-TN-102', name: 'Priya Dharshini', phone: '9842100019', region: 'Erode Delta' },
+  { id: 'AGT-TN-103', name: 'Karthik Raja', phone: '9842100045', region: 'Coimbatore Delta' }
+];
+
+window.EXPORTER_ALLOCATIONS = [];
+window.EXPORTER_ALLOCATIONS_LOCKED = false;
+
+
+// =========================================================================
+// EXPORTER MODULE: THEME SYNC, CONTRACTED LANDS, AGENTS & HISTORY
+// =========================================================================
+
 function renderExporterDashboard(container) {
   const user = state.user || {};
-  container.innerHTML = `
-    <div style="padding:20px;">
-      <div style="background:linear-gradient(135deg, #1A202C, #2D3748); color:#FFF; padding:24px; border-radius:16px; margin-bottom:24px;">
-        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:#FBD38D; margin-bottom:8px;">Global Export Terminal</div>
-        <h1 style="font-size:24px; font-weight:900; margin:0 0 4px 0;">${user.name || 'Exporter'}</h1>
-        <div style="font-size:13px; color:#E2E8F0;">GST: ${user.gst_number || '33AAACK7741P1ZB'} &bull; Export ID: ${user.export_id || '0485019284'}</div>
-      </div>
-
-      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin-bottom:16px;">Active Consignments</h2>
-
-      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-          <div>
-            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Batch #TN-TUR-2026-0042</h3>
-            <div style="font-size:13px; color:#718096;">Bhavani Turmeric &bull; 12 Metric Tons &bull; Destination: Dubai</div>
-          </div>
-          <span style="background:#C6F6D5; color:#22543D; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">APEDA CLEARED</span>
-        </div>
-        <div style="background:#F0FFF4; padding:12px; border-radius:8px; margin-bottom:12px;">
-          <div style="font-size:12px; font-weight:bold; color:#276749; margin-bottom:8px;">COMPLIANCE STATUS</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-            <div style="font-size:13px; color:#2D3748;">MRL Check: <strong style="color:#38A169;">PASS</strong></div>
-            <div style="font-size:13px; color:#2D3748;">Pesticide Log: <strong style="color:#38A169;">VERIFIED</strong></div>
-            <div style="font-size:13px; color:#2D3748;">Agent Inspections: <strong style="color:#38A169;">18/18</strong></div>
-            <div style="font-size:13px; color:#2D3748;">Traceability QR: <strong style="color:#38A169;">GENERATED</strong></div>
-          </div>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button onclick="alert('Pre-Harvest Dossier downloaded.')" style="flex:1; background:#2F855A; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:13px;">Download APEDA Dossier</button>
-          <button onclick="alert('QR Passport generated.')" style="flex:1; background:#2B6CB0; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:13px;">Generate QR Passport</button>
-        </div>
-      </div>
-
-      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Batch #TN-PAD-2026-0078</h3>
-            <div style="font-size:13px; color:#718096;">Sona Masoori Rice &bull; 25 MT &bull; Destination: Singapore</div>
-          </div>
-          <span style="background:#FEFCBF; color:#744210; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">PENDING MRL</span>
-        </div>
-      </div>
-
-      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Batch #TN-SGR-2026-0015</h3>
-            <div style="font-size:13px; color:#718096;">Organic Sugarcane &bull; 8 MT &bull; Destination: EU</div>
-          </div>
-          <span style="background:#FED7D7; color:#9B2C2C; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">AGENT REVIEW</span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// =========================================================================
-// FERTILIZER SHOP DASHBOARD: Inventory & Token Fulfillment View
-// =========================================================================
-function renderFertilizerShopDashboard(container) {
-  const user = state.user || {};
-  container.innerHTML = `
-    <div style="padding:20px;">
-      <div style="background:linear-gradient(135deg, #22543D, #2F855A); color:#FFF; padding:24px; border-radius:16px; margin-bottom:24px;">
-        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:#C6F6D5; margin-bottom:8px;">Fertilizer & Pesticide Hub</div>
-        <h1 style="font-size:24px; font-weight:900; margin:0 0 4px 0;">${user.name || user.shop_name || 'Shop Owner'}</h1>
-        <div style="font-size:13px; color:#C6F6D5;">GST: ${user.gst_number || '33BBBCK1234P1ZA'} &bull; ${user.region || 'Tamil Nadu'}</div>
-      </div>
-
-      <div onclick="simulateInventoryUpload()" style="background:#FFF; border:2px dashed #3182CE; border-radius:12px; padding:24px; text-align:center; margin-bottom:24px; cursor:pointer;">
-        <div style="font-size:28px; margin-bottom:8px;">&#128196;</div>
-        <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Auto-Stock via Supplier Invoice</h3>
-        <p style="font-size:13px; color:#718096; margin:0;">Upload PDF/Image to automatically extract and list products</p>
-      </div>
-
-      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin-bottom:16px;">Live Inventory</h2>
-      <div id="inventory-list">
-        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Trichoderma Viride</h4>
-            <div style="color:#718096; font-size:13px;">Bio-Fungicide &bull; Stock: 45 units</div>
-          </div>
-          <div style="font-size:18px; font-weight:bold; color:#2F855A;">&#x20B9;450</div>
-        </div>
-        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">DAP Fertilizer (50kg)</h4>
-            <div style="color:#718096; font-size:13px;">Chemical Fertilizer &bull; Stock: 200 bags</div>
-          </div>
-          <div style="font-size:18px; font-weight:bold; color:#2F855A;">&#x20B9;1350</div>
-        </div>
-        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Neem Oil Extract (10000 PPM)</h4>
-            <div style="color:#718096; font-size:13px;">Botanical Pesticide &bull; Stock: 78 units</div>
-          </div>
-          <div style="font-size:18px; font-weight:bold; color:#2F855A;">&#x20B9;220</div>
-        </div>
-      </div>
-
-      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin:24px 0 16px 0;">Pending Token Orders</h2>
-      <div style="background:#FFFFF0; border:1px solid #FEFCBF; border-radius:12px; padding:16px; margin-bottom:12px;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-          <div>
-            <h4 style="font-size:15px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Arumugam Sundaram</h4>
-            <div style="font-size:13px; color:#718096;">Trichoderma Viride x1 &bull; Token: <strong>#TKN-8492</strong></div>
-          </div>
-          <span style="background:#FEFCBF; color:#744210; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">AWAITING PICKUP</span>
-        </div>
-        <button onclick="alert('Token #TKN-8492 validated. Order marked as fulfilled.')" style="width:100%; background:#D69E2E; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:14px;">Validate Token & Fulfill</button>
-      </div>
-    </div>
-  `;
-}
-
-// 1. FARMER VIEW: CLEAN UI, ZERO EXTERNAL HUB JARGON, ONLY FLOATING (+)
-// =========================================================================
-async function loadFarmerData() {
-  try {
-    const fRes = await fetch('/api/farmer/farms', {
-      headers: { Authorization: `Bearer ${state.token}` }
-    });
-    if (fRes.ok) {
-      state.farms = await fRes.json();
-      if (state.farms.length > 0) {
-        state.activeFarm = state.activeFarm
-          ? state.farms.find(f => f.id === state.activeFarm.id) || state.farms[0]
-          : state.farms[0];
-
-        const aRes = await fetch(`/api/farmer/farms/${state.activeFarm.id}/activities`, {
-          headers: { Authorization: `Bearer ${state.token}` }
-        });
-        if (aRes.ok) state.activities = await aRes.json();
-      }
-    }
-  } catch (e) {
-    console.warn('Error loading farmer data:', e);
-  }
-}
-
-function renderFarmerView(container) {
-  const farm = state.activeFarm;
-
-  // Initialize or fetch dynamic 1-week cycle for this farm matching its stage
-  if (!state.farmWeeklyState) state.farmWeeklyState = {};
-  if (farm && !state.farmWeeklyState[farm.id]) {
-    const isHarvest = farm.current_stage === 'Harvest';
-    const isFlowering = farm.current_stage === 'Flowering';
-    state.farmWeeklyState[farm.id] = {
-      week: isHarvest ? 18 : (isFlowering ? 11 : 4),
-      totalWeeks: 18,
-      stageName: isHarvest ? 'Pre-Harvest Quarantine & Grain Hardening' : (isFlowering ? 'Flowering & Rhizome Enlargement' : 'Vegetative Tillering & Root Aeration'),
-      tasks: isHarvest ? [
-        { id: 'wt-01', title: 'Water drainage & field drying for combine harvester', day: 'Day 1', done: true, type: 'irrigation' },
-        { id: 'wt-02', title: 'Pre-harvest moisture meter reading (<= 14%)', day: 'Day 3', done: true, type: 'sensor' },
-        { id: 'wt-03', title: 'Bio-Potash foliar spray dosing', day: 'Day 5', done: false, type: 'fertilizer' }
-      ] : isFlowering ? [
-        { id: 'wt-01', title: 'Furrow irrigation & rhizome root check', day: 'Day 1', done: true, type: 'irrigation' },
-        { id: 'wt-02', title: 'Trichoderma Viride 1% WP root drenching', day: 'Day 3', done: false, type: 'pest' },
-        { id: 'wt-03', title: 'Canopy inspection & MRL rapid test strip', day: 'Day 6', done: false, type: 'sensor' }
-      ] : [
-        { id: 'wt-01', title: 'Irrigation & standing water check (3cm)', day: 'Day 1', done: true, type: 'irrigation' },
-        { id: 'wt-02', title: 'AI Soil moisture retention reading', day: 'Day 3', done: true, type: 'sensor' },
-        { id: 'wt-03', title: 'Bio-Neem NSKE 5% foliar spray dosing', day: 'Day 6', done: false, type: 'pest' }
-      ]
-    };
-  }
-  const wState = farm ? state.farmWeeklyState[farm.id] : null;
-  const completedTasks = wState ? wState.tasks.filter(t => t.done).length : 0;
-  const totalTasks = wState ? wState.tasks.length : 3;
-  const progressPercent = Math.round((completedTasks / totalTasks) * 100);
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  // Active pending task: strictly filter out tasks that are done, or rescheduled to a future date
-  const activeTask = wState ? (
-    wState.tasks.find(t => !t.done && (!t.status || t.status === 'PENDING') && (!t.scheduled_date || t.scheduled_date <= todayStr) && !t.rescheduled_to) ||
-    wState.tasks.find(t => !t.done && t.status === 'RESCHEDULED' && (t.scheduled_date === todayStr || t.rescheduled_to === todayStr)) ||
-    null
-  ) : null;
-  const isDosingTask = activeTask && (activeTask.type === 'pest' || activeTask.type === 'fertilizer');
+  const lands = window.EXPORTER_CONTRACTED_LANDS || [];
 
   container.innerHTML = `
-    <!-- Hero Header: Clean, Human-Centric, Zero External Hub Mention -->
-    <div class="hero-header">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-        <div>
-          <div class="hero-title">${t('hero_farmer_greeting', 'Vanakkam')}, ${state.user.name || 'Arumugam Sundaram'} 🌾</div>
-          <div class="hero-meta">
-            <span>📍 ${state.user.district || 'Thanjavur Basin'}</span>
-            <span>•</span>
-            <span class="badge badge-gold" style="font-size:10px;">ID: ${state.user.farmer_id_code || 'TN-FARM-8492'}</span>
-          </div>
-        </div>
-        <div>
-          <button type="button" onclick="playTamilPrompt('dashboard_guide', this)" class="voice-walkthrough-btn">
-            🔊 ${state.language === 'ta' ? 'குரல் வழிகாட்டி' : 'Audio Guide'}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- LAND SELECTION GRID CONTAINER (Top Priority: Select Land First) -->
-    <div class="agro-card" style="margin-bottom:18px; padding:14px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-        <div>
-          <span class="card-label" style="font-size:13px; font-weight:800; color:var(--primary);">${state.language === 'ta' ? 'நிலங்கள்' : 'LAND'} (${state.farms.length})</span>
-          <div style="font-size:11px; color:var(--slate); margin-top:2px;">${state.language === 'ta' ? 'மேற்பார்வையிட ஒரு நிலத்தைத் தேர்ந்தெடுக்கவும்' : 'Select a land parcel to manage cultivation & tasks'}</div>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;">
-        ${state.farms.map(f => {
-          const isSelected = farm && farm.id === f.id;
-          const acres = f.area_acres || (f.area_ha ? (f.area_ha * 2.471).toFixed(1) : '4.2');
-
-          return `
-            <div onclick="selectFarm('${f.id}')" style="min-width:230px; padding:12px; border-radius:14px; background:${isSelected ? 'var(--mint-soft)' : 'var(--bg-canvas)'}; border:${isSelected ? '2px solid var(--primary)' : '1px solid var(--border)'}; cursor:pointer; transition:all 0.15s ease;">
-              <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:800;">
-                <span>${f.land_name || 'Land Parcel'}</span>
-                <span class="badge ${f.current_stage === 'Harvest' ? 'badge-gold' : 'badge-forest'}">${translateStage(f.current_stage || 'Flowering')}</span>
-              </div>
-              <div style="font-size:11px; color:var(--slate); margin-top:4px;">
-                ${translateCrop(f.crop_type || 'Crop')} • ${acres} ${t('cert_acres', 'Acres')}
-              </div>
-              <div style="font-size:10px; font-family:monospace; color:var(--primary); margin-top:2px;">
-                ID: ${f.unique_parcel_code || f.id}
-              </div>
-              <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700; color:var(--primary);">
-                <span>📍 ${f.district || 'Tamil Nadu'}</span>
-                <span style="background:${isSelected ? 'var(--primary)' : 'rgba(27, 77, 62, 0.1)'}; color:${isSelected ? '#FFFFFF' : 'var(--primary)'}; padding:2px 8px; border-radius:8px; font-size:10px;">
-                  ${isSelected ? t('active_parcel_tag', '✓ Active Parcel') : t('select_parcel_tag', 'Select')}
-                </span>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    </div>
-
-    ${farm ? `
-      <!-- PRIMARY ACTIONABLE LAND CARD (Selected Parcel Details) -->
-      <div class="agro-card" style="margin-bottom:18px;">
-        <div class="agro-card-header">
+    <div style="padding:24px;">
+      <!-- THEME SYNC: Primary Green Background matching Sidebar -->
+      <div style="background:linear-gradient(135deg, #1B4D3E 0%, #2F855A 100%); color:#FFF; padding:24px 28px; border-radius:20px; margin-bottom:24px; box-shadow:0 10px 25px -5px rgba(31, 77, 58, 0.35);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
           <div>
-            <div class="card-title">${farm.land_name || 'Amaravathi Basin Plot A'}</div>
-            <div style="font-size:12px; color:var(--slate); margin-top:2px;">
-              ${translateCrop(farm.crop_type || 'Ponni Rice')} • ${farm.area_acres || '4.2'} ${t('cert_acres', 'Acres')} (${farm.area_ha} Ha)
+            <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:#9AE6B4; fontWeight:800;">
+              APEDA Registered Global Export Terminal
             </div>
-            <div style="font-size:10.5px; font-family:monospace; color:var(--primary); margin-top:2px;">
-              ID: <strong>${farm.unique_parcel_code || farm.id}</strong>
+            <h1 style="font-size:24px; font-weight:900; margin:4px 0 6px 0;">${user.name || 'Kongu Agro Global Exports Pvt Ltd'} 🚢</h1>
+            <div style="font-size:12px; color:#D1E7DD; display:flex; align-items:center; gap:8px;">
+              <span>APEDA Reg: EXP-TN-COIMBATORE-101 • Codex Alimentarius International Standards</span>
             </div>
           </div>
-          <span class="badge badge-forest" style="font-size:12px;">Stage: ${translateStage(farm.current_stage || wState?.stageName || 'Flowering')}</span>
+          <div style="background:rgba(255,255,255,0.15); padding:8px 16px; border-radius:12px; text-align:right;">
+            <div style="font-size:10px; text-transform:uppercase; color:#9AE6B4; font-weight:700;">Export Status</div>
+            <div style="font-size:13px; font-weight:800; margin-top:2px;">100% Pre-Harvest MRL Cleared</div>
+          </div>
         </div>
 
-        ${((farm.current_stage || wState?.stageName || '').toLowerCase().includes('harvest')) ? `
-        <!-- REAL-TIME DYNAMIC EXPORT COMPLIANCE & QR DOCUMENT CARD (HARVEST STAGE EXCLUSIVE) -->
-        <div style="background: linear-gradient(135deg, var(--mint-soft) 0%, #FFFFFF 100%); border: 1.5px solid var(--primary); border-radius: 14px; padding: 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <!-- Minimal Key Metrics Row (Legacy Simplified Layout) -->
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.15);">
           <div>
-            <div style="font-weight: 800; font-size: 13.5px; color: var(--primary); display: flex; align-items: center; gap: 6px;">
-              <span>📜</span>
-              <span>${t('cert_dossier_subtitle', 'International Export Compliance Dossier')}</span>
-            </div>
-            <div style="font-size: 11px; color: var(--slate); margin-top: 2px;">
-              ${state.language === 'ta' ? 'APEDA, APVMA, கோடெக்ஸ், EU விதிமுறைகள் மற்றும் இரசாயன தணிக்கை விவரங்கள் அடங்கிய நேரலை ஆவணம்.' : 'Live international standards dossier (APEDA, APVMA, Codex, EU MRL) with applied agrochemical audit trail.'}
-            </div>
+            <div style="font-size:11px; color:#D1E7DD;">Contracted Farms</div>
+            <div style="font-size:18px; font-weight:800; color:#FFFFFF; margin-top:2px;">${lands.length} Parcels</div>
           </div>
-          <button onclick="openDynamicComplianceModal('${farm.id}')" class="agro-btn-primary" style="padding: 8px 14px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 6px;">
-            <span>🔍</span>
-            <span>${t('btn_view_certificate_qr', 'View Certificate & QR')}</span>
-          </button>
-        </div>
-        ` : ''}
-
-        <!-- DYNAMIC ONE-WEEK PROGRESSION BAR -->
-        <div class="weekly-cycle-box">
-          <div class="weekly-cycle-header">
-            <div class="weekly-cycle-title">
-              <span>📅</span>
-              <span>${t('timeline_week', 'Week')} ${wState.week} / ${wState.totalWeeks}: ${translateStage(wState.stageName)}</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="badge ${progressPercent === 100 ? 'badge-forest' : 'badge-gold'}" style="font-size:10px;">
-                ${progressPercent === 100 ? (state.language === 'ta' ? '🎉 100% சுழற்சி நிறைவடைந்தது' : '🎉 100% CYCLE COMPLETED') : `${completedTasks} of ${totalTasks} (${progressPercent}%)`}
-              </span>
-            </div>
+          <div>
+            <div style="font-size:11px; color:#D1E7DD;">Active Field Agents</div>
+            <div style="font-size:18px; font-weight:800; color:#FFFFFF; margin-top:2px;">${(window.EXPORTER_AGENTS || []).length} Certified Agents</div>
           </div>
-
-          <div class="weekly-cycle-track">
-            <div class="weekly-cycle-fill" style="width: ${progressPercent}%;"></div>
-          </div>
-
-          <div class="weekly-tasks-grid">
-            ${wState.tasks.map(t => {
-              const isRescheduled = t.status === 'RESCHEDULED';
-              const newDate = t.scheduled_date || t.rescheduled_to;
-              const displayDate = isRescheduled ? (state.language === 'ta' ? `புதிய தேதி: ${newDate}` : `Shifted: ${newDate}`) : `${t.day} • ${translateActivityType(t.type)}`;
-              return `
-              <div class="weekly-task-chip ${t.done ? 'completed' : isRescheduled ? 'rescheduled' : 'active'}" onclick="${!t.done ? (t.type === 'pest' || t.type === 'fertilizer' ? `openTreatmentBarcodeModal('${farm.crop_type?.includes('Turmeric') ? 'Trichoderma Viride 1% WP' : (farm.crop_type?.includes('Sugar') ? 'Bio-Neem NSKE 5% Bio-Spray' : 'Bio-Neem 5% EC')}', 'Target Bio-Protection', '500 ml / Acre', '${farm.id}', '${t.id}', '8901234567890')` : `openCameraModal('${farm.id}', '${t.id}')`) : ''}" style="${!t.done ? 'cursor:pointer;' : ''}">
-                <div>
-                  <div style="font-size:9px; color:var(--slate); text-transform:uppercase;">${displayDate}</div>
-                  <div style="margin-top:2px;">${t.title}</div>
-                  ${isRescheduled ? `<div style="font-size:9px; color:var(--primary); font-weight:700; margin-top:2px;">${state.language === 'ta' ? 'புதிய தேதிக்கு திட்டமிடப்பட்டது' : 'Rescheduled strictly to new date'}</div>` : ''}
-                </div>
-                <span style="font-size:14px; margin-left:6px;">${t.done ? '✅' : isRescheduled ? '📅' : '⏳'}</span>
-              </div>
-            `;
-            }).join('')}
+          <div>
+            <div style="font-size:11px; color:#D1E7DD;">Target Procurement</div>
+            <div style="font-size:18px; font-weight:800; color:#FFFFFF; margin-top:2px;">490 Quintals</div>
           </div>
         </div>
+      </div>
 
-        <!-- CONTEXTUAL ACTION PROMPT (Clears when completed or rescheduled away) -->
-        ${activeTask ? `
-          <div class="action-prompt-box" style="flex-direction:column; gap:10px; margin-top:14px;">
-            <div style="display:flex; align-items:flex-start; gap:12px; width:100%;">
-              <div class="prompt-icon">${isDosingTask ? '🧪' : '💧'}</div>
-              <div style="flex:1;">
-                <div class="prompt-text">
-                  ${isDosingTask 
-                    ? `${farm.pesticide_fertilizer_dosing?.mixture || 'Bio-Neem NSKE 5%'} foliar spray scheduled — Scan bottle barcode before application`
-                    : (activeTask.status === 'RESCHEDULED' && (activeTask.scheduled_date || activeTask.rescheduled_to) !== todayStr)
-                      ? (state.language === 'ta' ? `📅 பணி ${activeTask.scheduled_date || activeTask.rescheduled_to} புதிய தேதிக்கு மாற்றப்பட்டுள்ளது — நடவடிக்கை புதிய தேதியில் திட்டமிடப்பட்டுள்ளது` : `📅 Task rescheduled to ${activeTask.scheduled_date || activeTask.rescheduled_to} — Action scheduled strictly on new date`)
-                      : (farm.immediate_action_prompt || (state.language === 'ta' ? 'இன்றைய பாசன பணி — 3 செ.மீ நீர் மட்டத்தை பராமரிக்கவும்' : 'Irrigation due today — Maintain 3cm standing water'))}
-                </div>
-                <div class="prompt-sub">
-                  ${isDosingTask 
-                    ? (state.language === 'ta' ? 'APEDA கட்டாய ஏற்றுமதி விதிமுறை: கேமரா மூலம் பார் குறியீட்டை சரிபார்க்கவும். தடை செய்யப்பட்ட செயற்கை இரசாயனங்கள் அனுமதிக்கப்படாது.' : 'Mandatory APEDA export protocol: In-app camera barcode authentication required. Synthetic non-compliant chemicals are blocked.')
-                    : (state.language === 'ta' ? 'பயிர் வளர்ச்சிக்கு தேவையான நடவடிக்கை. மண் ஈரப்பதம் தொடர்ந்து கண்காணிக்கப்படுகிறது.' : 'Action required for stage development. Soil moisture baseline active.')}
-                </div>
-              </div>
-            </div>
+      <!-- CONTRACTED LANDS ACTION HEADER -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 4px 0;">Contracted Lands</h2>
+          <p style="font-size:13px; color:#64748B; margin:0;">Farmer land parcels bound under APEDA export contracts</p>
+        </div>
+        <button onclick="openAddContractedLandModal()" style="background:#2F855A; color:#FFF; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; box-shadow:0 4px 10px rgba(47, 133, 90, 0.25);">
+          + Add Contracted Land
+        </button>
+      </div>
 
-            <div style="width:100%; margin-top:8px; padding-top:10px; border-top:1px solid rgba(27, 77, 62, 0.15); display:flex; flex-direction:column; gap:8px;">
-              ${isDosingTask ? `
-                <button onclick="openTreatmentBarcodeModal('${farm.pesticide_fertilizer_dosing?.mixture || 'Bio-Neem NSKE 5%'}', 'Stem Borer & Leaf Folder Control', '${farm.pesticide_fertilizer_dosing?.dosage || '500 ml / Acre'}', '${farm.id}', '${activeTask.id}', '8901234567890')" class="agro-btn-primary" style="padding:10px 14px; font-size:12.5px; width:100%; font-weight:700;">
-                  ${t('btn_scan_barcode_dosing', '📷 Scan Barcode & Log Treatment (Mandatory Verification)')}
-                </button>
-              ` : `
-                <button onclick="openCameraModal('${farm.id}', '${activeTask.id}')" class="agro-btn-primary" style="padding:10px 14px; font-size:12.5px; width:100%; font-weight:700;">
-                  ${t('btn_done_camera', '✓ Done / Completed (Camera Proof)')}
-                </button>
-              `}
+      <!-- CONTRACTED LANDS LIST -->
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        ${lands.map(land => `
+          <div style="background:#FFF; border-radius:14px; padding:20px; border:1px solid #E2E8F0; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
               <div>
-                <button onclick="openRescheduleModal('${farm.id}', '${activeTask.id}')" class="agro-btn-secondary" style="padding:9px 12px; font-size:12px; font-weight:700; width:100%;">
-                  ${t('btn_reschedule', '⏳ Reschedule')}
-                </button>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                  <span style="font-size:12px; font-weight:800; color:#2F855A; background:#E8F5E9; padding:3px 8px; border-radius:6px;">${land.id}</span>
+                  <span style="font-size:12px; color:#64748B;">Active Procurement Contract</span>
+                </div>
+                <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:4px 0;">${land.parcelName} &bull; ${land.crop}</h3>
+                <div style="font-size:13px; color:#475569; margin-top:4px;">📍 ${land.location} (GPS: ${land.gps})</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:15px; font-weight:800; color:#1E293B;">${land.area}</div>
+                <div style="font-size:12px; color:#64748B;">Est. Yield: ${land.expectedYield}</div>
+                <div style="font-size:11px; color:#15803D; font-weight:700; margin-top:4px;">✓ ${land.mrlStatus}</div>
               </div>
             </div>
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid #F1F5F9; display:flex; justify-content:space-between; font-size:12px; color:#64748B;">
+              <div>Farmer: <strong style="color:#1E293B;">${land.farmerName}</strong> (${land.farmerPhone})</div>
+              <div>Harvest Due: <strong style="color:#1E293B;">${land.harvestDate}</strong></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// 2. EXPORTER LANDS HISTORY VIEW
+function renderExporterLandsHistoryView(container) {
+  container.innerHTML = `
+    <div style="padding:24px;">
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 4px 0;">Lands History & Completed Contracts</h2>
+        <p style="font-size:13px; color:#64748B; margin:0;">Archive of fulfilled seasonal harvests and APEDA export clearance shipments</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:#FFF; border-radius:14px; padding:20px; border:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span style="font-size:11px; font-weight:800; color:#1E4D3A; background:#E8F5E9; padding:3px 8px; border-radius:6px;">HIST-2026-01</span>
+              <span style="font-size:12px; color:#64748B;">August 2026</span>
+            </div>
+            <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:4px 0;">Amaravathi Basin Plot A &bull; Turmeric (Grade A)</h3>
+            <div style="font-size:12px; color:#475569;">Farmer: <strong>Arumugam Sundaram</strong> &bull; Total Yield Procured: <strong>240 Qtl</strong></div>
+            <div style="font-size:12px; color:#166534; margin-top:4px; font-weight:600;">Port Dispatch: Chennai Sea Port &rarr; Dubai</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="background:#DCFCE7; color:#166534; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;">✓ APEDA Certified</div>
+            <div style="font-size:11px; color:#64748B; margin-top:6px;">Cert: APEDA/CODEX/2026/894</div>
+          </div>
+        </div>
+
+        <div style="background:#FFF; border-radius:14px; padding:20px; border:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <span style="font-size:11px; font-weight:800; color:#1E4D3A; background:#E8F5E9; padding:3px 8px; border-radius:6px;">HIST-2026-02</span>
+              <span style="font-size:12px; color:#64748B;">July 2026</span>
+            </div>
+            <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:4px 0;">Cauvery River Block 1 &bull; Sona Masoori Rice</h3>
+            <div style="font-size:12px; color:#475569;">Farmer: <strong>Suresh Kumar</strong> &bull; Total Yield Procured: <strong>450 Qtl</strong></div>
+            <div style="font-size:12px; color:#166534; margin-top:4px; font-weight:600;">Port Dispatch: Tuticorin Port &rarr; Singapore</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="background:#DCFCE7; color:#166534; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700;">✓ APEDA Certified</div>
+            <div style="font-size:11px; color:#64748B; margin-top:6px;">Cert: APEDA/CODEX/2026/712</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// 3. EXPORTER AGENT MANAGEMENT VIEW
+function renderExporterAgentManagementView(container) {
+  const agents = window.EXPORTER_AGENTS || [];
+  const allocations = window.EXPORTER_ALLOCATIONS || [];
+  const isLocked = window.EXPORTER_ALLOCATIONS_LOCKED || false;
+
+  container.innerHTML = `
+    <div style="padding:24px; display:flex; flex-direction:column; gap:24px;">
+      <!-- ADD AGENT VIA ID -->
+      <div style="background:#FFF; border-radius:16px; padding:22px; border:1px solid #E2E8F0; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+        <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:0 0 12px 0;">👥 Link Field Agent via ID</h3>
+        <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <input type="text" id="exporter-agent-id-input" placeholder="Enter Agent ID (e.g., AGT-TN-104)..." style="flex:1; min-width:240px; padding:12px 14px; border-radius:8px; border:1px solid #CBD5E1; font-size:14px; font-weight:700; text-transform:uppercase; outline:none; background:#F8FAFC;" />
+          <button onclick="handleAddAgentSubmit()" style="background:#2F855A; color:#FFF; border:none; padding:12px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+            Link Agent
+          </button>
+        </div>
+
+        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+          ${agents.map(ag => `
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:10px 14px; font-size:12px; display:flex; align-items:center; gap:8px;">
+              <div style="width:8px; height:8px; border-radius:50%; background:#22C55E;"></div>
+              <div>
+                <strong style="color:#1E293B;">${ag.name}</strong> (${ag.id})
+                <div style="color:#64748B; font-size:11px;">${ag.region}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- DAILY AUTO-ASSIGN & TASK MANAGEMENT -->
+      <div style="background:#FFF; border-radius:16px; padding:24px; border:1px solid #E2E8F0; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:0 0 4px 0;">📅 Daily Field Task Allocation</h3>
+            <p style="font-size:12px; color:#64748B; margin:0;">Auto-dispatch certified agents to active contracted land parcels</p>
+          </div>
+          <button onclick="handleAutoAssignAgentsClick()" style="background:#1E4D3A; color:#FFF; border:none; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+            ✨ Auto-Assign Today's Visits
+          </button>
+        </div>
+
+        ${allocations.length === 0 ? `
+          <div style="text-align:center; padding:40px 20px; background:#F8FAFC; border-radius:12px; border:1px dashed #CBD5E1; color:#64748B; font-size:13px;">
+            Click <strong>"Auto-Assign Today's Visits"</strong> to dynamically generate today's field inspection schedule.
           </div>
         ` : `
-          <!-- Celebration Card When All Tasks for Today are Done or Rescheduled -->
-          <div class="action-prompt-box" style="margin-top:14px; background:linear-gradient(135deg, var(--mint-soft) 0%, #FFFFFF 100%); border:1.5px solid var(--primary); padding:16px;">
-            <div style="display:flex; align-items:center; gap:12px; width:100%;">
-              <div class="prompt-icon" style="font-size:26px;">🎉</div>
-              <div style="flex:1;">
-                <div class="prompt-text" style="color:var(--primary); font-weight:800; font-size:14px;">
-                  ${state.language === 'ta' ? 'இன்றைய திட்டமிடப்பட்ட பணிகள் அனைத்தும் வெற்றிகரமாக முடிவடைந்தன!' : 'All scheduled tasks completed for today!'}
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            ${allocations.map(item => `
+              <div style="background:${isLocked ? '#F0FDF4' : '#F8FAFC'}; border:${isLocked ? '1px solid #BBF7D0' : '1px solid #E2E8F0'}; border-radius:12px; padding:16px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                <div style="max-width:650px;">
+                  <div style="font-size:14px; font-weight:700; color:#1E293B; margin-bottom:4px;">
+                    Agent <span style="color:#2F855A;">${item.agentName}</span> is assigned to visit <span style="color:#1E4D3A; text-decoration:underline;">${item.landParcel}</span> for <strong>${item.purpose}</strong> today.
+                  </div>
+                  <div style="font-size:12px; color:#64748B; display:flex; gap:14px;">
+                    <span>Farmer: <strong>${item.farmerName}</strong></span>
+                    <span>Due: <strong>${item.due}</strong></span>
+                    <span style="color:#D97706; font-weight:600;">${item.priority}</span>
+                  </div>
                 </div>
-                <div class="prompt-sub" style="font-size:11.5px; color:var(--slate); margin-top:2px;">
-                  ${state.language === 'ta' ? 'உங்கள் பயிர் பராமரிப்பு மற்றும் ஏற்றுமதி தணிக்கை தரவுகள் முழுமையாக புதுப்பிக்கப்பட்டுள்ளன.' : 'Cultivation milestones, moisture levels, and export traceability logs are fully up-to-date.'}
+                <div>
+                  <span style="font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; background:${isLocked ? '#DCFCE7' : '#FEF3C7'}; color:${isLocked ? '#166534' : '#92400E'};">
+                    ${isLocked ? '✓ Dispatched & Locked' : '🕒 Pending Review'}
+                  </span>
                 </div>
               </div>
-              <span class="badge badge-forest" style="font-size:11px; padding:4px 10px;">✓ ${t('status_compliant', 'COMPLIANT')}</span>
+            `).join('')}
+
+            <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+              <button onclick="handleConfirmLockAssignments()" ${isLocked ? 'disabled style="background:#64748B; color:#FFF; border:none; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:800; cursor:not-allowed;"' : 'style="background:#2F855A; color:#FFF; border:none; padding:12px 24px; border-radius:10px; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(47, 133, 90, 0.3);"'}>
+                ${isLocked ? '🔒 Tasks Assigned & Locked for Today' : 'Assign & Lock Tasks'}
+              </button>
             </div>
           </div>
         `}
+      </div>
+    </div>
+  `;
+}
 
-        <!-- Harvest Countdown & Yield Forecast -->
-        <div style="margin-top:16px; background:var(--mint-soft); border:1px solid var(--mint-light); border-radius:14px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
-            <span class="card-label" style="color:var(--primary);">${t('harvest_forecast', 'Harvest Forecast')}</span>
-            <div style="font-size:18px; font-weight:800; color:var(--ink); margin-top:2px;">
-              ${t('harvest_in_days', '⏳ Harvest in {days} Days', { days: farm.harvest_prediction?.days_remaining || 125 })}
-            </div>
-            <div style="font-size:11px; color:var(--slate);">
-              ${t('expected_harvest', 'Expected: {date}', { date: farm.harvest_prediction?.expected_harvest_date || '2027-01-12' })}
-            </div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:20px; font-weight:800; color:var(--primary);">
-              ${farm.harvest_prediction?.predicted_yield_tonnes || '24.5'} Tonnes
-            </div>
-            <div style="font-size:11px; font-weight:700; color:var(--slate);">
-              ${t('grade_a_export', 'Grade A Export')}: <strong>${farm.harvest_prediction?.grade_a_percentage || 75}%</strong> • ${t('mandi_domestic', 'Mandi')}: <strong>${farm.harvest_prediction?.grade_b_c_percentage || 25}%</strong>
-            </div>
-          </div>
-        </div>
+// 4. ADD CONTRACTED LAND MODAL
+function openAddContractedLandModal() {
+  const existing = document.getElementById('contract-land-modal');
+  if (existing) existing.remove();
 
-        <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button onclick="openWeeklyProgressionModal('${farm.id}')" class="agro-btn-primary" style="font-size:12.5px; padding:10px 16px; flex:1; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
-              <span>📅</span>
-              <span>${t('btn_progression_timeline', 'Open 8-Week Progression Timeline')}</span>
-            </button>
-            <button onclick="toggleInlineProgressionTimeline('${farm.id}')" class="agro-btn-outline" style="font-size:12px; padding:10px 14px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
-              <span id="inline-prog-arrow-${farm.id}">▼</span>
-              <span id="inline-prog-text-${farm.id}">${t('btn_expand_timeline', 'Expand Timeline')}</span>
-            </button>
-          </div>
-          <div id="inline-progression-container-${farm.id}" style="display:none; margin-top:8px; border:1.5px solid var(--primary); border-radius:14px; padding:14px; background:var(--mint-soft);"></div>
+  const modalHtml = `
+    <div class="modal-backdrop" id="contract-land-modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px;">
+      <div style="background:#FFF; border-radius:16px; width:100%; max-width:440px; box-shadow:0 20px 40px rgba(0,0,0,0.2); overflow:hidden;">
+        <div style="padding:18px 20px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+          <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:0;">Contract New Land Parcel</h3>
+          <button onclick="document.getElementById('contract-land-modal').remove()" style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:20px;">&times;</button>
         </div>
+        <form onsubmit="handleContractLandSubmit(event)" style="padding:22px;">
+          <div style="margin-bottom:14px;">
+            <label style="display:block; font-size:12px; font-weight:700; color:#475569; margin-bottom:6px;">FARMER GENERATED LAND ID *</label>
+            <input type="text" id="contract-land-id-input" placeholder="e.g., LAND-TN-9901 or TN-FARM-8492" required style="width:100%; padding:12px; border-radius:8px; border:1px solid #CBD5E1; font-size:14px; font-weight:700; text-transform:uppercase; outline:none; background:#F8FAFC;" />
+            <div style="font-size:11px; color:#64748B; margin-top:6px; line-height:1.4;">
+              Enter the registered Land ID provided by the farmer. Telemetry & harvest metrics will map automatically.
+            </div>
+          </div>
+          <button type="submit" style="width:100%; background:#2F855A; color:#FFF; padding:12px; border-radius:8px; border:none; font-weight:700; font-size:14px; cursor:pointer;">
+            Fetch & Map to Contracts
+          </button>
+        </form>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function handleContractLandSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById('contract-land-id-input');
+  const id = input ? input.value.trim().toUpperCase() : '';
+  if (!id) return;
+
+  const newLand = {
+    id: id,
+    farmerName: id.includes('99') ? 'Suresh Perumal' : 'Murugesan Govindasamy',
+    farmerPhone: '9842100077',
+    parcelName: 'Delta Fertile Block (' + id + ')',
+    crop: 'Bhavani Pure Turmeric',
+    area: '5.0 Acres',
+    location: 'Coimbatore Delta, Tamil Nadu',
+    gps: '11.016° N, 76.955° E',
+    mrlStatus: 'APEDA Soil Tested MRL Compliant',
+    expectedYield: '310 Quintals',
+    harvestDate: 'Dec 2026'
+  };
+
+  window.EXPORTER_CONTRACTED_LANDS = [newLand, ...(window.EXPORTER_CONTRACTED_LANDS || [])];
+  const modal = document.getElementById('contract-land-modal');
+  if (modal) modal.remove();
+  alert('✓ Land ID "' + id + '" successfully fetched and mapped to Contracted Lands!');
+  renderApp();
+}
+
+function handleAddAgentSubmit() {
+  const input = document.getElementById('exporter-agent-id-input');
+  const id = input ? input.value.trim().toUpperCase() : '';
+  if (!id) return;
+
+  const newAgent = {
+    id: id,
+    name: 'Velmurugan M.',
+    phone: '98421' + Math.floor(10000 + Math.random() * 90000),
+    region: 'Tamil Nadu Agri Zone'
+  };
+
+  window.EXPORTER_AGENTS = [...(window.EXPORTER_AGENTS || []), newAgent];
+  input.value = '';
+  alert('✓ Agent Velmurugan M. (' + id + ') linked successfully!');
+  renderApp();
+}
+
+function handleAutoAssignAgentsClick() {
+  window.EXPORTER_ALLOCATIONS = [
+    {
+      agentName: 'Suresh Kumar',
+      landParcel: 'Amaravathi Basin Plot C',
+      farmerName: 'Arumugam Sundaram',
+      purpose: 'MRL pre-harvest residue screening & GPS boundary confirmation',
+      due: 'Today, 11:30 AM',
+      priority: 'High Priority (Harvest in 3 wks)'
+    },
+    {
+      agentName: 'Priya Dharshini',
+      landParcel: 'Bhavani River Delta Block 2',
+      farmerName: 'Kavitha Ramachandran',
+      purpose: 'Stem vigor check and organic bio-pesticide adherence audit',
+      due: 'Today, 2:00 PM',
+      priority: 'Routine Weekly Inspection'
+    },
+    {
+      agentName: 'Karthik Raja',
+      landParcel: 'Cauvery Basin Plot A',
+      farmerName: 'Murugesan Govindasamy',
+      purpose: 'Leaf uniformity test & moisture meter hardware audit',
+      due: 'Today, 4:15 PM',
+      priority: 'Pre-Export Certification'
+    }
+  ];
+  window.EXPORTER_ALLOCATIONS_LOCKED = false;
+  renderApp();
+}
+
+function handleConfirmLockAssignments() {
+  window.EXPORTER_ALLOCATIONS_LOCKED = true;
+  alert('✓ Daily tasks officially locked & dispatched to Field Agents!');
+  renderApp();
+}
+
+
+// =========================================================================
+// SHOP MODULE: CLEAN LIVE INVENTORY, FAB (+), SMART EXTRACT & ORDER FLOW
+// =========================================================================
+
+function renderFertilizerShopDashboard(container) {
+  const user = state.user || {};
+  const inventory = window.SHOP_LIVE_INVENTORY || [];
+
+  // Note: Auto-Stock Box has been COMPLETELY REMOVED as requested
+  container.innerHTML = `
+    <div style="padding:24px; position:relative; min-height:80vh;">
+      <div style="background:linear-gradient(135deg, #1B4D3E 0%, #2F855A 100%); color:#FFF; padding:24px 28px; border-radius:18px; margin-bottom:24px; box-shadow:0 8px 20px rgba(31,77,58,0.25);">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#C6F6D5; margin-bottom:6px; font-weight:800;">
+          Agri-Input Fertilizer & Pesticide Hub
+        </div>
+        <h1 style="font-size:24px; font-weight:900; margin:0 0 4px 0;">${user.name || user.shop_name || 'Kisan Fertilizer Clinic'}</h1>
+        <div style="font-size:13px; color:#D1E7DD;">GST: ${user.gst_number || '33BBBCK1234P1ZA'} &bull; ${user.region || 'Thanjavur, Tamil Nadu'}</div>
       </div>
 
-    ` : `
-      <div class="agro-card" style="text-align:center; padding:40px;">
-        <p style="color:var(--slate); margin-bottom:14px;">${state.language === 'ta' ? 'பதிவுசெய்த நிலப்பரப்புகள் எதுவும் இல்லை.' : 'No land parcels registered yet.'}</p>
-        <p style="font-size:13px; color:var(--primary); font-weight:700;">${state.language === 'ta' ? 'முதல் நிலத்தை பதிவு செய்ய கீழே வலதுபுறத்தில் உள்ள (+) பொத்தானை தட்டவும்.' : 'Tap the floating (+) button at the bottom-right to register your first parcel.'}</p>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+        <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Live Inventory Feed</h2>
+        <span style="font-size:12px; font-weight:700; color:#2F855A; background:#E8F5E9; padding:4px 10px; border-radius:20px;">
+          ● ${inventory.length} SKUs in Stock
+        </span>
       </div>
-    `}
 
-    ${farm ? `
+      <!-- INVENTORY LIST -->
+      <div id="shop-inventory-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px;">
+        ${inventory.map(item => `
+          <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:14px; padding:18px; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+                <span style="font-size:11px; font-weight:700; background:#F1F5F9; color:#475569; padding:3px 8px; border-radius:6px;">${item.category}</span>
+                <span style="font-size:17px; font-weight:800; color:#2F855A;">₹${item.price}</span>
+              </div>
+              <h4 style="font-size:16px; font-weight:800; color:#1E293B; margin:6px 0;">${item.name}</h4>
+              <div style="font-size:13px; color:#64748B;">Available Stock: <strong style="color:#1E293B;">${item.stock} Units</strong></div>
+            </div>
+            <div style="margin-top:14px; height:6px; background:#F1F5F9; border-radius:4px; overflow:hidden;">
+              <div style="height:100%; width:70%; background:#2F855A;"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- PROMINENT FLOATING ACTION BUTTON (+) -->
+      <button onclick="openAddProductModal()" style="position:fixed; bottom:32px; right:32px; width:60px; height:60px; border-radius:50%; background:#2F855A; color:#FFF; border:none; box-shadow:0 8px 24px rgba(47, 133, 90, 0.4); display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:300; cursor:pointer; z-index:999; transition:transform 0.2s;" onmouseenter="this.style.transform='scale(1.08)'" onmouseleave="this.style.transform='scale(1)'" title="Add New Product">
+        +
+      </button>
+    </div>
+  `;
+}
+
+// 5. SHOP VIEW ORDERS
+function renderShopOrdersView(container) {
+  const orders = window.SHOP_ACTIVE_ORDERS || [];
+  container.innerHTML = `
+    <div style="padding:24px;">
+      <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 16px 0;">Active & Pending Orders</h2>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        ${orders.map(order => `
+          <div style="background:#FFF; border-radius:14px; padding:20px; border:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-size:12px; font-weight:800; color:#D97706; background:#FEF3C7; padding:3px 8px; border-radius:6px;">${order.token}</span>
+                <span style="font-size:12px; color:#64748B;">${order.time}</span>
+              </div>
+              <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:6px 0 2px 0;">${order.farmer}</h3>
+              <div style="font-size:13px; color:#475569;">${order.product} &bull; Qty: <strong>${order.qty}</strong></div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:18px; font-weight:800; color:#1E293B; margin-bottom:8px;">₹${order.total}</div>
+              <button onclick="handleFulfillShopOrder('${order.id}')" style="background:#2F855A; color:#FFF; border:none; padding:10px 18px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer;">
+                Verify Token & Fulfill
+              </button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function handleFulfillShopOrder(orderId) {
+  const o = (window.SHOP_ACTIVE_ORDERS || []).find(x => x.id === orderId);
+  if (!o) return;
+  window.SHOP_ACTIVE_ORDERS = window.SHOP_ACTIVE_ORDERS.filter(x => x.id !== orderId);
+  window.SHOP_COMPLETED_ORDERS = [
+    { id: o.id, farmer: o.farmer, product: o.product, qty: o.qty, total: o.total, date: 'Just now', payment: 'Cash at Store (Token Validated)' },
+    ...(window.SHOP_COMPLETED_ORDERS || [])
+  ];
+  alert('✓ Token ' + o.token + ' verified. Order fulfilled!');
+  renderApp();
+}
+
+// 6. SHOP ORDER HISTORY VIEW
+function renderShopOrderHistoryView(container) {
+  const completed = window.SHOP_COMPLETED_ORDERS || [];
+  container.innerHTML = `
+    <div style="padding:24px;">
+      <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 16px 0;">Order History (Completed)</h2>
+      <div style="background:#FFF; border-radius:14px; border:1px solid #E2E8F0; overflow:hidden;">
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+          <thead>
+            <tr style="background:#F8FAFC; border-bottom:1px solid #E2E8F0; color:#64748B; font-weight:700;">
+              <th style="padding:14px 16px;">ORDER ID</th>
+              <th style="padding:14px 16px;">FARMER</th>
+              <th style="padding:14px 16px;">PRODUCT & QTY</th>
+              <th style="padding:14px 16px;">AMOUNT</th>
+              <th style="padding:14px 16px;">PAYMENT STATUS</th>
+              <th style="padding:14px 16px;">DATE</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${completed.map(c => `
+              <tr style="border-bottom:1px solid #F1F5F9;">
+                <td style="padding:14px 16px; font-weight:700;">${c.id}</td>
+                <td style="padding:14px 16px; font-weight:600;">${c.farmer}</td>
+                <td style="padding:14px 16px; color:#475569;">${c.product} (${c.qty}x)</td>
+                <td style="padding:14px 16px; font-weight:700; color:#2F855A;">₹${c.total}</td>
+                <td style="padding:14px 16px;"><span style="color:#166534; background:#DCFCE7; padding:3px 8px; border-radius:6px; font-weight:700; font-size:11px;">${c.payment}</span></td>
+                <td style="padding:14px 16px; color:#64748B;">${c.date}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// 7. SHOP SALES REPORT VIEW
+function renderShopSalesReportView(container) {
+  container.innerHTML = `
+    <div style="padding:24px;">
+      <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 16px 0;">Sales Report & Analytics</h2>
       
-      <!-- NEW PESTICIDE RECOMMENDATION & BUY PRODUCT FLOW -->
-      <div class="agro-card" style="margin-top:18px; margin-bottom:18px; border-left:5px solid #E53E3E; background:linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);">
-        <div class="agro-card-header" style="margin-bottom:12px;">
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:20px;">🧪</span>
-              <div class="card-title" style="color:#C53030;">Today's Recommended Treatment</div>
-            </div>
-            <div style="font-size:11.5px; color:#E53E3E; margin-top:2px; font-weight:bold;">
-              Based on active crop stage: ${farm ? farm.current_stage || 'Flowering & Grain Filling' : 'Flowering'}
-            </div>
-          </div>
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:#FFF; padding:20px; border-radius:14px; border:1px solid #E2E8F0;">
+          <div style="font-size:12px; color:#64748B; font-weight:700;">WEEKLY REVENUE</div>
+          <div style="font-size:24px; font-weight:800; color:#1E293B; margin-top:4px;">₹62,450</div>
+          <div style="color:#16A34A; font-size:12px; font-weight:700; margin-top:4px;">&uarr; +18.4% vs last week</div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="background:#FFF; border:1px solid #FED7D7; padding:16px; border-radius:12px;">
-            <h3 style="font-size:18px; font-weight:bold; color:#2D3748; margin:0 0 8px 0;">Trichoderma Viride (Bio-Fungicide)</h3>
-            <p style="font-size:14px; color:#4A5568; margin:0 0 16px 0;">Prevents root rot. Apply 5ml per liter of water via foliar spray.</p>
-            <button onclick="openProductPurchaseFlow()" style="width:100%; background:#E53E3E; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:16px; box-shadow: 0 4px 6px rgba(229,62,62,0.2);">Buy Product</button>
+        <div style="background:#FFF; padding:20px; border-radius:14px; border:1px solid #E2E8F0;">
+          <div style="font-size:12px; color:#64748B; font-weight:700;">UNITS SOLD</div>
+          <div style="font-size:24px; font-weight:800; color:#1E293B; margin-top:4px;">359 Units</div>
+          <div style="color:#2F855A; font-size:12px; font-weight:600; margin-top:4px;">87% In-Store Tokens</div>
+        </div>
+        <div style="background:#FFF; padding:20px; border-radius:14px; border:1px solid #E2E8F0;">
+          <div style="font-size:12px; color:#64748B; font-weight:700;">FARMERS SERVED</div>
+          <div style="font-size:24px; font-weight:800; color:#1E293B; margin-top:4px;">42 Farmers</div>
+          <div style="color:#64748B; font-size:12px; font-weight:600; margin-top:4px;">Thanjavur Delta Basin</div>
+        </div>
+      </div>
+
+      <div style="background:#FFF; padding:22px; border-radius:14px; border:1px solid #E2E8F0;">
+        <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:0 0 16px 0;">📈 Best Selling Products of the Week</h3>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700; margin-bottom:6px;">
+              <span>#1 Urea Granular 46%</span>
+              <span>140 units (₹37,520)</span>
+            </div>
+            <div style="height:8px; background:#F1F5F9; border-radius:4px; overflow:hidden;"><div style="height:100%; width:90%; background:#2F855A;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700; margin-bottom:6px;">
+              <span>#2 DAP High Nitrogen Complex</span>
+              <span>110 units (₹1,48,500)</span>
+            </div>
+            <div style="height:8px; background:#F1F5F9; border-radius:4px; overflow:hidden;"><div style="height:100%; width:75%; background:#2F855A;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700; margin-bottom:6px;">
+              <span>#3 Pseudomonas Fluorescens Seed Tonic</span>
+              <span>52 units (₹19,760)</span>
+            </div>
+            <div style="height:8px; background:#F1F5F9; border-radius:4px; overflow:hidden;"><div style="height:100%; width:45%; background:#2F855A;"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700; margin-bottom:6px;">
+              <span>#4 Trichoderma Viride Bio-Fungicide</span>
+              <span>35 units (₹15,750)</span>
+            </div>
+            <div style="height:8px; background:#F1F5F9; border-radius:4px; overflow:hidden;"><div style="height:100%; width:30%; background:#2F855A;"></div></div>
           </div>
         </div>
       </div>
-      ` : ''}
-    `;
+    </div>
+  `;
+}
+
+// 8. ADD PRODUCT MODAL (MANUAL & SMART EXTRACT OCR WITH PRICE CONFIRMATION)
+function openAddProductModal() {
+  const existing = document.getElementById('add-product-modal');
+  if (existing) existing.remove();
+
+  const modalHtml = `
+    <div class="modal-backdrop" id="add-product-modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.75); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px;">
+      <div style="background:#FFF; border-radius:18px; width:100%; max-width:500px; box-shadow:0 25px 50px rgba(0,0,0,0.25); overflow:hidden;">
+        <div style="padding:18px 22px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+          <div>
+            <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:0;">Add New Product to Store</h3>
+            <div style="font-size:12px; color:#64748B; margin-top:2px;">Manual entry or auto-extract via invoice</div>
+          </div>
+          <button onclick="document.getElementById('add-product-modal').remove()" style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:22px;">&times;</button>
+        </div>
+
+        <div style="display:flex; padding:14px 20px 0 20px; gap:8px;">
+          <button type="button" id="tab-btn-manual" onclick="switchAddProductMode('manual')" style="flex:1; padding:10px; border-radius:8px; border:none; font-weight:700; font-size:13px; cursor:pointer; background:#2F855A; color:#FFF;">
+            Option A: Manual Entry
+          </button>
+          <button type="button" id="tab-btn-invoice" onclick="switchAddProductMode('invoice')" style="flex:1; padding:10px; border-radius:8px; border:none; font-weight:700; font-size:13px; cursor:pointer; background:#F1F5F9; color:#64748B;">
+            ✨ Option B: Upload Invoice
+          </button>
+        </div>
+
+        <div style="padding:20px;">
+          <!-- MANUAL FORM -->
+          <div id="section-manual-entry">
+            <form onsubmit="handleManualAddProductSubmit(event)" style="display:flex; flexDirection:column; gap:14px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">PRODUCT NAME *</label>
+                <input type="text" id="manual-prod-name" placeholder="e.g., Trichoderma Viride Bio-Fungicide" required style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid #CBD5E1; font-size:13px; outline:none;" />
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                  <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">CATEGORY *</label>
+                  <select id="manual-prod-cat" style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid #CBD5E1; font-size:13px; outline:none;">
+                    <option value="Bio-Fungicide">Bio-Fungicide</option>
+                    <option value="NPK Fertilizer">NPK Fertilizer</option>
+                    <option value="Organic Pesticide">Organic Pesticide</option>
+                    <option value="Seed Treatment">Seed Treatment</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">STOCK QUANTITY *</label>
+                  <input type="number" id="manual-prod-stock" min="1" placeholder="e.g., 50" required style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid #CBD5E1; font-size:13px; outline:none;" />
+                </div>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:4px;">PRICE (₹) *</label>
+                <input type="number" id="manual-prod-price" min="0" step="0.01" placeholder="e.g., 450" required style="width:100%; padding:10px 12px; border-radius:8px; border:1px solid #CBD5E1; font-size:13px; outline:none;" />
+              </div>
+              <button type="submit" style="width:100%; background:#2F855A; color:#FFF; padding:12px; border-radius:8px; border:none; font-weight:700; font-size:14px; cursor:pointer; margin-top:8px;">
+                Add Product to Inventory
+              </button>
+            </form>
+          </div>
+
+          <!-- SMART EXTRACT (INVOICE OCR) -->
+          <div id="section-invoice-extract" style="display:none;">
+            <div id="ocr-dropzone" style="border:2px dashed #94A3B8; border-radius:12px; padding:32px 16px; text-align:center; background:#F8FAFC; cursor:pointer; position:relative;">
+              <input type="file" accept=".pdf,.png,.jpg,.jpeg" onchange="handleSmartInvoiceUpload(event)" style="position:absolute; inset:0; opacity:0; cursor:pointer;" />
+              <div style="font-size:32px; margin-bottom:8px;">📄</div>
+              <div style="font-size:14px; font-weight:700; color:#1E293B;">Upload Supplier Invoice (PDF / Image)</div>
+              <div style="font-size:12px; color:#64748B; margin-top:4px;">Drag & drop or tap to browse file</div>
+            </div>
+
+            <div id="ocr-loading" style="display:none; text-align:center; padding:30px 16px; background:#F8FAFC; border-radius:12px;">
+              <div style="font-size:26px; animation:spin 1s infinite linear;">🔄</div>
+              <div style="font-size:15px; font-weight:800; color:#1E293B; margin-top:10px;">Analyzing Invoice via AI OCR...</div>
+              <div style="font-size:12px; color:#64748B; margin-top:4px;">Extracting products, quantities, and wholesale prices...</div>
+            </div>
+
+            <div id="ocr-price-confirmation" style="display:none; margin-top:12px;">
+              <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:10px; padding:14px; margin-bottom:12px;">
+                <div style="font-size:11px; font-weight:800; color:#166534;">✓ AI EXTRACTION COMPLETE</div>
+                <div style="font-size:15px; font-weight:800; color:#14532D; margin-top:4px;" id="extracted-prod-name">Pseudomonas Fluorescens (Bio-Pesticide)</div>
+                <div style="font-size:12px; color:#15803D; margin-top:2px;">Category: Bio-Pesticide &bull; Stock: 120 units</div>
+              </div>
+
+              <!-- CRUCIAL STEP: Prompt & Editable Price Input -->
+              <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:10px; padding:16px; margin-bottom:16px;">
+                <div style="font-size:13px; font-weight:800; color:#92400E;">Price Confirmation Required</div>
+                <div style="font-size:13px; color:#B45309; margin-top:2px;">
+                  Extracted Price: <strong>₹<span id="extracted-display-price">380</span></strong>. Keep this price or edit it?
+                </div>
+                <div style="margin-top:10px;">
+                  <label style="display:block; font-size:11px; font-weight:700; color:#78350F; margin-bottom:4px;">STORE SELLING PRICE (₹)</label>
+                  <input type="number" id="editable-price-input" value="380" step="0.01" style="width:100%; padding:10px 12px; border-radius:8px; border:2px solid #F59E0B; font-size:16px; font-weight:800; color:#78350F; outline:none; background:#FFF;" />
+                </div>
+              </div>
+
+              <div style="display:flex; gap:10px;">
+                <button type="button" onclick="resetOcrDropzone()" style="flex:1; padding:10px; border-radius:8px; border:1px solid #CBD5E1; background:#FFF; font-weight:700; font-size:13px; cursor:pointer;">
+                  Re-Upload
+                </button>
+                <button type="button" onclick="confirmOcrProduct()" style="flex:2; padding:10px; border-radius:8px; border:none; background:#2F855A; color:#FFF; font-weight:700; font-size:13px; cursor:pointer;">
+                  Confirm & Add to Inventory
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function switchAddProductMode(mode) {
+  const manualTab = document.getElementById('tab-btn-manual');
+  const invoiceTab = document.getElementById('tab-btn-invoice');
+  const manualSec = document.getElementById('section-manual-entry');
+  const invoiceSec = document.getElementById('section-invoice-extract');
+
+  if (mode === 'manual') {
+    if (manualTab) { manualTab.style.background = '#2F855A'; manualTab.style.color = '#FFF'; }
+    if (invoiceTab) { invoiceTab.style.background = '#F1F5F9'; invoiceTab.style.color = '#64748B'; }
+    if (manualSec) manualSec.style.display = 'block';
+    if (invoiceSec) invoiceSec.style.display = 'none';
+  } else {
+    if (invoiceTab) { invoiceTab.style.background = '#2F855A'; invoiceTab.style.color = '#FFF'; }
+    if (manualTab) { manualTab.style.background = '#F1F5F9'; manualTab.style.color = '#64748B'; }
+    if (manualSec) manualSec.style.display = 'none';
+    if (invoiceSec) invoiceSec.style.display = 'block';
   }
+}
+
+function handleManualAddProductSubmit(e) {
+  e.preventDefault();
+  const name = document.getElementById('manual-prod-name')?.value;
+  const category = document.getElementById('manual-prod-cat')?.value || 'Bio-Fungicide';
+  const stock = parseInt(document.getElementById('manual-prod-stock')?.value || '1', 10);
+  const price = parseFloat(document.getElementById('manual-prod-price')?.value || '100');
+
+  const newProd = {
+    id: 'PROD-' + Date.now().toString().slice(-4),
+    name: name,
+    category: category,
+    stock: stock,
+    price: price
+  };
+
+  window.SHOP_LIVE_INVENTORY = [newProd, ...(window.SHOP_LIVE_INVENTORY || [])];
+  document.getElementById('add-product-modal')?.remove();
+  alert('✓ "' + name + '" successfully added to live inventory at ₹' + price);
+  renderApp();
+}
+
+function handleSmartInvoiceUpload(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const dropzone = document.getElementById('ocr-dropzone');
+  const loading = document.getElementById('ocr-loading');
+  const confirmBox = document.getElementById('ocr-price-confirmation');
+
+  if (dropzone) dropzone.style.display = 'none';
+  if (loading) loading.style.display = 'block';
+
+  setTimeout(() => {
+    if (loading) loading.style.display = 'none';
+    if (confirmBox) confirmBox.style.display = 'block';
+  }, 1600);
+}
+
+function resetOcrDropzone() {
+  const dropzone = document.getElementById('ocr-dropzone');
+  const confirmBox = document.getElementById('ocr-price-confirmation');
+  if (dropzone) dropzone.style.display = 'block';
+  if (confirmBox) confirmBox.style.display = 'none';
+}
+
+function confirmOcrProduct() {
+  const priceInput = document.getElementById('editable-price-input');
+  const price = parseFloat(priceInput ? priceInput.value : '380');
+
+  const newProd = {
+    id: 'PROD-' + Date.now().toString().slice(-4),
+    name: 'Pseudomonas Fluorescens (Bio-Pesticide)',
+    category: 'Bio-Pesticide',
+    stock: 120,
+    price: price
+  };
+
+  window.SHOP_LIVE_INVENTORY = [newProd, ...(window.SHOP_LIVE_INVENTORY || [])];
+  document.getElementById('add-product-modal')?.remove();
+  alert('✓ Confirmed & Added "Pseudomonas Fluorescens" at ₹' + price + ' to Live Inventory!');
+  renderApp();
+}
 
 
 function completeWeeklyTask(farmId, taskId) {
