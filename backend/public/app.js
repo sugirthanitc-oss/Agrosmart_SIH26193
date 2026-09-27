@@ -1603,25 +1603,44 @@ function switchNavTab(tab) {
 }
 
 // --- Role Switching ---
-async function switchRole(role) {
-  state.currentRole = role;
-  state.currentTab = role === 'shop_owner' ? 'marketplace' : 'menu';
-  document.querySelectorAll('.role-pill-btn').forEach(b => { b.classList.toggle('active', b.getAttribute('data-role') === role); });
-  document.querySelectorAll('.mobile-nav-btn').forEach(el => { el.classList.toggle('active', el.getAttribute('data-nav') === (role === 'shop_owner' ? 'marketplace' : 'menu')); });
-  
-  // Prompt Auth Modal with prefilled data
-  selectedAuthRole = role;
-  activeAuthTab = 'login';
-  renderAuthModalContent();
-  
-  setTimeout(() => {
+  async function switchRole(role) {
+    // === COMPLETE STATE RESET ===
+    // 1. Reset role and default tab atomically
+    state.currentRole = role;
+    state.currentTab = role === 'shop_owner' ? 'marketplace' : 'menu';
+    
+    // 2. Reset all role-specific cached data to prevent stale content
+    state.farms = [];
+    state.activeFarm = null;
+    state.activities = [];
+    state.agentFarms = [];
+    state.exporterConsignments = [];
+    
+    // 3. Load the correct persona for this role
     const persona = TN_PERSONAS[role];
-    const phoneInput = document.getElementById('auth-phone');
-    const passInput = document.getElementById('auth-password');
-    if (phoneInput && persona) phoneInput.value = persona.phone;
-    if (passInput) passInput.value = '123456';
-  }, 150);
-}
+    if (persona) {
+      state.user = { ...persona };
+      state.token = state.token || 'demo-offline-token';
+    }
+    
+    // 4. Update ALL pill buttons synchronously
+    document.querySelectorAll('.role-pill-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-role') === role);
+    });
+    
+    // 5. Update mobile bottom nav synchronously
+    const defaultTab = role === 'shop_owner' ? 'marketplace' : 'menu';
+    document.querySelectorAll('.mobile-nav-btn').forEach(el => {
+      el.classList.toggle('active', el.getAttribute('data-nav') === defaultTab);
+    });
+    
+    // 6. Force SYNCHRONIZED refresh of ALL three UI zones
+    updateSidebarProfile();          // Zone 1: Header & profile name
+    renderRoleSidebar(role);         // Zone 2: Sidebar navigation links
+    await renderApp();               // Zone 3: Main dashboard content area
+    
+    // No auth modal popup - direct entry for demo/hackathon mode
+  }
 
 async function loginAsRole(role) {
   const persona = TN_PERSONAS[role];
