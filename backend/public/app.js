@@ -1465,10 +1465,10 @@ function renderRoleSidebar(role) {
           <span style="font-size:16px;">👨‍🌾</span>
           <span>${t('nav_agents', 'Agent Management')}</span>
         </a>
-        <a href="javascript:void(0)" class="nav-item ${state.currentTab === 'marketplace' ? 'active' : ''}" onclick="switchNavTab('marketplace')">
-          <span style="font-size:16px;">🛒</span>
-          <span>${t('nav_mandi_marketplace', 'Mandi Marketplace')}</span>
-        </a>
+
+
+
+
         <div class="nav-section-title" style="margin-top:14px;">${t('nav_account_title', 'Account')}</div>
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
           <span style="font-size:16px;">✏️</span>
