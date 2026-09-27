@@ -1763,7 +1763,6 @@ async function renderApp() {
         renderFarmerView(appBody);
     }
   }
-}
 
 // =========================================================================
 // 1. FARMER VIEW: CLEAN UI, ZERO EXTERNAL HUB JARGON, ONLY FLOATING (+)
