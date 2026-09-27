@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AgroSmartFarmerDashboard } from './components/AgroSmartFarmerDashboard.jsx';
 import { FieldAgentVisitScreen } from './components/FieldAgentVisitScreen.jsx';
-import { ShopOwnerMarketScreen } from './components/ShopOwnerMarketScreen.jsx';
+import { AgriInputShopModule } from './components/AgriInputShopModule.jsx';
 import { ExporterDashboard } from './components/ExporterDashboard.jsx';
 import { OfflineSyncIndicator } from './components/OfflineSyncIndicator.jsx';
 import { RoleSwitchBar } from './components/RoleSwitchBar.jsx';
@@ -118,7 +118,7 @@ export default function App() {
               <FieldAgentVisitScreen user={user} token={token} />
             )}
             {currentRole === 'shop_owner' && (
-              <ShopOwnerMarketScreen user={user} token={token} isOffline={isOffline} />
+              <AgriInputShopModule user={user} />
             )}
             {currentRole === 'exporter' && (
               <ExporterDashboard user={user} token={token} />

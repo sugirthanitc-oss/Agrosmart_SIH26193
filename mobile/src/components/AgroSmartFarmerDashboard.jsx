@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { FarmerWeeklyReport } from './FarmerWeeklyReport.jsx';
 import {
   CloudRain,
   Sun,
@@ -1231,8 +1232,13 @@ export function AgroSmartFarmerDashboard({ user, token, isOffline }) {
         </div>
       )}
 
-      {/* MODAL 2: 18-WEEK CHRONOLOGICAL PROGRESSION TIMELINE */}
+      {/* MODAL 2: NEW EXPORT-QUALITY WEEKLY REPORT */}
       {showWeeklyModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, overflowY: 'auto' }}>
+          <FarmerWeeklyReport onClose={() => setShowWeeklyModal(false)} />
+        </div>
+      )}
+      {false && (
         <div
           style={{
             position: 'fixed',

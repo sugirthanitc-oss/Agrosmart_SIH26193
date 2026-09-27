@@ -297,14 +297,7 @@ export function ExporterDashboard({ user, token }) {
                   {lot.quantity} Quintals ({Math.round(lot.quantity * 100).toLocaleString('en-IN')} kg)
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>
-                  <button
-                    onClick={() => handleSplitListing(lot.id)}
-                    className="agro-btn-secondary"
-                    style={{ padding: '6px 10px', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}
-                    title="Split 75% Export / 25% Mandi"
-                  >
-                    <Split size={13} /> Split Lot
-                  </button>
+                  {/* Mandi Split button removed per constraints */}
                   <button
                     onClick={() => handleViewTraceability(lot.id)}
                     className="agro-btn-primary"

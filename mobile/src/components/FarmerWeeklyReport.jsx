@@ -9,7 +9,7 @@ const MOCK_RECOMMENDATION = {
   cropStage: 'Flowering'
 };
 
-export function FarmerWeeklyReport() {
+export function FarmerWeeklyReport({ onClose }) {
   const [lang, setLang] = useState('en');
   const [showPurchaseFlow, setShowPurchaseFlow] = useState(false);
   
@@ -22,9 +22,16 @@ export function FarmerWeeklyReport() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#F4F7F6', display: 'flex', flexDirection: 'column' }}>
       <header style={{ backgroundColor: '#2F855A', padding: '40px 20px 20px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FFF', margin: 0 }}>
-          {t('Weekly Report', 'வார அறிக்கை')}
-        </h1>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {onClose && (
+            <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#FFF', fontSize: '24px', marginRight: '16px', cursor: 'pointer' }}>
+              ←
+            </button>
+          )}
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#FFF', margin: 0 }}>
+            {t('Weekly Report', 'வார அறிக்கை')}
+          </h1>
+        </div>
         <button 
           onClick={() => setLang(lang === 'en' ? 'ta' : 'en')}
           style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#FFF', border: 'none', padding: '8px 16px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}

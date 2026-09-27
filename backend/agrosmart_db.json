@@ -100,6 +100,25 @@
       "language": "ta",
       "farmer_id_code": "TN-FARM-2028",
       "created_at": "2026-09-23T15:41:54.612Z"
+    },
+    {
+      "id": "user-1f55cfa3",
+      "phone": "9800000001",
+      "role": "exporter",
+      "name": "IndoGlobal Agri-Exports",
+      "region": "Thanjavur, Tamil Nadu",
+      "language": "ta",
+      "exporter_code": "EXP-TN-7580",
+      "created_at": "2026-09-27T12:28:46.724Z"
+    },
+    {
+      "id": "user-ad1cd495",
+      "phone": "9800000003",
+      "role": "shop_owner",
+      "name": "Kisan Retail & Wholesale",
+      "region": "Thanjavur, Tamil Nadu",
+      "language": "ta",
+      "created_at": "2026-09-27T12:28:48.112Z"
     }
   ],
   "farms": [
