@@ -5807,42 +5807,6 @@ async function handleAuthSubmit(event) {
       closeAuthModal();
     }
   }
-} else {
-    const payload = {
-      phone,
-      password,
-      role: selectedAuthRole,
-      name: document.getElementById('auth-name')?.value || 'New User',
-      district: document.getElementById('auth-district')?.value || 'Thanjavur',
-      exporter_code: document.getElementById('auth-agent-exporter-code')?.value,
-      company_name: document.getElementById('auth-company-name')?.value,
-      company_reg_id: document.getElementById('auth-company-reg')?.value,
-      gst_number: document.getElementById('auth-gst-number')?.value || document.getElementById('auth-shop-gst')?.value,
-      export_id: document.getElementById('auth-export-id')?.value,
-      shop_name: document.getElementById('auth-shop-name')?.value
-    };
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (res.ok) {
-        state.token = data.token;
-        state.user = data.user;
-        state.currentRole = data.user.role;
-        alert(`✓ Account Created!\n\nRole: ${data.user.role.toUpperCase()}`);
-        closeAuthModal();
-        switchRole(data.user.role);
-      } else {
-        alert(`Registration Error: ${data.error || 'Failed to create account.'}`);
-      }
-    } catch (e) {
-      closeAuthModal();
-    }
-  }
 }
 
 function closeAuthModal() {
