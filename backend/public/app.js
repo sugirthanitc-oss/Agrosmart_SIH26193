@@ -1598,6 +1598,9 @@ function switchNavTab(tab) {
     if (state.currentRole === 'shop_owner' || state.currentRole === 'shop') {
       if (tab === 'marketplace' || tab === 'menu') tab = 'products';
     }
+    if (state.currentRole === 'agent') {
+      if (tab === 'menu') tab = 'lands';
+    }
     if (state.currentRole === 'exporter') {
       if (tab === 'menu' || tab === 'consignments') tab = 'contracted_lands';
       if (tab === 'agents') tab = 'agent_management';
@@ -1738,7 +1741,13 @@ async function renderApp() {
 
     // 3. AGENT ROLE
     if (state.currentRole === 'agent') {
-      renderAgentDashboard(appBody);
+      if (state.currentTab === 'history') {
+        renderAgentLandsHistoryView(appBody);
+      } else if (state.currentTab === 'manage_exporter') {
+        renderAgentManageExporterView(appBody);
+      } else {
+        renderAgentDashboard(appBody); // Default: Lands (Assigned inspections)
+      }
       return;
     }
 
@@ -2036,6 +2045,252 @@ function approveAiInspection(farmId) {
   alert('✓ Farm inspection approved and stamped with APEDA cryptographic signature!');
   renderApp();
 }
+
+
+// =========================================================================
+// FIELD AGENT VIEWS: LANDS HISTORY & MANAGE EXPORTERS
+// =========================================================================
+
+window.AGENT_LINKED_EXPORTERS = window.AGENT_LINKED_EXPORTERS || [
+  {
+    id: 'EXP-TN-COIMBATORE-101',
+    companyName: 'Kongu Agro Global Exports Pvt Ltd',
+    director: 'R. Shanmugam',
+    phone: '+91 98421 88001',
+    activeContracts: '4 Contracted Farms (18.4 Acres)',
+    apedaReg: 'APEDA/EXP/2026/TN-841',
+    status: 'Primary Export House',
+    port: 'Chennai & Tuticorin Sea Ports'
+  },
+  {
+    id: 'EXP-2026-INDOGLOBAL',
+    companyName: 'IndoGlobal Agri-Exports Ltd',
+    director: 'S. Varun Kumar',
+    phone: '+91 98421 77402',
+    activeContracts: '2 Contracted Farms (7.7 Acres)',
+    apedaReg: 'APEDA/EXP/2025/IN-109',
+    status: 'Active Partner',
+    port: 'Cochin Export Terminal'
+  }
+];
+
+function renderAgentLandsHistoryView(container) {
+  const history = [
+    {
+      id: 'INSP-2026-901',
+      landName: 'Amaravathi Basin Plot A',
+      farmerName: 'Arumugam Sundaram',
+      crop: 'Bhavani Turmeric (PTS-10)',
+      area: '4.5 Acres',
+      visitDate: '26 Sep 2026, 11:30 AM',
+      gps: '10.7870° N, 79.1370° E',
+      status: 'Passed AI Check',
+      mrlStatus: 'Pre-Harvest MRL Clear (0.008 mg/kg)',
+      stampId: 'APEDA-STAMP-8492'
+    },
+    {
+      id: 'INSP-2026-884',
+      landName: 'Cauvery Delta Block 4',
+      farmerName: 'Palanisamy Velu',
+      crop: 'Sona Masoori Rice (Export Grade)',
+      area: '3.8 Acres',
+      visitDate: '22 Sep 2026, 03:15 PM',
+      gps: '10.7920° N, 79.1410° E',
+      status: 'Completed',
+      mrlStatus: 'APEDA Certified Safe',
+      stampId: 'APEDA-STAMP-7741'
+    },
+    {
+      id: 'INSP-2026-871',
+      landName: 'Bhavani River Delta Block 1',
+      farmerName: 'Kavitha Ramachandran',
+      crop: 'Export Grade Turmeric',
+      area: '2.1 Acres',
+      visitDate: '18 Sep 2026, 10:00 AM',
+      gps: '11.3410° N, 77.7170° E',
+      status: 'Passed AI Check',
+      mrlStatus: 'Zero Pesticide Residue',
+      stampId: 'APEDA-STAMP-6629'
+    },
+    {
+      id: 'INSP-2026-850',
+      landName: 'Periyar Basin Plot C',
+      farmerName: 'Murugesan Govindasamy',
+      crop: 'Co-86032 Organic Sugarcane',
+      area: '6.0 Acres',
+      visitDate: '12 Sep 2026, 04:45 PM',
+      gps: '11.0160° N, 76.9550° E',
+      status: 'Completed',
+      mrlStatus: 'Codex MRL Compliant',
+      stampId: 'APEDA-STAMP-5510'
+    }
+  ];
+
+  container.innerHTML = `
+    <div style="padding:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 4px 0;">History of Lands Inspected</h2>
+          <p style="font-size:13px; color:#64748B; margin:0;">Historical log of GPS-verified field audits & AI diagnostics</p>
+        </div>
+        <span style="font-size:12px; font-weight:700; color:#2F855A; background:#E8F5E9; padding:6px 14px; border-radius:20px;">
+          ✓ ${history.length} Logged Inspections
+        </span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        ${history.map(item => `
+          <div style="background:#FFF; border-radius:16px; padding:20px; border:1px solid #E2E8F0; box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                  <span style="font-size:11px; font-weight:800; color:#1E4D3A; background:#E8F5E9; padding:3px 8px; border-radius:6px;">${item.id}</span>
+                  <span style="font-size:12px; color:#64748B;">${item.visitDate}</span>
+                </div>
+                <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:4px 0;">${item.landName} • ${item.crop}</h3>
+                <div style="font-size:13px; color:#475569; margin-top:4px;">
+                  Farmer: <strong style="color:#1E293B;">${item.farmerName}</strong> &bull; Area: <strong>${item.area}</strong>
+                </div>
+                <div style="font-size:12px; color:#64748B; margin-top:4px;">
+                  📍 GPS Verified: ${item.gps}
+                </div>
+              </div>
+
+              <div style="text-align:right;">
+                <span style="display:inline-flex; align-items:center; gap:4px; background:#DCFCE7; color:#166534; padding:5px 12px; border-radius:20px; font-size:11px; font-weight:800;">
+                  ✓ ${item.status}
+                </span>
+                <div style="font-size:11px; color:#15803D; font-weight:700; margin-top:6px;">
+                  ✓ ${item.mrlStatus}
+                </div>
+                <div style="font-size:10px; color:#94A3B8; margin-top:2px;">
+                  Stamp: ${item.stampId}
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderAgentManageExporterView(container) {
+  const exporters = window.AGENT_LINKED_EXPORTERS || [];
+
+  container.innerHTML = `
+    <div style="padding:24px; position:relative; min-height:75vh;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 4px 0;">Manage Linked Exporters</h2>
+          <p style="font-size:13px; color:#64748B; margin:0;">Export houses currently authorizing your field audits and APEDA inspection stamps</p>
+        </div>
+        <button onclick="openAddExporterModal()" style="background:#2F855A; color:#FFF; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 4px 10px rgba(47,133,90,0.25);">
+          + Add Exporter
+        </button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;">
+        ${exporters.map(exp => `
+          <div style="background:#FFF; border-radius:16px; padding:22px; border:1px solid #E2E8F0; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                <span style="font-size:11px; font-weight:800; color:#1E4D3A; background:#E8F5E9; padding:3px 8px; border-radius:6px;">${exp.id}</span>
+                <span style="font-size:11px; font-weight:700; color:#166534; background:#DCFCE7; padding:3px 8px; border-radius:12px;">${exp.status}</span>
+              </div>
+              <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:4px 0 8px 0;">${exp.companyName}</h3>
+              <div style="font-size:13px; color:#475569; line-height:1.5;">
+                <div>Director: <strong>${exp.director}</strong></div>
+                <div>Authorized Port: <strong>${exp.port}</strong></div>
+                <div style="margin-top:4px; color:#1E4D3A; font-weight:600;">${exp.activeContracts}</div>
+              </div>
+            </div>
+            <div style="margin-top:16px; padding-top:12px; border-top:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#64748B;">
+              <span>APEDA: ${exp.apedaReg}</span>
+              <span style="color:#2F855A; font-weight:700;">● Active Link</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Prominent Floating Action Button (+) -->
+      <button onclick="openAddExporterModal()" style="position:fixed; bottom:32px; right:32px; width:58px; height:58px; border-radius:50%; background:#2F855A; color:#FFF; border:none; box-shadow:0 8px 24px rgba(47,133,90,0.4); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:300; cursor:pointer; z-index:999; transition:transform 0.2s;" title="Add Exporter" onmouseenter="this.style.transform='scale(1.08)'" onmouseleave="this.style.transform='scale(1)'">
+        +
+      </button>
+    </div>
+  `;
+}
+
+function openAddExporterModal() {
+  const existing = document.getElementById('add-exporter-modal');
+  if (existing) existing.remove();
+
+  const modalHtml = `
+    <div class="modal-backdrop" id="add-exporter-modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.7); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px;">
+      <div style="background:#FFF; border-radius:18px; width:100%; max-width:440px; box-shadow:0 20px 40px rgba(0,0,0,0.2); overflow:hidden;">
+        <div style="padding:18px 20px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
+          <div>
+            <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:0;">Link New Export House</h3>
+            <div style="font-size:11px; color:#64748B; margin-top:2px;">Authorize field audits under an APEDA exporter</div>
+          </div>
+          <button onclick="document.getElementById('add-exporter-modal').remove()" style="background:none; border:none; color:#94A3B8; cursor:pointer; font-size:22px;">&times;</button>
+        </div>
+
+        <form onsubmit="handleVerifyAndLinkExporter(event)" style="padding:22px;">
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:6px; text-transform:uppercase;">ENTER EXPORTER ID *</label>
+            <input type="text" id="agent-exporter-id-input" placeholder="e.g., EXP-2026-XYZ or EXP-TN-COIMBATORE-101" required style="width:100%; box-sizing:border-box; padding:12px 14px; border-radius:8px; border:1px solid #CBD5E1; font-size:14px; font-weight:700; text-transform:uppercase; outline:none; background:#F8FAFC;" />
+            <div style="font-size:11px; color:#64748B; margin-top:6px; line-height:1.4;">
+              Enter the unique Exporter Registration ID provided by the export house. Details will auto-populate upon verification.
+            </div>
+          </div>
+
+          <button type="submit" id="btn-verify-exporter" style="width:100%; background:#2F855A; color:#FFF; padding:12px; border-radius:8px; border:none; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+            Verify & Link Exporter
+          </button>
+        </form>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function handleVerifyAndLinkExporter(e) {
+  e.preventDefault();
+  const input = document.getElementById('agent-exporter-id-input');
+  const btn = document.getElementById('btn-verify-exporter');
+  const id = input ? input.value.trim().toUpperCase() : '';
+  if (!id) return;
+
+  if (window.AGENT_LINKED_EXPORTERS.some(ex => ex.id === id)) {
+    alert('⚠️ Exporter ID is already linked to your terminal.');
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '🔄 Verifying with APEDA Registry...';
+  }
+
+  setTimeout(() => {
+    const newExp = {
+      id: id,
+      companyName: id.includes('CHENN') ? 'Thanjavur Delta Organics Export Pvt Ltd' : 'Tamil Nadu Spice & Commodity Exporters',
+      director: 'M. Sivasankaran',
+      phone: '+91 98421 99015',
+      activeContracts: '3 Contracted Farms (11.2 Acres)',
+      apedaReg: 'APEDA/EXP/2026/' + (id.slice(-4) || '8821'),
+      status: 'Newly Linked Partner',
+      port: 'Chennai Port Container Terminal'
+    };
+
+    window.AGENT_LINKED_EXPORTERS = [newExp, ...window.AGENT_LINKED_EXPORTERS];
+    document.getElementById('add-exporter-modal')?.remove();
+    alert('✓ Exporter "' + newExp.companyName + '" (' + id + ') verified and linked successfully!');
+    renderApp();
+  }, 1100);
+}
+
 
 window.EXPORTER_CONTRACTED_LANDS = [
   {

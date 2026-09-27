@@ -31,6 +31,14 @@ export function Sidebar({ role = 'shop', activeTab, onSelectTab, user }) {
       ];
     }
 
+    if (role === 'agent') {
+      return [
+        { id: 'lands', label: 'Assigned Lands', icon: MapPin },
+        { id: 'history', label: 'History of Lands', icon: FileCheck },
+        { id: 'manage_exporter', label: 'Manage Exporter', icon: Users, badge: 'Linked' },
+      ];
+    }
+
     // Default fallback
     return [];
   };
