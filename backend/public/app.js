@@ -6046,7 +6046,7 @@ function openProductPurchaseFlow() {
               </div>
               <div style="font-size:20px; font-weight:bold; color:#2F855A;">₹450</div>
             </div>
-            <button onclick="confirmPurchase('Sri Murugan Agri Clinic')" style="width:100%; background:#FFF; color:#2F855A; font-weight:bold; padding:12px; border-radius:8px; border:2px solid #2F855A; cursor:pointer; font-size:14px;">Buy Now</button>
+            <button onclick="showPaymentOptions('Sri Murugan Agri Clinic')" style="width:100%; background:#FFF; color:#2F855A; font-weight:bold; padding:12px; border-radius:8px; border:2px solid #2F855A; cursor:pointer; font-size:14px;">Buy Now</button>
           </div>
         </div>
       </div>
@@ -6068,4 +6068,68 @@ function confirmPurchase(shopName) {
       <button onclick="document.getElementById('checkout-modal').remove()" style="background:#E2E8F0; color:#2D3748; font-weight:bold; padding:16px; width:100%; border-radius:12px; border:none; cursor:pointer; font-size:16px;">Done</button>
     </div>
   `;
+}
+
+
+function simulateInventoryUpload() {
+  alert('Simulating AI Document Parsing... Extracting products from invoice.');
+  setTimeout(() => {
+    const list = document.getElementById('inventory-list');
+    if (list) {
+      list.innerHTML += `
+        <div style="background:#F0FFF4; border:1px solid #9AE6B4; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:11px; font-weight:bold; color:#38A169; margin-bottom:4px;">dY"' NEWLY ADDED VIA INVOICE</div>
+            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Neem Oil Extract (10000 PPM)</h4>
+            <div style="color:#718096; font-size:13px;">Botanical Pesticide &bull; Stock: 120 units</div>
+          </div>
+          <div style="font-size:18px; font-weight:bold; color:#2F855A;">₹220</div>
+        </div>
+      `;
+    }
+  }, 1000);
+}
+
+
+function showPaymentOptions(shopName) {
+  const m = document.getElementById('checkout-modal');
+  if (m) m.innerHTML = `
+    <div class="modal-content" style="max-width:500px; padding:0; background:#F4F7F6; overflow:hidden;">
+      <header style="background:#FFF; padding:24px 20px; border-bottom:1px solid #E2E8F0; display:flex; align-items:center;">
+        <button onclick="document.getElementById('checkout-modal').remove()" style="margin-right:16px; background:none; border:none; font-size:24px; cursor:pointer;">&larr;</button>
+        <h1 style="font-size:20px; font-weight:bold; color:#2D3748; margin:0;">Checkout</h1>
+      </header>
+      <div style="padding:24px 20px;">
+        <h3 style="font-size:16px; font-weight:bold; color:#4A5568; margin-bottom:16px;">Select Payment Option</h3>
+        
+        <label style="display:flex; align-items:center; padding:20px; background:#FFF; border:2px solid #3182CE; border-radius:12px; margin-bottom:12px; cursor:pointer;">
+          <input type="radio" name="payment" value="online" checked style="margin-right:16px; transform:scale(1.2);" />
+          <div style="flex:1;">
+            <div style="font-size:16px; font-weight:bold; color:#2D3748; margin-bottom:4px;">dY' Pay Online (Home Delivery)</div>
+            <div style="font-size:13px; color:#718096;">UPI, NetBanking, Debit/Credit Cards</div>
+          </div>
+        </label>
+
+        <label style="display:flex; align-items:center; padding:20px; background:#FFF; border:2px solid #E2E8F0; border-radius:12px; margin-bottom:24px; cursor:pointer;" onclick="this.style.borderColor='#2F855A'; this.previousElementSibling.style.borderColor='#E2E8F0';">
+          <input type="radio" name="payment" value="token" style="margin-right:16px; transform:scale(1.2);" />
+          <div style="flex:1;">
+            <div style="font-size:16px; font-weight:bold; color:#2D3748; margin-bottom:4px;">dYO^ Generate Token (Pay at Shop)</div>
+            <div style="font-size:13px; color:#718096;">Reserve stock now, pay cash at ${shopName}</div>
+          </div>
+        </label>
+
+        <button onclick="processCheckout('${shopName}')" style="width:100%; background:#2F855A; color:#FFF; font-weight:bold; padding:16px; border-radius:12px; border:none; cursor:pointer; font-size:16px;">Confirm Order</button>
+      </div>
+    </div>
+  `;
+}
+
+function processCheckout(shopName) {
+  const selected = document.querySelector('input[name="payment"]:checked');
+  if (selected && selected.value === 'online') {
+    alert('Redirecting to Secure Payment Gateway...');
+    document.getElementById('checkout-modal').remove();
+  } else {
+    confirmPurchase(shopName); // Generates Token
+  }
 }
