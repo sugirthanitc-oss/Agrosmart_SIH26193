@@ -1692,98 +1692,246 @@ function updateSidebarProfile() {
 
 // --- Main App Dispatcher ---
 async function renderApp() {
-  const appBody = document.getElementById('app-body');
-  const fabLand = document.getElementById('fab-add-land');
-  // Floating Action Button Management:
-  // Land FAB (+) only in Farmer Dashboard view
-  if (fabLand) {
-    fabLand.style.display = (state.currentRole === 'farmer' && state.currentTab === 'menu') ? 'flex' : 'none';
-  }
+    const appBody = document.getElementById('app-body');
+    if (!appBody) return;
+    
+    const fabLand = document.getElementById('fab-add-land');
+    if (fabLand) {
+      fabLand.style.display = (state.currentRole === 'farmer' && state.currentTab === 'menu') ? 'flex' : 'none';
+    }
 
-  // Shop Owner defaults to Mandi Marketplace unless on user_listings or history
-  if (state.currentRole === 'shop_owner' && !['marketplace', 'user_listings', 'history'].includes(state.currentTab)) {
-    state.currentTab = 'marketplace';
-  }
-
-  if (state.currentTab === 'marketplace') {
-    await renderMarketplaceView(appBody);
-    return;
-  }
-  if (state.currentTab === 'consignments') {
-    await renderConsignmentHistoryView(appBody);
-    return;
-  }
-  if (state.currentTab === 'agents') {
-    await renderDedicatedAgentsManagementView(appBody);
-    return;
-  }
-  if (state.currentTab === 'analytics') {
-    await renderAnalyticsView(appBody);
-    return;
-  }
-  if (state.currentTab === 'yield') {
-    renderYieldView(appBody);
-    return;
-  }
-  if (state.currentTab === 'forms') {
-    await renderAgentFormsView(appBody);
-    return;
-  }
-  if (state.currentTab === 'user_listings') {
-    await renderUserListingsView(appBody);
-    return;
-  }
-  if (state.currentTab === 'manage_exporter') {
-    renderManageExporterView(appBody);
-    return;
-  }
-  if (state.currentTab === 'lands') {
-    if (state.currentRole === 'agent') {
-      await loadAgentData();
-      renderDedicatedFieldAgentView(appBody);
+    // === TAB-SPECIFIC VIEWS (shared across roles) ===
+    if (state.currentTab === 'analytics') {
+      await renderAnalyticsView(appBody);
       return;
     }
-  }
-  if (state.currentTab === 'history') {
-    if (state.currentRole === 'farmer') {
-      await renderLogListView(appBody);
-    } else if (state.currentRole === 'agent') {
-      await renderAgentHistoryView(appBody);
-    } else if (state.currentRole === 'shop_owner') {
-      await renderOrdersReceiptsLedgerView(appBody);
-    } else if (state.currentRole === 'exporter') {
-      await renderConsignmentHistoryView(appBody);
-    } else {
-      renderHistoryView(appBody);
+    if (state.currentTab === 'yield') {
+      renderYieldView(appBody);
+      return;
     }
-    return;
-  }
+    if (state.currentTab === 'history') {
+      if (state.currentRole === 'farmer') {
+        await renderLogListView(appBody);
+      } else if (state.currentRole === 'agent') {
+        renderAgentDashboard(appBody);
+      } else if (state.currentRole === 'shop_owner') {
+        await renderOrdersReceiptsLedgerView(appBody);
+      } else if (state.currentRole === 'exporter') {
+        renderExporterDashboard(appBody);
+      } else {
+        renderHistoryView(appBody);
+      }
+      return;
+    }
+    if (state.currentTab === 'user_listings') {
+      await renderUserListingsView(appBody);
+      return;
+    }
 
-    // STRICT DYNAMIC ROUTING FOR MAIN DASHBOARDS
+    // === STRICT ROLE-BASED MAIN DASHBOARD ROUTING ===
+    // This is the ONLY place that decides which dashboard to render.
+    // No fallback to Farmer. Each role gets its own distinct view.
     switch (state.currentRole) {
       case 'farmer':
         await loadFarmerData();
         renderFarmerView(appBody);
         break;
       case 'agent':
-        await loadAgentData();
-        renderDedicatedFieldAgentView(appBody);
+        renderAgentDashboard(appBody);
         break;
       case 'exporter':
-        await loadExporterData();
-        renderExporterView(appBody);
+        renderExporterDashboard(appBody);
         break;
       case 'shop_owner':
       case 'shop':
-        await renderMarketplaceView(appBody); // Render new Shop Layout
+        renderFertilizerShopDashboard(appBody);
         break;
       default:
-        await loadFarmerData();
-        renderFarmerView(appBody);
+        appBody.innerHTML = '<div style="padding:40px; text-align:center; color:#718096;">Unknown role. Please select a valid role tab above.</div>';
     }
   }
 
 // =========================================================================
+
+
+// =========================================================================
+// AGENT DASHBOARD: Field Agent Operations View
+// =========================================================================
+function renderAgentDashboard(container) {
+  const user = state.user || {};
+  container.innerHTML = `
+    <div style="padding:20px;">
+      <div style="background:linear-gradient(135deg, #1A365D, #2A4365); color:#FFF; padding:24px; border-radius:16px; margin-bottom:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:#90CDF4; margin-bottom:8px;">Field Agent Terminal</div>
+        <h1 style="font-size:24px; font-weight:900; margin:0 0 4px 0;">${user.name || 'Agent'}</h1>
+        <div style="font-size:13px; color:#BEE3F8;">${user.exporter_code || 'EXP-TN-101'} &bull; ${user.region || 'Tamil Nadu'}</div>
+      </div>
+
+      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin-bottom:16px;">Assigned Farm Inspections</h2>
+      
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Arumugam's Turmeric Field</h3>
+            <div style="font-size:13px; color:#718096;">Thanjavur &bull; 4.5 Acres &bull; Week 12 of 18</div>
+          </div>
+          <span style="background:#C6F6D5; color:#22543D; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">ON TRACK</span>
+        </div>
+        <div style="background:#F7FAFC; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; font-weight:bold; color:#4A5568; margin-bottom:8px;">WEEKLY VERIFICATION CHECKLIST</div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#2D3748;"><input type="checkbox" checked /> Leaf Uniformity Verified</label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#2D3748;"><input type="checkbox" checked /> Stem Vigor Check Passed</label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#2D3748;"><input type="checkbox" /> Pest/Blemish Inspection</label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#2D3748;"><input type="checkbox" /> Soil Moisture Reading</label>
+          </div>
+        </div>
+        <button onclick="alert('Inspection report submitted successfully!')" style="width:100%; background:#2B6CB0; color:#FFF; font-weight:bold; padding:14px; border-radius:8px; border:none; cursor:pointer; font-size:14px;">Submit Inspection Report</button>
+      </div>
+
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Kavitha's Paddy Plot</h3>
+            <div style="font-size:13px; color:#718096;">Erode &bull; 2.1 Acres &bull; Week 6 of 18</div>
+          </div>
+          <span style="background:#FEFCBF; color:#744210; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">NEEDS VISIT</span>
+        </div>
+      </div>
+
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Murugan's Sugarcane Field</h3>
+            <div style="font-size:13px; color:#718096;">Coimbatore &bull; 6.0 Acres &bull; Week 15 of 18</div>
+          </div>
+          <span style="background:#C6F6D5; color:#22543D; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">ON TRACK</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// =========================================================================
+// EXPORTER DASHBOARD: Global Export Operations View
+// =========================================================================
+function renderExporterDashboard(container) {
+  const user = state.user || {};
+  container.innerHTML = `
+    <div style="padding:20px;">
+      <div style="background:linear-gradient(135deg, #1A202C, #2D3748); color:#FFF; padding:24px; border-radius:16px; margin-bottom:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:#FBD38D; margin-bottom:8px;">Global Export Terminal</div>
+        <h1 style="font-size:24px; font-weight:900; margin:0 0 4px 0;">${user.name || 'Exporter'}</h1>
+        <div style="font-size:13px; color:#E2E8F0;">GST: ${user.gst_number || '33AAACK7741P1ZB'} &bull; Export ID: ${user.export_id || '0485019284'}</div>
+      </div>
+
+      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin-bottom:16px;">Active Consignments</h2>
+
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+          <div>
+            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Batch #TN-TUR-2026-0042</h3>
+            <div style="font-size:13px; color:#718096;">Bhavani Turmeric &bull; 12 Metric Tons &bull; Destination: Dubai</div>
+          </div>
+          <span style="background:#C6F6D5; color:#22543D; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">APEDA CLEARED</span>
+        </div>
+        <div style="background:#F0FFF4; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <div style="font-size:12px; font-weight:bold; color:#276749; margin-bottom:8px;">COMPLIANCE STATUS</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div style="font-size:13px; color:#2D3748;">MRL Check: <strong style="color:#38A169;">PASS</strong></div>
+            <div style="font-size:13px; color:#2D3748;">Pesticide Log: <strong style="color:#38A169;">VERIFIED</strong></div>
+            <div style="font-size:13px; color:#2D3748;">Agent Inspections: <strong style="color:#38A169;">18/18</strong></div>
+            <div style="font-size:13px; color:#2D3748;">Traceability QR: <strong style="color:#38A169;">GENERATED</strong></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="alert('Pre-Harvest Dossier downloaded.')" style="flex:1; background:#2F855A; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:13px;">Download APEDA Dossier</button>
+          <button onclick="alert('QR Passport generated.')" style="flex:1; background:#2B6CB0; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:13px;">Generate QR Passport</button>
+        </div>
+      </div>
+
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Batch #TN-PAD-2026-0078</h3>
+            <div style="font-size:13px; color:#718096;">Sona Masoori Rice &bull; 25 MT &bull; Destination: Singapore</div>
+          </div>
+          <span style="background:#FEFCBF; color:#744210; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">PENDING MRL</span>
+        </div>
+      </div>
+
+      <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Batch #TN-SGR-2026-0015</h3>
+            <div style="font-size:13px; color:#718096;">Organic Sugarcane &bull; 8 MT &bull; Destination: EU</div>
+          </div>
+          <span style="background:#FED7D7; color:#9B2C2C; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">AGENT REVIEW</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// =========================================================================
+// FERTILIZER SHOP DASHBOARD: Inventory & Token Fulfillment View
+// =========================================================================
+function renderFertilizerShopDashboard(container) {
+  const user = state.user || {};
+  container.innerHTML = `
+    <div style="padding:20px;">
+      <div style="background:linear-gradient(135deg, #22543D, #2F855A); color:#FFF; padding:24px; border-radius:16px; margin-bottom:24px;">
+        <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:#C6F6D5; margin-bottom:8px;">Fertilizer & Pesticide Hub</div>
+        <h1 style="font-size:24px; font-weight:900; margin:0 0 4px 0;">${user.name || user.shop_name || 'Shop Owner'}</h1>
+        <div style="font-size:13px; color:#C6F6D5;">GST: ${user.gst_number || '33BBBCK1234P1ZA'} &bull; ${user.region || 'Tamil Nadu'}</div>
+      </div>
+
+      <div onclick="simulateInventoryUpload()" style="background:#FFF; border:2px dashed #3182CE; border-radius:12px; padding:24px; text-align:center; margin-bottom:24px; cursor:pointer;">
+        <div style="font-size:28px; margin-bottom:8px;">&#128196;</div>
+        <h3 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Auto-Stock via Supplier Invoice</h3>
+        <p style="font-size:13px; color:#718096; margin:0;">Upload PDF/Image to automatically extract and list products</p>
+      </div>
+
+      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin-bottom:16px;">Live Inventory</h2>
+      <div id="inventory-list">
+        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Trichoderma Viride</h4>
+            <div style="color:#718096; font-size:13px;">Bio-Fungicide &bull; Stock: 45 units</div>
+          </div>
+          <div style="font-size:18px; font-weight:bold; color:#2F855A;">&#x20B9;450</div>
+        </div>
+        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">DAP Fertilizer (50kg)</h4>
+            <div style="color:#718096; font-size:13px;">Chemical Fertilizer &bull; Stock: 200 bags</div>
+          </div>
+          <div style="font-size:18px; font-weight:bold; color:#2F855A;">&#x20B9;1350</div>
+        </div>
+        <div style="background:#FFF; border:1px solid #E2E8F0; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Neem Oil Extract (10000 PPM)</h4>
+            <div style="color:#718096; font-size:13px;">Botanical Pesticide &bull; Stock: 78 units</div>
+          </div>
+          <div style="font-size:18px; font-weight:bold; color:#2F855A;">&#x20B9;220</div>
+        </div>
+      </div>
+
+      <h2 style="font-size:18px; font-weight:bold; color:#1A365D; margin:24px 0 16px 0;">Pending Token Orders</h2>
+      <div style="background:#FFFFF0; border:1px solid #FEFCBF; border-radius:12px; padding:16px; margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div>
+            <h4 style="font-size:15px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Arumugam Sundaram</h4>
+            <div style="font-size:13px; color:#718096;">Trichoderma Viride x1 &bull; Token: <strong>#TKN-8492</strong></div>
+          </div>
+          <span style="background:#FEFCBF; color:#744210; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:6px;">AWAITING PICKUP</span>
+        </div>
+        <button onclick="alert('Token #TKN-8492 validated. Order marked as fulfilled.')" style="width:100%; background:#D69E2E; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:14px;">Validate Token & Fulfill</button>
+      </div>
+    </div>
+  `;
+}
+
 // 1. FARMER VIEW: CLEAN UI, ZERO EXTERNAL HUB JARGON, ONLY FLOATING (+)
 // =========================================================================
 async function loadFarmerData() {
