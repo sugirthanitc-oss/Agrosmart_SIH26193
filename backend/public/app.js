@@ -1606,13 +1606,21 @@ function switchNavTab(tab) {
 async function switchRole(role) {
   state.currentRole = role;
   state.currentTab = role === 'shop_owner' ? 'marketplace' : 'menu';
-  document.querySelectorAll('.role-pill-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('data-role') === role);
-  });
-  document.querySelectorAll('.mobile-nav-btn').forEach(el => {
-    el.classList.toggle('active', el.getAttribute('data-nav') === (role === 'shop_owner' ? 'marketplace' : 'menu'));
-  });
-  await loginAsRole(role);
+  document.querySelectorAll('.role-pill-btn').forEach(b => { b.classList.toggle('active', b.getAttribute('data-role') === role); });
+  document.querySelectorAll('.mobile-nav-btn').forEach(el => { el.classList.toggle('active', el.getAttribute('data-nav') === (role === 'shop_owner' ? 'marketplace' : 'menu')); });
+  
+  // Prompt Auth Modal with prefilled data
+  selectedAuthRole = role;
+  activeAuthTab = 'login';
+  renderAuthModalContent();
+  
+  setTimeout(() => {
+    const persona = TN_PERSONAS[role];
+    const phoneInput = document.getElementById('auth-phone');
+    const passInput = document.getElementById('auth-password');
+    if (phoneInput && persona) phoneInput.value = persona.phone;
+    if (passInput) passInput.value = '123456';
+  }, 150);
 }
 
 async function loginAsRole(role) {
@@ -2044,85 +2052,32 @@ function renderFarmerView(container) {
     `}
 
     ${farm ? `
-      <!-- GEOLOCATION-BASED METEOROLOGY, DYNAMIC IRRIGATION & PRECISION AGRO-CHEMICAL TIMING (Positioned at Bottom) -->
-      <div class="agro-card" style="margin-top:18px; margin-bottom:18px; border-left:4px solid var(--primary);">
+      
+      <!-- NEW PESTICIDE RECOMMENDATION & BUY PRODUCT FLOW -->
+      <div class="agro-card" style="margin-top:18px; margin-bottom:18px; border-left:5px solid #E53E3E; background:linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);">
         <div class="agro-card-header" style="margin-bottom:12px;">
           <div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:20px;">🛰️</span>
-              <div class="card-title">${state.language === 'ta' ? `${farm.land_name || 'நிலம்'} - வானிலை & துல்லிய திட்டமிடல்` : `${farm.land_name || 'Selected Land'} - Meteorology & Precision Scheduling`}</div>
+              <span style="font-size:20px;">🧪</span>
+              <div class="card-title" style="color:#C53030;">Today's Recommended Treatment</div>
             </div>
-            <div style="font-size:11.5px; color:var(--slate); margin-top:2px;">
-              📍 Keyed to Parcel Coordinates: <strong>10.7872°N, 79.1375°E</strong> (${farm.land_name || 'Amaravathi Basin Plot A'}) • Live Forecast
+            <div style="font-size:11.5px; color:#E53E3E; margin-top:2px; font-weight:bold;">
+              Based on active crop stage: ${farm ? farm.current_stage || 'Flowering & Grain Filling' : 'Flowering'}
             </div>
-          </div>
-          <span class="badge badge-forest" style="font-size:11px;">METEOROLOGICAL TELEMETRY</span>
-        </div>
-
-        <!-- 4 Telemetry Metrics -->
-        <div class="grid-4" style="gap:8px; margin-bottom:14px;">
-          <div class="dosing-cell">
-            <div class="cell-label">Ambient Temp</div>
-            <div class="cell-value" style="font-size:15px; color:var(--ink);">29.4°C</div>
-            <div style="font-size:10px; color:var(--slate);">Min 24°C / Max 33°C</div>
-          </div>
-          <div class="dosing-cell">
-            <div class="cell-label">Relative Humidity</div>
-            <div class="cell-value" style="font-size:15px; color:var(--ink);">68%</div>
-            <div style="font-size:10px; color:var(--slate);">Evaporative Index: Moderate</div>
-          </div>
-          <div class="dosing-cell">
-            <div class="cell-label">Wind Velocity</div>
-            <div class="cell-value" style="font-size:15px; color:var(--primary);">13.8 km/h</div>
-            <div style="font-size:10px; color:#10B981; font-weight:700;">Safe (&lt; 15 km/h)</div>
-          </div>
-          <div class="dosing-cell" style="border-left:3px solid #10B981;">
-            <div class="cell-label">Rain Probability</div>
-            <div class="cell-value" style="font-size:15px; color:#10B981;">15% (0.0 mm)</div>
-            <div style="font-size:10px; color:#10B981; font-weight:700;">Dry Window</div>
           </div>
         </div>
-
-        <!-- 2 Precision Decision Cards: Dynamic Irrigation + Agro-Chemical Window -->
-        <div class="grid-2" style="gap:12px;">
-          <!-- 1. Predictive Dynamic Irrigation -->
-          <div style="background:var(--mint-soft); border:1.5px solid #10B981; border-radius:12px; padding:12px 14px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <div style="font-weight:800; font-size:12.5px; color:var(--primary); display:flex; align-items:center; gap:6px;">
-                <span>💧</span>
-                <span>${state.language === 'ta' ? 'முன்னறிவிப்பு பாசன அளவு' : 'Dynamic Irrigation Scheduling'}</span>
-              </div>
-              <span class="badge badge-forest" style="font-size:10px;">ACTIVE REQUIRED</span>
-            </div>
-            <div style="font-size:18px; font-weight:900; color:var(--primary); margin-bottom:2px;">
-              8,200 Liters / Acre
-            </div>
-            <div style="font-size:11.5px; color:var(--ink); line-height:1.4;">
-              Frequency: <strong>Every 3 Days (Micro-Drip Pulse)</strong>. Evapotranspiration demand is 4.8 mm/day. No rainfall expected within 48h.
-            </div>
-          </div>
-
-          <!-- 2. Precision Agro-Chemical Safe Window -->
-          <div style="background:#FFFFFF; border:1.5px solid var(--primary-light); border-radius:12px; padding:12px 14px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <div style="font-weight:800; font-size:12.5px; color:var(--primary); display:flex; align-items:center; gap:6px;">
-                <span>🧪</span>
-                <span>${state.language === 'ta' ? 'பாதுகாப்பான தெளிப்பு நேரம்' : 'Precision Agro-Chemical Window'}</span>
-              </div>
-              <span class="badge badge-forest" style="font-size:10px; background:#10B981; color:#FFF;">OPTIMAL WINDOW</span>
-            </div>
-            <div style="font-size:14px; font-weight:800; color:#065F46; margin-bottom:2px;">
-              06:30 AM - 09:30 AM & 04:30 PM - 06:30 PM
-            </div>
-            <div style="font-size:11.5px; color:var(--slate); line-height:1.4;">
-              Low wind drift (13.8 km/h), ambient temperature stable (&lt; 32°C), zero wash-off risk. Safe for scheduled bio-protectant application.
-            </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:#FFF; border:1px solid #FED7D7; padding:16px; border-radius:12px;">
+            <h3 style="font-size:18px; font-weight:bold; color:#2D3748; margin:0 0 8px 0;">Trichoderma Viride (Bio-Fungicide)</h3>
+            <p style="font-size:14px; color:#4A5568; margin:0 0 16px 0;">Prevents root rot. Apply 5ml per liter of water via foliar spray.</p>
+            <button onclick="openProductPurchaseFlow()" style="width:100%; background:#E53E3E; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:16px; box-shadow: 0 4px 6px rgba(229,62,62,0.2);">Buy Product</button>
           </div>
         </div>
       </div>
-    ` : ''}
-  `;
-}
+      ` : ''}
+    `;
+  }
+
 
 function completeWeeklyTask(farmId, taskId) {
   if (!state.farmWeeklyState || !state.farmWeeklyState[farmId]) return;
@@ -6869,224 +6824,47 @@ function renderExporterMarketplaceView(container) {
   `;
 }
 
+
 async function renderMarketplaceView(container) {
-  // Ensure only shop owners can make posts, visible only to exporters, with no posts from farmers
-  if (state.currentRole === 'farmer') {
-    container.innerHTML = `
-      <div class="agro-card" style="text-align:center; padding:48px 20px; max-width:600px; margin:40px auto;">
-        <div style="font-size:38px; margin-bottom:12px;">🔒</div>
-        <div style="font-size:18px; font-weight:800; color:var(--ink);">Mandi Marketplace Access Restricted</div>
-        <div style="font-size:13px; color:var(--slate); margin-top:8px; line-height:1.6;">
-          Mandi Marketplace listings are strictly managed by Shop Owners and accessible to Exporters for commercial procurement. Farmers manage assigned land, cultivation workflows, and crop health in their dedicated workspace.
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  // EXPORTER OVERHAUL: Exclusively display requirement posts & procurement requests created by Shop Owners
-  if (state.currentRole === 'exporter') {
-    renderExporterMarketplaceView(container);
-    return;
-  }
-
-  if (!state.marketplaceLots || state.marketplaceLots.length === 0) {
-    await loadShopData();
-  }
-
-  // Strictly filter out all posts from farmers; ensure only shop owner posts are present
-  let lots = (state.marketplaceLots || []).filter(item => {
-    if (item.seller_role === 'farmer' || item.is_farmer_direct_demand) return false;
-    if (item.seller_name && (item.seller_name.includes('Farmer') || item.seller_name.includes('Kisan') || item.seller_name.includes('Arumugam') || item.seller_name.includes('Muthuvel'))) return false;
-    return true;
-  });
-
-  if (lots.length === 0) {
-    lots = [
-      {
-        id: 'lot-exp-001',
-        seller_id: 'user-exp-01',
-        seller_name: 'Kongu Agro Global Exports (S. Ramanathan)',
-        seller_role: 'exporter',
-        crop: 'Ponni Rice (BPT 5204)',
-        quantity_qtl: 120.0,
-        quantity_kg: 12000,
-        grade: 'Grade A',
-        harvest_date: '2026-09-20',
-        channel: 'export_terminal',
-        status: 'ready',
-        price_per_kg: 49.0,
-        certification_status: 'Codex Alimentarius Export Grade Certified',
-        region: 'Coimbatore Export Terminal, Tamil Nadu',
-        is_farmer_direct_demand: false
-      },
-      {
-        id: 'lot-exp-002',
-        seller_id: 'user-exp-02',
-        seller_name: 'Tamil Nadu Spices Export Corp',
-        seller_role: 'exporter',
-        crop: 'Erode Salem Turmeric (Curcumin 4.8%)',
-        quantity_qtl: 85.0,
-        quantity_kg: 8500,
-        grade: 'Grade A',
-        harvest_date: '2026-09-22',
-        channel: 'export_terminal',
-        status: 'ready',
-        price_per_kg: 145.0,
-        certification_status: 'APEDA Zero Chemical Residue Cleared',
-        region: 'Erode Terminal Hub, Tamil Nadu',
-        is_farmer_direct_demand: false
-      },
-      {
-        id: 'lot-mandi-001',
-        seller_id: 'user-mandi-01',
-        seller_name: 'Thanjavur Delta Regulated Mandi Yard',
-        seller_role: 'mandi',
-        crop: 'Coimbatore Black Gram (Organic Certified)',
-        quantity_qtl: 60.0,
-        quantity_kg: 6000,
-        grade: 'Grade A',
-        harvest_date: '2026-09-25',
-        channel: 'mandi',
-        status: 'ready',
-        price_per_kg: 95.0,
-        certification_status: 'Organic Bio-Shield Certified',
-        region: 'Thanjavur Mandi, Tamil Nadu',
-        is_farmer_direct_demand: false
-      },
-      {
-        id: 'lot-mandi-002',
-        seller_id: 'user-shop-01',
-        seller_name: 'Meenakshi Wholesale Mandi (Palanisamy Velu)',
-        seller_role: 'mandi',
-        crop: 'Madurai Gundu Chilli (Stemless Premium)',
-        quantity_qtl: 45.0,
-        quantity_kg: 4500,
-        grade: 'Grade A',
-        harvest_date: '2026-09-28',
-        channel: 'mandi',
-        status: 'ready',
-        price_per_kg: 180.0,
-        certification_status: 'Agmark Grade Special Certified',
-        region: 'Madurai Mandi Central, Tamil Nadu',
-        is_farmer_direct_demand: false
-      }
-    ];
-    state.marketplaceLots = lots;
-  }
-
-  const filteredLots = lots.filter(item => {
-    if (!marketplaceCropSearchQuery) return true;
-    const crop = (item.crop || '').toLowerCase();
-    const cropEn = (translateCrop(item.crop) || '').toLowerCase();
-    return crop.includes(marketplaceCropSearchQuery) || cropEn.includes(marketplaceCropSearchQuery);
-  });
-
+  if (state.currentRole !== 'shop_owner') return;
   container.innerHTML = `
-    <!-- Clean Minimal Header (Metadata clutter removed) -->
-    <div style="margin-bottom:16px;">
-      <h2 style="font-size:22px; font-weight:800; color:var(--ink); margin:0;">
-        ${t('mandi_marketplace_title', 'Mandi Marketplace')}
-      </h2>
-    </div>
-
-    <!-- Prominent Responsive Search Bar -->
-    <div style="margin-bottom:18px; position:relative;">
-      <span style="position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:16px; color:var(--slate);">🔍</span>
-      <input
-        type="text"
-        id="market-crop-search"
-        value="${marketplaceCropSearchQuery}"
-        oninput="handleMarketCropSearch(this.value)"
-        placeholder="${t('search_crops_placeholder', 'Search by crop name (e.g., Ponni Rice, Erode Turmeric)...')}"
-        style="width:100%; padding:12px 16px 12px 42px; font-size:14px; border-radius:12px; border:1.5px solid var(--border); background:#FFFFFF; color:var(--ink); box-shadow:0 2px 6px rgba(0,0,0,0.04); outline:none; transition:border-color 0.2s ease;"
-      />
-      ${marketplaceCropSearchQuery ? `
-        <button onclick="document.getElementById('market-crop-search').value = ''; handleMarketCropSearch('');" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--slate); font-size:18px; cursor:pointer;">&times;</button>
-      ` : ''}
-    </div>
-
-    <!-- Available Produce Lots -->
-    <div class="agro-card" style="margin-bottom:24px;">
-      <div class="agro-card-header">
-        <div>
-          <span class="card-label">Live Produce Lots</span>
-          <div class="card-title">Available Harvest Batches for Procurement</div>
-        </div>
-        <span class="badge badge-forest" id="marketplace-lots-count">${filteredLots.length} Lots Available</span>
+    <div style="padding-bottom:80px;background:#F0F4F8;min-height:100vh;">
+      <header style="background:#1A365D;color:#FFF;padding:40px 20px 20px 20px;box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+        <h1 style="font-size:24px;font-weight:bold;margin:0;">Store Dashboard</h1>
+      </header>
+      <div style="padding:16px;display:flex;gap:16px;">
+        <button style="flex:1;background:#FFF;color:#3182CE;font-weight:bold;padding:16px;border-radius:12px;border:none;box-shadow:0 2px 5px rgba(0,0,0,0.05);">Active Orders</button>
+        <button style="flex:1;background:#FFF;color:#3182CE;font-weight:bold;padding:16px;border-radius:12px;border:none;box-shadow:0 2px 5px rgba(0,0,0,0.05);">Order History</button>
       </div>
-
-      <div id="marketplace-lots-list" style="display:flex; flex-direction:column; gap:14px;">
-        ${renderMarketLotsCardsHtml(filteredLots)}
+      <div style="margin:0 16px;background:#FFF;padding:24px;border-radius:12px;border-left:5px solid #3182CE;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+        <h2 style="font-size:16px;font-weight:bold;color:#2D3748;margin:0 0 8px 0;">Daily Sales Report</h2>
+        <div style="font-size:32px;font-weight:bold;color:#2D3748;">₹ 45,200</div>
+        <div style="color:#48BB78;font-weight:600;margin-top:4px;font-size:14px;">+12% from yesterday</div>
       </div>
-    </div>
-
-    <!-- Only Shop Owners can make posts via bottom FAB -->
-    ${state.currentRole === 'shop_owner' ? `
-      <button onclick="openCreateListingModal()" class="fab-bottom-btn" id="fab-bottom-add" title="Post Produce Lot / Listing">
-        +
-      </button>
-    ` : ''}
-  `;
-}
-
-function renderShopView(container) {
-  return renderMarketplaceView(container);
-}
-
-function openPostRequirementModal() {
-  const modalHtml = `
-    <div class="modal-backdrop" id="modal-container">
-      <div class="modal-content" style="max-width:460px;">
-        <div class="modal-header">
-          <div>
-            <span class="card-label" style="color:var(--primary);">${t('post_demand_subtitle', 'Demand Signal')}</span>
-            <div style="font-size:18px; font-weight:800;">${t('post_demand_title', 'Post Buyer Requirement')}</div>
-          </div>
-          <button onclick="closeModal()" class="modal-close">&times;</button>
+      <h2 style="font-size:18px;font-weight:bold;color:#2D3748;margin:24px 16px 12px 16px;">Live Inventory Feed</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;padding:0 16px;">
+        <div style="background:#FFF;padding:20px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+          <h3 style="font-size:18px;font-weight:bold;color:#2D3748;margin:0 0 4px 0;">Urea 46%</h3>
+          <p style="color:#718096;font-size:14px;margin:0 0 16px 0;">375 sold out of 500 units</p>
+          <div style="height:8px;width:100%;background:#EDF2F7;border-radius:4px;overflow:hidden;"><div style="height:100%;width:75%;background:#3182CE;"></div></div>
+          <div style="text-align:right;margin-top:8px;font-size:12px;font-weight:bold;color:#A0AEC0;">75% Sold</div>
         </div>
-
-        <form onsubmit="handlePostRequirementSubmit(event)">
-          <div class="form-group">
-            <label class="form-label">${t('post_crop_demanded', 'Crop Demanded')}</label>
-            <select id="req-crop" class="form-control" required>
-              <option value="Ponni Rice (BPT 5204)">${translateCrop('Ponni Rice')} (BPT 5204)</option>
-              <option value="Erode Turmeric (Curcumin 4.5%)">${translateCrop('Erode Turmeric')}</option>
-              <option value="Chettinad Organic Cotton">${translateCrop('Cotton')}</option>
-            </select>
-          </div>
-
-          <div class="grid-2 form-group" style="gap:10px;">
-            <div>
-              <label class="form-label">${t('post_qty_kg', 'Quantity (kg)')}</label>
-              <input type="number" id="req-qty-kg" class="form-control" value="8000" min="100" step="50" required />
-              <div style="font-size:10px; color:var(--slate); margin-top:2px;">e.g. 8000 kg (8 MT)</div>
-            </div>
-            <div>
-              <label class="form-label">${t('post_quality_grade', 'Quality Grade')}</label>
-              <select id="req-grade" class="form-control" required>
-                <option value="Grade A">${t('grade_export', 'Grade A (Export)')}</option>
-                <option value="Grade B" selected>${t('grade_domestic', 'Grade B (Mandi)')}</option>
-                <option value="Grade C">Grade C (Processing)</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">${t('post_needed_by', 'Needed By Date')}</label>
-            <input type="date" id="req-date" class="form-control" value="2026-09-30" required />
-          </div>
-
-          <button type="submit" class="agro-btn-primary" style="width:100%; padding:12px; font-size:13px; font-weight:800;">
-            ${t('post_btn_submit', '✓ Post Demand to Marketplace')}
-          </button>
-        </form>
+        <div style="background:#FFF;padding:20px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+          <h3 style="font-size:18px;font-weight:bold;color:#2D3748;margin:0 0 4px 0;">DAP Fertilizer</h3>
+          <p style="color:#718096;font-size:14px;margin:0 0 16px 0;">120 sold out of 300 units</p>
+          <div style="height:8px;width:100%;background:#EDF2F7;border-radius:4px;overflow:hidden;"><div style="height:100%;width:40%;background:#3182CE;"></div></div>
+          <div style="text-align:right;margin-top:8px;font-size:12px;font-weight:bold;color:#A0AEC0;">40% Sold</div>
+        </div>
+        <div style="background:#FFF;padding:20px;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+          <h3 style="font-size:18px;font-weight:bold;color:#2D3748;margin:0 0 4px 0;">Trichoderma Viride</h3>
+          <p style="color:#718096;font-size:14px;margin:0 0 16px 0;">18 sold out of 100 units</p>
+          <div style="height:8px;width:100%;background:#EDF2F7;border-radius:4px;overflow:hidden;"><div style="height:100%;width:18%;background:#3182CE;"></div></div>
+          <div style="text-align:right;margin-top:8px;font-size:12px;font-weight:bold;color:#A0AEC0;">18% Sold</div>
+        </div>
       </div>
     </div>
   `;
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
-
 async function handlePostRequirementSubmit(event) {
   event.preventDefault();
   const crop = document.getElementById('req-crop').value;
