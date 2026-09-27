@@ -57,12 +57,12 @@
       "id": "user-shop-01",
       "phone": "9842100003",
       "role": "shop_owner",
-      "name": "Palanisamy Velu",
+      "name": "SUGIRTHAN",
       "shop_name": "Meenakshi Wholesale & Retail Mandi",
       "gst_number": "33AABCM9102K1ZV",
       "region": "Madurai, Tamil Nadu",
       "district": "Madurai",
-      "language": "ta",
+      "language": "en",
       "created_at": "2026-05-05T08:00:00Z"
     },
     {
@@ -73,7 +73,7 @@
       "farmer_id_code": "TN-FARM-8492",
       "region": "Thanjavur, Tamil Nadu",
       "district": "Thanjavur",
-      "language": "ta",
+      "language": "en",
       "linked_agent_id": "user-agt-01",
       "linked_exporter_id": "user-exp-01",
       "created_at": "2026-05-10T08:00:00Z"

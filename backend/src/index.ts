@@ -1,12 +1,26 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import mongoose from 'mongoose';
 import { config } from './config/index.js';
 import apiRoutes from './routes/api.routes.js';
 import { db } from './database/db.js';
 import { seedDatabase } from './seed/seedData.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
+
+// Initialize MongoDB Connection (Preparation for Production Migration)
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+      console.log('✅ Successfully connected to MongoDB Atlas Cluster (AgroSmart DB)');
+    })
+    .catch((err) => {
+      console.error('❌ Error connecting to MongoDB:', err.message);
+    });
+}
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
