@@ -2597,6 +2597,356 @@ function confirmOcrProduct() {
 }
 
 
+// =========================================================================
+// 1. RESTORED FARMER DATA LOADER & VIEW
+// =========================================================================
+async function loadFarmerData() {
+  try {
+    const fRes = await fetch('/api/farmer/farms', {
+      headers: { Authorization: `Bearer ${state.token}` }
+    });
+    if (fRes.ok) {
+      state.farms = await fRes.json();
+      if (state.farms.length > 0) {
+        state.activeFarm = state.activeFarm
+          ? state.farms.find(f => f.id === state.activeFarm.id) || state.farms[0]
+          : state.farms[0];
+
+        const aRes = await fetch(`/api/farmer/farms/${state.activeFarm.id}/activities`, {
+          headers: { Authorization: `Bearer ${state.token}` }
+        });
+        if (aRes.ok) state.activities = await aRes.json();
+      }
+    }
+  } catch (e) {
+    console.warn('Error loading farmer data:', e);
+  }
+
+  // Resilient fallback for demo / offline mode
+  if (!state.farms || state.farms.length === 0) {
+    state.farms = [
+      {
+        id: 'farm-tn-01',
+        parcel_name: 'Amaravathi Basin Plot C',
+        area_ha: 4.5,
+        crop_type: 'Bhavani High-Yield Turmeric',
+        current_stage: 'Flowering & Grain Filling',
+        geo_polygon: { coordinates: [[[10.787, 79.137]]] },
+        mrl_status: 'Pre-Tested MRL Clear'
+      },
+      {
+        id: 'farm-tn-02',
+        parcel_name: 'Cauvery River Block 1',
+        area_ha: 3.2,
+        crop_type: 'Sona Masoori Rice',
+        current_stage: 'Harvest',
+        geo_polygon: { coordinates: [[[10.792, 79.141]]] },
+        mrl_status: 'Codex Compliant'
+      }
+    ];
+    state.activeFarm = state.farms[0];
+  }
+}
+
+function renderFarmerView(container) {
+  const farm = state.activeFarm;
+
+  // Initialize or fetch dynamic 1-week cycle for this farm matching its stage
+  if (!state.farmWeeklyState) state.farmWeeklyState = {};
+  if (farm && !state.farmWeeklyState[farm.id]) {
+    const isHarvest = farm.current_stage === 'Harvest';
+    const isFlowering = farm.current_stage === 'Flowering';
+    state.farmWeeklyState[farm.id] = {
+      week: isHarvest ? 18 : (isFlowering ? 11 : 4),
+      totalWeeks: 18,
+      stageName: isHarvest ? 'Pre-Harvest Quarantine & Grain Hardening' : (isFlowering ? 'Flowering & Rhizome Enlargement' : 'Vegetative Tillering & Root Aeration'),
+      tasks: isHarvest ? [
+        { id: 'wt-01', title: 'Water drainage & field drying for combine harvester', day: 'Day 1', done: true, type: 'irrigation' },
+        { id: 'wt-02', title: 'Pre-harvest moisture meter reading (<= 14%)', day: 'Day 3', done: true, type: 'sensor' },
+        { id: 'wt-03', title: 'Bio-Potash foliar spray dosing', day: 'Day 5', done: false, type: 'fertilizer' }
+      ] : isFlowering ? [
+        { id: 'wt-01', title: 'Furrow irrigation & rhizome root check', day: 'Day 1', done: true, type: 'irrigation' },
+        { id: 'wt-02', title: 'Trichoderma Viride 1% WP root drenching', day: 'Day 3', done: false, type: 'pest' },
+        { id: 'wt-03', title: 'Canopy inspection & MRL rapid test strip', day: 'Day 6', done: false, type: 'sensor' }
+      ] : [
+        { id: 'wt-01', title: 'Irrigation & standing water check (3cm)', day: 'Day 1', done: true, type: 'irrigation' },
+        { id: 'wt-02', title: 'AI Soil moisture retention reading', day: 'Day 3', done: true, type: 'sensor' },
+        { id: 'wt-03', title: 'Bio-Neem NSKE 5% foliar spray dosing', day: 'Day 6', done: false, type: 'pest' }
+      ]
+    };
+  }
+  const wState = farm ? state.farmWeeklyState[farm.id] : null;
+  const completedTasks = wState ? wState.tasks.filter(t => t.done).length : 0;
+  const totalTasks = wState ? wState.tasks.length : 3;
+  const progressPercent = Math.round((completedTasks / totalTasks) * 100);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  // Active pending task: strictly filter out tasks that are done, or rescheduled to a future date
+  const activeTask = wState ? (
+    wState.tasks.find(t => !t.done && (!t.status || t.status === 'PENDING') && (!t.scheduled_date || t.scheduled_date <= todayStr) && !t.rescheduled_to) ||
+    wState.tasks.find(t => !t.done && t.status === 'RESCHEDULED' && (t.scheduled_date === todayStr || t.rescheduled_to === todayStr)) ||
+    null
+  ) : null;
+  const isDosingTask = activeTask && (activeTask.type === 'pest' || activeTask.type === 'fertilizer');
+
+  container.innerHTML = `
+    <!-- Hero Header: Clean, Human-Centric, Zero External Hub Mention -->
+    <div class="hero-header">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+        <div>
+          <div class="hero-title">${t('hero_farmer_greeting', 'Vanakkam')}, ${state.user.name || 'Arumugam Sundaram'} 🌾</div>
+          <div class="hero-meta">
+            <span>📍 ${state.user.district || 'Thanjavur Basin'}</span>
+            <span>•</span>
+            <span class="badge badge-gold" style="font-size:10px;">ID: ${state.user.farmer_id_code || 'TN-FARM-8492'}</span>
+          </div>
+        </div>
+        <div>
+          <button type="button" onclick="playTamilPrompt('dashboard_guide', this)" class="voice-walkthrough-btn">
+            🔊 ${state.language === 'ta' ? 'குரல் வழிகாட்டி' : 'Audio Guide'}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAND SELECTION GRID CONTAINER (Top Priority: Select Land First) -->
+    <div class="agro-card" style="margin-bottom:18px; padding:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+        <div>
+          <span class="card-label" style="font-size:13px; font-weight:800; color:var(--primary);">${state.language === 'ta' ? 'நிலங்கள்' : 'LAND'} (${state.farms.length})</span>
+          <div style="font-size:11px; color:var(--slate); margin-top:2px;">${state.language === 'ta' ? 'மேற்பார்வையிட ஒரு நிலத்தைத் தேர்ந்தெடுக்கவும்' : 'Select a land parcel to manage cultivation & tasks'}</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;">
+        ${state.farms.map(f => {
+          const isSelected = farm && farm.id === f.id;
+          const acres = f.area_acres || (f.area_ha ? (f.area_ha * 2.471).toFixed(1) : '4.2');
+
+          return `
+            <div onclick="selectFarm('${f.id}')" style="min-width:230px; padding:12px; border-radius:14px; background:${isSelected ? 'var(--mint-soft)' : 'var(--bg-canvas)'}; border:${isSelected ? '2px solid var(--primary)' : '1px solid var(--border)'}; cursor:pointer; transition:all 0.15s ease;">
+              <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:800;">
+                <span>${f.land_name || 'Land Parcel'}</span>
+                <span class="badge ${f.current_stage === 'Harvest' ? 'badge-gold' : 'badge-forest'}">${translateStage(f.current_stage || 'Flowering')}</span>
+              </div>
+              <div style="font-size:11px; color:var(--slate); margin-top:4px;">
+                ${translateCrop(f.crop_type || 'Crop')} • ${acres} ${t('cert_acres', 'Acres')}
+              </div>
+              <div style="font-size:10px; font-family:monospace; color:var(--primary); margin-top:2px;">
+                ID: ${f.unique_parcel_code || f.id}
+              </div>
+              <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700; color:var(--primary);">
+                <span>📍 ${f.district || 'Tamil Nadu'}</span>
+                <span style="background:${isSelected ? 'var(--primary)' : 'rgba(27, 77, 62, 0.1)'}; color:${isSelected ? '#FFFFFF' : 'var(--primary)'}; padding:2px 8px; border-radius:8px; font-size:10px;">
+                  ${isSelected ? t('active_parcel_tag', '✓ Active Parcel') : t('select_parcel_tag', 'Select')}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+
+    ${farm ? `
+      <!-- PRIMARY ACTIONABLE LAND CARD (Selected Parcel Details) -->
+      <div class="agro-card" style="margin-bottom:18px;">
+        <div class="agro-card-header">
+          <div>
+            <div class="card-title">${farm.land_name || 'Amaravathi Basin Plot A'}</div>
+            <div style="font-size:12px; color:var(--slate); margin-top:2px;">
+              ${translateCrop(farm.crop_type || 'Ponni Rice')} • ${farm.area_acres || '4.2'} ${t('cert_acres', 'Acres')} (${farm.area_ha} Ha)
+            </div>
+            <div style="font-size:10.5px; font-family:monospace; color:var(--primary); margin-top:2px;">
+              ID: <strong>${farm.unique_parcel_code || farm.id}</strong>
+            </div>
+          </div>
+          <span class="badge badge-forest" style="font-size:12px;">Stage: ${translateStage(farm.current_stage || wState?.stageName || 'Flowering')}</span>
+        </div>
+
+        ${((farm.current_stage || wState?.stageName || '').toLowerCase().includes('harvest')) ? `
+        <!-- REAL-TIME DYNAMIC EXPORT COMPLIANCE & QR DOCUMENT CARD (HARVEST STAGE EXCLUSIVE) -->
+        <div style="background: linear-gradient(135deg, var(--mint-soft) 0%, #FFFFFF 100%); border: 1.5px solid var(--primary); border-radius: 14px; padding: 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-weight: 800; font-size: 13.5px; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+              <span>📜</span>
+              <span>${t('cert_dossier_subtitle', 'International Export Compliance Dossier')}</span>
+            </div>
+            <div style="font-size: 11px; color: var(--slate); margin-top: 2px;">
+              ${state.language === 'ta' ? 'APEDA, APVMA, கோடெக்ஸ், EU விதிமுறைகள் மற்றும் இரசாயன தணிக்கை விவரங்கள் அடங்கிய நேரலை ஆவணம்.' : 'Live international standards dossier (APEDA, APVMA, Codex, EU MRL) with applied agrochemical audit trail.'}
+            </div>
+          </div>
+          <button onclick="openDynamicComplianceModal('${farm.id}')" class="agro-btn-primary" style="padding: 8px 14px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 6px;">
+            <span>🔍</span>
+            <span>${t('btn_view_certificate_qr', 'View Certificate & QR')}</span>
+          </button>
+        </div>
+        ` : ''}
+
+        <!-- DYNAMIC ONE-WEEK PROGRESSION BAR -->
+        <div class="weekly-cycle-box">
+          <div class="weekly-cycle-header">
+            <div class="weekly-cycle-title">
+              <span>📅</span>
+              <span>${t('timeline_week', 'Week')} ${wState.week} / ${wState.totalWeeks}: ${translateStage(wState.stageName)}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge ${progressPercent === 100 ? 'badge-forest' : 'badge-gold'}" style="font-size:10px;">
+                ${progressPercent === 100 ? (state.language === 'ta' ? '🎉 100% சுழற்சி நிறைவடைந்தது' : '🎉 100% CYCLE COMPLETED') : `${completedTasks} of ${totalTasks} (${progressPercent}%)`}
+              </span>
+            </div>
+          </div>
+
+          <div class="weekly-cycle-track">
+            <div class="weekly-cycle-fill" style="width: ${progressPercent}%;"></div>
+          </div>
+
+          <div class="weekly-tasks-grid">
+            ${wState.tasks.map(t => {
+              const isRescheduled = t.status === 'RESCHEDULED';
+              const newDate = t.scheduled_date || t.rescheduled_to;
+              const displayDate = isRescheduled ? (state.language === 'ta' ? `புதிய தேதி: ${newDate}` : `Shifted: ${newDate}`) : `${t.day} • ${translateActivityType(t.type)}`;
+              return `
+              <div class="weekly-task-chip ${t.done ? 'completed' : isRescheduled ? 'rescheduled' : 'active'}" onclick="${!t.done ? (t.type === 'pest' || t.type === 'fertilizer' ? `openTreatmentBarcodeModal('${farm.crop_type?.includes('Turmeric') ? 'Trichoderma Viride 1% WP' : (farm.crop_type?.includes('Sugar') ? 'Bio-Neem NSKE 5% Bio-Spray' : 'Bio-Neem 5% EC')}', 'Target Bio-Protection', '500 ml / Acre', '${farm.id}', '${t.id}', '8901234567890')` : `openCameraModal('${farm.id}', '${t.id}')`) : ''}" style="${!t.done ? 'cursor:pointer;' : ''}">
+                <div>
+                  <div style="font-size:9px; color:var(--slate); text-transform:uppercase;">${displayDate}</div>
+                  <div style="margin-top:2px;">${t.title}</div>
+                  ${isRescheduled ? `<div style="font-size:9px; color:var(--primary); font-weight:700; margin-top:2px;">${state.language === 'ta' ? 'புதிய தேதிக்கு திட்டமிடப்பட்டது' : 'Rescheduled strictly to new date'}</div>` : ''}
+                </div>
+                <span style="font-size:14px; margin-left:6px;">${t.done ? '✅' : isRescheduled ? '📅' : '⏳'}</span>
+              </div>
+            `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- CONTEXTUAL ACTION PROMPT (Clears when completed or rescheduled away) -->
+        ${activeTask ? `
+          <div class="action-prompt-box" style="flex-direction:column; gap:10px; margin-top:14px;">
+            <div style="display:flex; align-items:flex-start; gap:12px; width:100%;">
+              <div class="prompt-icon">${isDosingTask ? '🧪' : '💧'}</div>
+              <div style="flex:1;">
+                <div class="prompt-text">
+                  ${isDosingTask 
+                    ? `${farm.pesticide_fertilizer_dosing?.mixture || 'Bio-Neem NSKE 5%'} foliar spray scheduled — Scan bottle barcode before application`
+                    : (activeTask.status === 'RESCHEDULED' && (activeTask.scheduled_date || activeTask.rescheduled_to) !== todayStr)
+                      ? (state.language === 'ta' ? `📅 பணி ${activeTask.scheduled_date || activeTask.rescheduled_to} புதிய தேதிக்கு மாற்றப்பட்டுள்ளது — நடவடிக்கை புதிய தேதியில் திட்டமிடப்பட்டுள்ளது` : `📅 Task rescheduled to ${activeTask.scheduled_date || activeTask.rescheduled_to} — Action scheduled strictly on new date`)
+                      : (farm.immediate_action_prompt || (state.language === 'ta' ? 'இன்றைய பாசன பணி — 3 செ.மீ நீர் மட்டத்தை பராமரிக்கவும்' : 'Irrigation due today — Maintain 3cm standing water'))}
+                </div>
+                <div class="prompt-sub">
+                  ${isDosingTask 
+                    ? (state.language === 'ta' ? 'APEDA கட்டாய ஏற்றுமதி விதிமுறை: கேமரா மூலம் பார் குறியீட்டை சரிபார்க்கவும். தடை செய்யப்பட்ட செயற்கை இரசாயனங்கள் அனுமதிக்கப்படாது.' : 'Mandatory APEDA export protocol: In-app camera barcode authentication required. Synthetic non-compliant chemicals are blocked.')
+                    : (state.language === 'ta' ? 'பயிர் வளர்ச்சிக்கு தேவையான நடவடிக்கை. மண் ஈரப்பதம் தொடர்ந்து கண்காணிக்கப்படுகிறது.' : 'Action required for stage development. Soil moisture baseline active.')}
+                </div>
+              </div>
+            </div>
+
+            <div style="width:100%; margin-top:8px; padding-top:10px; border-top:1px solid rgba(27, 77, 62, 0.15); display:flex; flex-direction:column; gap:8px;">
+              ${isDosingTask ? `
+                <button onclick="openTreatmentBarcodeModal('${farm.pesticide_fertilizer_dosing?.mixture || 'Bio-Neem NSKE 5%'}', 'Stem Borer & Leaf Folder Control', '${farm.pesticide_fertilizer_dosing?.dosage || '500 ml / Acre'}', '${farm.id}', '${activeTask.id}', '8901234567890')" class="agro-btn-primary" style="padding:10px 14px; font-size:12.5px; width:100%; font-weight:700;">
+                  ${t('btn_scan_barcode_dosing', '📷 Scan Barcode & Log Treatment (Mandatory Verification)')}
+                </button>
+              ` : `
+                <button onclick="openCameraModal('${farm.id}', '${activeTask.id}')" class="agro-btn-primary" style="padding:10px 14px; font-size:12.5px; width:100%; font-weight:700;">
+                  ${t('btn_done_camera', '✓ Done / Completed (Camera Proof)')}
+                </button>
+              `}
+              <div>
+                <button onclick="openRescheduleModal('${farm.id}', '${activeTask.id}')" class="agro-btn-secondary" style="padding:9px 12px; font-size:12px; font-weight:700; width:100%;">
+                  ${t('btn_reschedule', '⏳ Reschedule')}
+                </button>
+              </div>
+            </div>
+          </div>
+        ` : `
+          <!-- Celebration Card When All Tasks for Today are Done or Rescheduled -->
+          <div class="action-prompt-box" style="margin-top:14px; background:linear-gradient(135deg, var(--mint-soft) 0%, #FFFFFF 100%); border:1.5px solid var(--primary); padding:16px;">
+            <div style="display:flex; align-items:center; gap:12px; width:100%;">
+              <div class="prompt-icon" style="font-size:26px;">🎉</div>
+              <div style="flex:1;">
+                <div class="prompt-text" style="color:var(--primary); font-weight:800; font-size:14px;">
+                  ${state.language === 'ta' ? 'இன்றைய திட்டமிடப்பட்ட பணிகள் அனைத்தும் வெற்றிகரமாக முடிவடைந்தன!' : 'All scheduled tasks completed for today!'}
+                </div>
+                <div class="prompt-sub" style="font-size:11.5px; color:var(--slate); margin-top:2px;">
+                  ${state.language === 'ta' ? 'உங்கள் பயிர் பராமரிப்பு மற்றும் ஏற்றுமதி தணிக்கை தரவுகள் முழுமையாக புதுப்பிக்கப்பட்டுள்ளன.' : 'Cultivation milestones, moisture levels, and export traceability logs are fully up-to-date.'}
+                </div>
+              </div>
+              <span class="badge badge-forest" style="font-size:11px; padding:4px 10px;">✓ ${t('status_compliant', 'COMPLIANT')}</span>
+            </div>
+          </div>
+        `}
+
+        <!-- Harvest Countdown & Yield Forecast -->
+        <div style="margin-top:16px; background:var(--mint-soft); border:1px solid var(--mint-light); border-radius:14px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <span class="card-label" style="color:var(--primary);">${t('harvest_forecast', 'Harvest Forecast')}</span>
+            <div style="font-size:18px; font-weight:800; color:var(--ink); margin-top:2px;">
+              ${t('harvest_in_days', '⏳ Harvest in {days} Days', { days: farm.harvest_prediction?.days_remaining || 125 })}
+            </div>
+            <div style="font-size:11px; color:var(--slate);">
+              ${t('expected_harvest', 'Expected: {date}', { date: farm.harvest_prediction?.expected_harvest_date || '2027-01-12' })}
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px; font-weight:800; color:var(--primary);">
+              ${farm.harvest_prediction?.predicted_yield_tonnes || '24.5'} Tonnes
+            </div>
+            <div style="font-size:11px; font-weight:700; color:var(--slate);">
+              ${t('grade_a_export', 'Grade A Export')}: <strong>${farm.harvest_prediction?.grade_a_percentage || 75}%</strong> • ${t('mandi_domestic', 'Mandi')}: <strong>${farm.harvest_prediction?.grade_b_c_percentage || 25}%</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="openWeeklyProgressionModal('${farm.id}')" class="agro-btn-primary" style="font-size:12.5px; padding:10px 16px; flex:1; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+              <span>📅</span>
+              <span>${t('btn_progression_timeline', 'Open 8-Week Progression Timeline')}</span>
+            </button>
+            <button onclick="toggleInlineProgressionTimeline('${farm.id}')" class="agro-btn-outline" style="font-size:12px; padding:10px 14px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
+              <span id="inline-prog-arrow-${farm.id}">▼</span>
+              <span id="inline-prog-text-${farm.id}">${t('btn_expand_timeline', 'Expand Timeline')}</span>
+            </button>
+          </div>
+          <div id="inline-progression-container-${farm.id}" style="display:none; margin-top:8px; border:1.5px solid var(--primary); border-radius:14px; padding:14px; background:var(--mint-soft);"></div>
+        </div>
+      </div>
+
+    ` : `
+      <div class="agro-card" style="text-align:center; padding:40px;">
+        <p style="color:var(--slate); margin-bottom:14px;">${state.language === 'ta' ? 'பதிவுசெய்த நிலப்பரப்புகள் எதுவும் இல்லை.' : 'No land parcels registered yet.'}</p>
+        <p style="font-size:13px; color:var(--primary); font-weight:700;">${state.language === 'ta' ? 'முதல் நிலத்தை பதிவு செய்ய கீழே வலதுபுறத்தில் உள்ள (+) பொத்தானை தட்டவும்.' : 'Tap the floating (+) button at the bottom-right to register your first parcel.'}</p>
+      </div>
+    `}
+
+    ${farm ? `
+      
+      <!-- NEW PESTICIDE RECOMMENDATION & BUY PRODUCT FLOW -->
+      <div class="agro-card" style="margin-top:18px; margin-bottom:18px; border-left:5px solid #E53E3E; background:linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);">
+        <div class="agro-card-header" style="margin-bottom:12px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:20px;">🧪</span>
+              <div class="card-title" style="color:#C53030;">Today's Recommended Treatment</div>
+            </div>
+            <div style="font-size:11.5px; color:#E53E3E; margin-top:2px; font-weight:bold;">
+              Based on active crop stage: ${farm ? farm.current_stage || 'Flowering & Grain Filling' : 'Flowering'}
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:#FFF; border:1px solid #FED7D7; padding:16px; border-radius:12px;">
+            <h3 style="font-size:18px; font-weight:bold; color:#2D3748; margin:0 0 8px 0;">Trichoderma Viride (Bio-Fungicide)</h3>
+            <p style="font-size:14px; color:#4A5568; margin:0 0 16px 0;">Prevents root rot. Apply 5ml per liter of water via foliar spray.</p>
+            <button onclick="openProductPurchaseFlow()" style="width:100%; background:#E53E3E; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:16px; box-shadow: 0 4px 6px rgba(229,62,62,0.2);">Buy Product</button>
+          </div>
+        </div>
+      </div>
+      ` : ''}
+    `;
+  }
+
+
+
 function completeWeeklyTask(farmId, taskId) {
   if (!state.farmWeeklyState || !state.farmWeeklyState[farmId]) return;
   const w = state.farmWeeklyState[farmId];
