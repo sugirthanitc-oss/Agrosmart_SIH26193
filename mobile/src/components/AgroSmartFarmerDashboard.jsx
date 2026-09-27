@@ -46,8 +46,8 @@ export function AgroSmartFarmerDashboard({ user, token, isOffline }) {
   const [showLandModal, setShowLandModal] = useState(false);
   const [showWeeklyModal, setShowWeeklyModal] = useState(false);
   const [weeklyProgression, setWeeklyProgression] = useState(null);
-  const [showCameraModal, setShowCameraModal] = useState(false);
-  const [activeTaskIdForCamera, setActiveTaskIdForCamera] = useState(null);
+  
+  
   const [showSupplyPostModal, setShowSupplyPostModal] = useState(false);
 
   // Land Registration Form State
@@ -69,7 +69,7 @@ export function AgroSmartFarmerDashboard({ user, token, isOffline }) {
 
   // Direct Camera Stream Ref
   const videoRef = useRef(null);
-  const [cameraStreamActive, setCameraStreamActive] = useState(false);
+  
 
   useEffect(() => {
     loadDashboardData();
