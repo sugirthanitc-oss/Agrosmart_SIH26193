@@ -205,59 +205,61 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }) {
 
         {/* Body Content */}
         <div style={{ padding: '24px' }}>
-          {/* OPTION A: MANUAL ENTRY */}
+          {/* OPTION A: MANUAL ENTRY (CLEAN 2x2 GRID) */}
           {activeMode === 'manual' && (
-            <form onSubmit={handleManualSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
-                  PRODUCT NAME *
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g., Trichoderma Viride (Bio-Fungicide)"
-                  required
-                  value={manualForm.name}
-                  onChange={(e) => setManualForm({ ...manualForm, name: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: '10px',
-                    border: '1px solid #CBD5E1',
-                    fontSize: '14px',
-                    outline: 'none',
-                    backgroundColor: '#F8FAFC'
-                  }}
-                />
-              </div>
+            <form onSubmit={handleManualSubmit}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+                    PRODUCT NAME *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Trichoderma Viride Bio-Fungicide"
+                    required
+                    value={manualForm.name}
+                    onChange={(e) => setManualForm({ ...manualForm, name: e.target.value })}
+                    style={{
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      padding: '12px 14px',
+                      borderRadius: '8px',
+                      border: '1px solid #CBD5E1',
+                      fontSize: '13px',
+                      outline: 'none',
+                      backgroundColor: '#F8FAFC'
+                    }}
+                  />
+                </div>
 
-              <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
-                  CATEGORY *
-                </label>
-                <select
-                  value={manualForm.category}
-                  onChange={(e) => setManualForm({ ...manualForm, category: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: '10px',
-                    border: '1px solid #CBD5E1',
-                    fontSize: '14px',
-                    outline: 'none',
-                    backgroundColor: '#F8FAFC'
-                  }}
-                >
-                  <option value="Bio-Fungicide">Bio-Fungicide</option>
-                  <option value="NPK Chemical Fertilizer">NPK Chemical Fertilizer</option>
-                  <option value="Organic Botanical Pesticide">Organic Botanical Pesticide</option>
-                  <option value="Micro-Nutrient Spray">Micro-Nutrient Spray</option>
-                  <option value="Seed Treatment Solution">Seed Treatment Solution</option>
-                </select>
-              </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
+                    CATEGORY *
+                  </label>
+                  <select
+                    value={manualForm.category}
+                    onChange={(e) => setManualForm({ ...manualForm, category: e.target.value })}
+                    style={{
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      padding: '12px 14px',
+                      borderRadius: '8px',
+                      border: '1px solid #CBD5E1',
+                      fontSize: '13px',
+                      outline: 'none',
+                      backgroundColor: '#F8FAFC'
+                    }}
+                  >
+                    <option value="Bio-Fungicide">Bio-Fungicide</option>
+                    <option value="NPK Chemical Fertilizer">NPK Chemical Fertilizer</option>
+                    <option value="Organic Botanical Pesticide">Organic Botanical Pesticide</option>
+                    <option value="Micro-Nutrient Spray">Micro-Nutrient Spray</option>
+                    <option value="Seed Treatment Solution">Seed Treatment Solution</option>
+                  </select>
+                </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
                     STOCK QUANTITY (UNITS) *
                   </label>
                   <input
@@ -269,18 +271,19 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }) {
                     onChange={(e) => setManualForm({ ...manualForm, stock: e.target.value })}
                     style={{
                       width: '100%',
+                      boxSizing: 'border-box',
                       padding: '12px 14px',
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       border: '1px solid #CBD5E1',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       outline: 'none',
                       backgroundColor: '#F8FAFC'
                     }}
                   />
                 </div>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase' }}>
                     PRICE (₹) *
                   </label>
                   <input
@@ -293,10 +296,11 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }) {
                     onChange={(e) => setManualForm({ ...manualForm, price: e.target.value })}
                     style={{
                       width: '100%',
+                      boxSizing: 'border-box',
                       padding: '12px 14px',
-                      borderRadius: '10px',
+                      borderRadius: '8px',
                       border: '1px solid #CBD5E1',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       outline: 'none',
                       backgroundColor: '#F8FAFC'
                     }}
@@ -307,7 +311,7 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }) {
               <button
                 type="submit"
                 style={{
-                  marginTop: '8px',
+                  width: '100%',
                   backgroundColor: '#2F855A',
                   color: '#FFFFFF',
                   padding: '14px',
