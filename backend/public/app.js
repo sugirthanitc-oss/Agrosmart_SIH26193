@@ -1428,6 +1428,11 @@ function renderRoleSidebar(role) {
           <span style="font-size:16px;">✏️</span>
           <span>${t('nav_edit_profile', 'Edit Profile')}</span>
         </a>
+        <div class="nav-section-title" style="margin-top:14px;">Session</div>
+        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
+          <span style="font-size:16px;">🚪</span>
+          <span>Logout</span>
+        </a>
       `;
     } else if (role === 'agent') {
       container.innerHTML = `
@@ -1448,6 +1453,11 @@ function renderRoleSidebar(role) {
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
           <span style="font-size:16px;">✏️</span>
           <span>${t('nav_edit_profile', 'Edit Profile')}</span>
+        </a>
+        <div class="nav-section-title" style="margin-top:14px;">Session</div>
+        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
+          <span style="font-size:16px;">🚪</span>
+          <span>Logout</span>
         </a>
       `;
     } else if (role === 'shop_owner' || role === 'shop') {
@@ -1474,6 +1484,11 @@ function renderRoleSidebar(role) {
           <span style="font-size:16px;">👤</span>
           <span>Edit Profile</span>
         </a>
+        <div class="nav-section-title" style="margin-top:14px;">Session</div>
+        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
+          <span style="font-size:16px;">🚪</span>
+          <span>Logout</span>
+        </a>
       `;
     } else if (role === 'exporter') {
       container.innerHTML = `
@@ -1494,6 +1509,11 @@ function renderRoleSidebar(role) {
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
           <span style="font-size:16px;">👤</span>
           <span>Edit Profile</span>
+        </a>
+        <div class="nav-section-title" style="margin-top:14px;">Session</div>
+        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
+          <span style="font-size:16px;">🚪</span>
+          <span>Logout</span>
         </a>
       `;
     }
@@ -1689,6 +1709,14 @@ function updateSidebarProfile() {
   const roleEl = document.getElementById('sidebar-user-role');
   const authBtnLabel = document.getElementById('top-auth-btn-label');
 
+  if (!state.user) {
+    if (avatar) avatar.textContent = '?';
+    if (name) name.textContent = 'Guest User';
+    if (roleEl) roleEl.textContent = 'Logged Out';
+    if (authBtnLabel) authBtnLabel.textContent = 'Sign In';
+    return;
+  }
+
   if (avatar) avatar.textContent = (state.user.name || 'A')[0];
   if (name) name.textContent = state.user.name || 'User';
   const roleName = t(`role_${state.currentRole}`, state.currentRole.toUpperCase());
@@ -1708,7 +1736,25 @@ async function renderApp() {
     
     const fabLand = document.getElementById('fab-add-land');
     if (fabLand) {
-      fabLand.style.display = (state.currentRole === 'farmer' && state.currentTab === 'menu') ? 'flex' : 'none';
+      fabLand.style.display = (state.user && state.currentRole === 'farmer' && state.currentTab === 'menu') ? 'flex' : 'none';
+    }
+
+    if (!state.user) {
+      appBody.innerHTML = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:65vh; text-align:center; padding:40px 20px;">
+          <div style="width:76px; height:76px; background:#E8F5E9; border-radius:24px; display:flex; align-items:center; justify-content:center; font-size:38px; margin-bottom:20px; box-shadow:0 8px 24px rgba(47,133,90,0.15);">
+            🌾
+          </div>
+          <h2 style="font-size:24px; font-weight:900; color:#1E293B; margin:0 0 8px 0;">Signed Out of AgriSmart</h2>
+          <p style="font-size:14px; color:#64748B; max-width:440px; margin:0 0 24px 0; line-height:1.5;">
+            Your operational session has been securely closed. Choose your role to log back into your workspace.
+          </p>
+          <button onclick="openAuthModal()" style="background:linear-gradient(135deg, #1B4D3E 0%, #2F855A 100%); color:#FFFFFF; padding:12px 28px; border-radius:12px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 14px rgba(27,77,62,0.35);">
+            🔐 Sign In / Select Role
+          </button>
+        </div>
+      `;
+      return;
     }
 
     // === ROLE SPECIFIC DISPATCHING ===
@@ -2658,8 +2704,116 @@ function handleConfirmLockAssignments() {
 
 
 // =========================================================================
-// SHOP MODULE: CLEAN LIVE INVENTORY, FAB (+), SMART EXTRACT & ORDER FLOW
+// SHOP MODULE: PRE-FILLED LIVE INVENTORY, ACTIVE ORDERS & ORDER HISTORY
 // =========================================================================
+
+// Initialize realistic agricultural mock data for Fertilizer & Pesticide Shop module
+if (!window.SHOP_LIVE_INVENTORY || window.SHOP_LIVE_INVENTORY.length === 0) {
+  window.SHOP_LIVE_INVENTORY = [
+    {
+      id: 'PROD-101',
+      name: 'DAP Fertilizer (50kg)',
+      category: 'Fertilizer',
+      stock: 200,
+      price: 1350
+    },
+    {
+      id: 'PROD-102',
+      name: 'Neem Oil Extract 10000 PPM',
+      category: 'Bio-Pesticide',
+      stock: 78,
+      price: 220
+    },
+    {
+      id: 'PROD-103',
+      name: 'Trichoderma Viride Bio-Fungicide',
+      category: 'Bio-Fungicide',
+      stock: 45,
+      price: 450
+    },
+    {
+      id: 'PROD-104',
+      name: 'NPK 19:19:19 Water Soluble',
+      category: 'Water Soluble',
+      stock: 120,
+      price: 950
+    },
+    {
+      id: 'PROD-105',
+      name: 'Pseudomonas Fluorescens (1L)',
+      category: 'Bio-Pesticide',
+      stock: 60,
+      price: 380
+    }
+  ];
+}
+
+if (!window.SHOP_ACTIVE_ORDERS || window.SHOP_ACTIVE_ORDERS.length === 0) {
+  window.SHOP_ACTIVE_ORDERS = [
+    {
+      id: 'ORD-101',
+      token: 'TKN-8492 (Pending Pickup)',
+      time: 'Today, 09:30 AM',
+      farmer: 'Farmer Arumugam (TN-FARM-8492)',
+      product: '5 bags of DAP (50kg)',
+      qty: 5,
+      total: 6750,
+      status: 'Pending/Awaiting Pickup'
+    },
+    {
+      id: 'ORD-102',
+      token: 'TKN-2914 (Processing)',
+      time: 'Today, 11:15 AM',
+      farmer: 'Farmer Kavitha (TN-FARM-2914)',
+      product: '10 units Neem Oil Extract 10000 PPM',
+      qty: 10,
+      total: 2200,
+      status: 'Processing'
+    },
+    {
+      id: 'ORD-103',
+      token: 'TKN-5519 (Awaiting Verification)',
+      time: 'Today, 01:45 PM',
+      farmer: 'Farmer Muthukumar (TN-FARM-5519)',
+      product: '4 units Trichoderma Viride Bio-Fungicide',
+      qty: 4,
+      total: 1800,
+      status: 'Pending/Awaiting Pickup'
+    }
+  ];
+}
+
+if (!window.SHOP_COMPLETED_ORDERS || window.SHOP_COMPLETED_ORDERS.length === 0) {
+  window.SHOP_COMPLETED_ORDERS = [
+    {
+      id: 'ORD-089',
+      farmer: 'Farmer Senthil (TN-FARM-1102)',
+      product: '2 bags Urea Granular 46%',
+      qty: 2,
+      total: 536,
+      payment: 'Completed / Delivered (Cash at Store)',
+      date: 'Sept 25, 2026'
+    },
+    {
+      id: 'ORD-088',
+      farmer: 'Farmer Selvaraj (TN-FARM-3049)',
+      product: '3 bags NPK 19:19:19 Water Soluble',
+      qty: 3,
+      total: 2850,
+      payment: 'Completed / Delivered (UPI Token)',
+      date: 'Sept 24, 2026'
+    },
+    {
+      id: 'ORD-087',
+      farmer: 'Farmer Rajeshwari (TN-FARM-4401)',
+      product: '4 units Pseudomonas Fluorescens (1L)',
+      qty: 4,
+      total: 1520,
+      payment: 'Completed / Delivered (Direct Benefit Token)',
+      date: 'Sept 22, 2026'
+    }
+  ];
+}
 
 function renderFertilizerShopDashboard(container) {
   const user = state.user || {};
@@ -2723,6 +2877,7 @@ function renderShopOrdersView(container) {
               <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
                 <span style="font-size:12px; font-weight:800; color:#D97706; background:#FEF3C7; padding:3px 8px; border-radius:6px;">${order.token}</span>
                 <span style="font-size:12px; color:#64748B;">${order.time}</span>
+                <span style="font-size:11px; font-weight:700; color:#B45309; background:#FFFBEB; border:1px solid #FDE68A; padding:2px 8px; border-radius:4px;">Status: ${order.status || 'Pending/Awaiting Pickup'}</span>
               </div>
               <h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:6px 0 2px 0;">${order.farmer}</h3>
               <div style="font-size:13px; color:#475569;">${order.product} &bull; Qty: <strong>${order.qty}</strong></div>
@@ -6917,6 +7072,87 @@ let selectedAuthRole = 'farmer';
 // =========================================================================
 
 let authRegistrationStep = 1; // 1: Role Selection Cards, 2: Role-Specific Sign Up Form
+
+
+// =========================================================================
+// GLOBAL LOGOUT FLOW & COMPLETE STATE RESET
+// =========================================================================
+
+async function handleLogout() {
+  // 1. Clear session and user authentication state completely
+  state.user = null;
+  state.token = '';
+  state.currentRole = 'farmer';
+  state.currentTab = 'menu';
+  state.farms = [];
+  state.activeFarm = null;
+  state.activities = [];
+  state.agentFarms = [];
+  state.exporterConsignments = [];
+
+  // 2. Clear all authentication storages
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('agrosmart_token');
+      localStorage.removeItem('agrosmart_user');
+      localStorage.removeItem('agrosmart_role');
+      localStorage.removeItem('activeRole');
+      localStorage.removeItem('userSession');
+    }
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.clear();
+    }
+  } catch (e) {
+    console.warn('Storage cleanup:', e);
+  }
+
+  // 3. Reset UI badges, topbar pills, and mobile navigation
+  updateSidebarProfile();
+  document.querySelectorAll('.role-pill-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.mobile-nav-btn').forEach(el => el.classList.remove('active'));
+
+  // 4. Reset sidebar navigation to logged-out state
+  const sidebarNav = document.getElementById('sidebar-nav-container');
+  if (sidebarNav) {
+    sidebarNav.innerHTML = `
+      <div class="nav-section-title">Session Closed</div>
+      <a href="javascript:void(0)" class="nav-item active" onclick="openAuthModal()">
+        <span style="font-size:16px;">🔐</span>
+        <span>Sign In to Access</span>
+      </a>
+    `;
+  }
+
+  // 5. Render clear signed-out screen in main content area
+  const appBody = document.getElementById('app-body');
+  if (appBody) {
+    const fabLand = document.getElementById('fab-add-land');
+    if (fabLand) fabLand.style.display = 'none';
+    appBody.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:65vh; text-align:center; padding:40px 20px;">
+        <div style="width:76px; height:76px; background:#E8F5E9; border-radius:24px; display:flex; align-items:center; justify-content:center; font-size:38px; margin-bottom:20px; box-shadow:0 8px 24px rgba(47,133,90,0.15);">
+          🌾
+        </div>
+        <h2 style="font-size:24px; font-weight:900; color:#1E293B; margin:0 0 8px 0;">Signed Out of AgriSmart</h2>
+        <p style="font-size:14px; color:#64748B; max-width:440px; margin:0 0 24px 0; line-height:1.5;">
+          Your operational session has been securely closed. Choose your role to log back into your workspace.
+        </p>
+        <button onclick="openAuthModal()" style="background:linear-gradient(135deg, #1B4D3E 0%, #2F855A 100%); color:#FFFFFF; padding:12px 28px; border-radius:12px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 14px rgba(27,77,62,0.35);">
+          🔐 Sign In / Select Role
+        </button>
+      </div>
+    `;
+  }
+
+  // 6. Reset Main Authentication Portal state to default
+  activeAuthTab = 'login';
+  authRegistrationStep = 1;
+  selectedAuthRole = 'farmer';
+
+  // 7. Immediately redirect / launch the Main Authentication Portal
+  openAuthModal();
+}
+window.handleLogout = handleLogout;
 
 function openAuthModal() {
   selectedAuthRole = state.currentRole === 'shop' ? 'shop_owner' : (state.currentRole || 'farmer');
