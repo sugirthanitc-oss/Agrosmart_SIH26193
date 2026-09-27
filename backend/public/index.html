@@ -47,27 +47,23 @@
     <div class="main-workspace">
       <!-- Top System Status Bar -->
       <header class="top-system-bar">
-        <div class="top-bar-left"></div>
-
-        <!-- Role Switcher Pills -->
-        <div class="role-pills">
-          <button class="role-pill-btn active" data-role="farmer" onclick="switchRole('farmer')">🌾 <span id="role-label-farmer" data-i18n="role_farmer">Farmer</span></button>
-          <button class="role-pill-btn" data-role="agent" onclick="switchRole('agent')">🔍 <span id="role-label-agent" data-i18n="role_agent">Agent</span></button>
-          <button class="role-pill-btn" data-role="exporter" onclick="switchRole('exporter')">🚢 <span id="role-label-exporter" data-i18n="role_exporter">Exporter</span></button>
-          <button class="role-pill-btn" data-role="shop_owner" onclick="switchRole('shop_owner')">🏪 <span id="role-label-shop_owner" data-i18n="role_shop">Shop</span></button>
+        <div class="top-bar-left">
+          <span style="font-size:12px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:6px;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22C55E; box-shadow:0 0 8px #22C55E;"></span>
+            <span>AgriSmart Live Operations</span>
+          </span>
         </div>
 
-        <div class="top-bar-right" style="display:flex; align-items:center; gap:8px;">
+        <div class="top-bar-right" style="display:flex; align-items:center; gap:10px;">
           <!-- Global Language Switcher -->
           <button id="global-lang-switcher" class="lang-toggle-btn" onclick="toggleLanguage()" title="Switch Language / மொழியை மாற்றுக">
             🌐 <span id="current-lang-label">தமிழ் (TA)</span>
           </button>
-          <button onclick="openAuthModal()" class="agro-btn-secondary" style="font-size:11px; padding:6px 12px;">
-            👤 <span id="top-auth-btn-label" data-i18n="switch_account">Switch Account</span>
-          </button>
-          <button onclick="handleLogout()" class="agro-btn-logout" title="Sign Out of AgriSmart" style="font-size:11px; padding:6px 12px; background:#FEF2F2; color:#DC2626; border:1px solid #FECACA; border-radius:8px; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:5px; transition:all 0.2s;" onmouseenter="this.style.background='#FEE2E2'" onmouseleave="this.style.background='#FEF2F2'">
-            🚪 <span>Logout</span>
-          </button>
+          <!-- User Profile Name & Role Block -->
+          <div id="top-user-profile-block" onclick="openAuthModal()" style="display:flex; align-items:center; gap:8px; background:rgba(27,77,62,0.06); border:1px solid rgba(27,77,62,0.15); padding:6px 14px; border-radius:10px; cursor:pointer; transition:all 0.2s;" title="Switch Account / Auth Portal">
+            <span style="font-size:14px;">👤</span>
+            <span id="top-auth-btn-label" style="font-size:12px; font-weight:800; color:var(--primary);">Arumugam Sundaram (Farmer)</span>
+          </div>
         </div>
       </header>
 

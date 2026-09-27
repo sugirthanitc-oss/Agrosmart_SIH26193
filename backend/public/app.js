@@ -3315,6 +3315,10 @@ function renderFarmerView(container) {
           <span class="card-label" style="font-size:13px; font-weight:800; color:var(--primary);">${state.language === 'ta' ? 'நிலங்கள்' : 'LAND'} (${state.farms.length})</span>
           <div style="font-size:11px; color:var(--slate); margin-top:2px;">${state.language === 'ta' ? 'மேற்பார்வையிட ஒரு நிலத்தைத் தேர்ந்தெடுக்கவும்' : 'Select a land parcel to manage cultivation & tasks'}</div>
         </div>
+        <button type="button" onclick="openLandModal()" class="agro-btn-primary" style="padding:6px 14px; font-size:12px; font-weight:800; display:inline-flex; align-items:center; gap:6px; border-radius:8px; cursor:pointer;">
+          <span>+</span>
+          <span>${t('btn_add_land', 'Add Land')}</span>
+        </button>
       </div>
 
       <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;">
@@ -3593,6 +3597,410 @@ function selectFarm(farmId) {
 }
 
 // --- Claim / Map Land Parcel via Unique Code ---
+
+// =========================================================================
+// ADVANCED "ADD LAND" MODAL WITH AI SOIL CROP SUGGESTION & OVERRIDE FLOW
+// =========================================================================
+
+let currentLandModalCrop = 'Bhavani High-Yield Turmeric (PTS-10)';
+let currentGpsLocation = '';
+
+function openLandModal() {
+  currentLandModalCrop = 'Bhavani High-Yield Turmeric (PTS-10)';
+  currentGpsLocation = '';
+
+  const existing = document.getElementById('add-land-modal');
+  if (existing) existing.remove();
+
+  const modalHtml = `
+    <div class="modal-backdrop" id="add-land-modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:99999; display:flex; align-items:center; justify-content:center; padding:16px; overflow-y:auto;">
+      <div style="background:#FFFFFF; border-radius:22px; width:100%; max-width:580px; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 60px -15px rgba(27,77,62,0.4); border:1px solid #CBD5E1; margin:auto;">
+        
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg, #1B4D3E 0%, #236B51 50%, #2F855A 100%); color:#FFFFFF; padding:20px 24px; position:relative; flex-shrink:0;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:40px; height:40px; background:rgba(255,255,255,0.18); border:1.5px solid rgba(255,255,255,0.4); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px;">
+                🌱
+              </div>
+              <div>
+                <div style="font-size:18px; font-weight:900; letter-spacing:0.3px; color:#FFFFFF;">Register New Land Parcel</div>
+                <div style="font-size:11px; color:#C6F6D5; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; margin-top:2px;">
+                  AI Soil Diagnostics & GPS Boundary Verification
+                </div>
+              </div>
+            </div>
+            <button onclick="closeLandModal()" style="background:rgba(255,255,255,0.15); border:none; color:#FFFFFF; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; transition:background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.3)'" onmouseleave="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
+          </div>
+        </div>
+
+        <!-- Form Body -->
+        <form onsubmit="handleCreateLandSubmit(event)" style="padding:22px 26px; overflow-y:auto; flex-grow:1;">
+          
+          <!-- 1. Land Name -->
+          <div style="margin-bottom:14px;">
+            <label style="display:block; font-size:11px; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">
+              LAND NAME *
+            </label>
+            <input type="text" id="new-land-name" required placeholder="e.g. Amaravathi Basin Plot D" value="Kaveri Basin South Plot" style="width:100%; box-sizing:border-box; padding:11px 14px; border-radius:10px; border:1px solid #CBD5E1; font-size:13.5px; font-weight:600; outline:none; background:#F8FAFC;" onfocus="this.style.borderColor='#2F855A'; this.style.background='#FFFFFF';" onblur="this.style.borderColor='#CBD5E1';" />
+          </div>
+
+          <!-- 2. Area Size & Unit Selection -->
+          <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:14px;">
+            <div>
+              <label style="display:block; font-size:11px; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">
+                AREA SIZE *
+              </label>
+              <input type="number" step="0.1" id="new-land-size" required min="0.1" value="3.5" style="width:100%; box-sizing:border-box; padding:11px 14px; border-radius:10px; border:1px solid #CBD5E1; font-size:13.5px; font-weight:600; outline:none; background:#F8FAFC;" onfocus="this.style.borderColor='#2F855A'; this.style.background='#FFFFFF';" onblur="this.style.borderColor='#CBD5E1';" />
+            </div>
+            <div>
+              <label style="display:block; font-size:11px; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">
+                UNIT *
+              </label>
+              <select id="new-land-unit" style="width:100%; box-sizing:border-box; padding:11px 10px; border-radius:10px; border:1px solid #CBD5E1; font-size:13.5px; font-weight:700; outline:none; background:#F8FAFC; color:#1E293B;">
+                <option value="Acres" selected>Acres</option>
+                <option value="Hectares">Hectares</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 3. District -->
+          <div style="margin-bottom:14px;">
+            <label style="display:block; font-size:11px; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">
+              DISTRICT / AGRI-ZONE *
+            </label>
+            <select id="new-land-district" style="width:100%; box-sizing:border-box; padding:11px 14px; border-radius:10px; border:1px solid #CBD5E1; font-size:13.5px; font-weight:700; outline:none; background:#F8FAFC; color:#1E293B;">
+              <option value="Thanjavur Delta Basin" selected>Thanjavur Delta Basin</option>
+              <option value="Erode Agro-Industrial Corridor">Erode Agro-Industrial Corridor</option>
+              <option value="Coimbatore Kongu Valley">Coimbatore Kongu Valley</option>
+              <option value="Salem Hill Catchment">Salem Hill Catchment</option>
+              <option value="Madurai Vaigai Plains">Madurai Vaigai Plains</option>
+              <option value="Tiruchirappalli River Belt">Tiruchirappalli River Belt</option>
+              <option value="Dindigul Semi-Arid Ridge">Dindigul Semi-Arid Ridge</option>
+              <option value="Theni Spice Foothills">Theni Spice Foothills</option>
+            </select>
+          </div>
+
+          <!-- 4. Auto GPS Location -->
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:12px 14px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <div>
+                <span style="font-size:11px; font-weight:800; color:#334155; text-transform:uppercase;">AUTO GPS BOUNDARY LOCK</span>
+                <div style="font-size:10px; color:#64748B;">Satellite geolocation for APEDA export certification</div>
+              </div>
+              <button type="button" onclick="fetchMockGpsLocation()" id="btn-fetch-gps" style="background:#2F855A; color:#FFFFFF; border:none; padding:7px 12px; border-radius:8px; font-size:11.5px; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:5px; transition:all 0.2s;">
+                📍 Fetch Current Location
+              </button>
+            </div>
+            <div id="gps-status-box" style="font-size:12px; color:#64748B; background:#FFFFFF; border:1px dashed #CBD5E1; border-radius:8px; padding:8px 12px; display:flex; align-items:center; gap:8px;">
+              <span>🌐</span>
+              <span id="gps-status-text">Click "Fetch Current Location" to lock satellite coordinates</span>
+            </div>
+            <input type="hidden" id="new-land-gps" value="" />
+          </div>
+
+          <!-- 5. Soil Test Report Upload -->
+          <div style="margin-bottom:16px;">
+            <label style="display:block; font-size:11px; font-weight:800; color:#334155; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">
+              SOIL TEST REPORT (AI DIAGNOSTIC SCAN)
+            </label>
+            
+            <div id="soil-drop-area" style="border:2px dashed #94A3B8; background:#F8FAFC; border-radius:14px; padding:16px; text-align:center; cursor:pointer; transition:all 0.2s;" onclick="document.getElementById('soil-report-file').click()" ondragover="event.preventDefault(); this.style.borderColor='#2F855A'; this.style.backgroundColor='#F0FDF4';" ondragleave="this.style.borderColor='#94A3B8'; this.style.backgroundColor='#F8FAFC';" ondrop="handleSoilReportDrop(event)">
+              <div style="font-size:26px; margin-bottom:6px;">📄</div>
+              <div style="font-size:13px; font-weight:800; color:#1E293B;">
+                Drag & Drop Soil Lab Test Report or <span style="color:#2F855A; text-decoration:underline;">Browse</span>
+              </div>
+              <div style="font-size:11px; color:#64748B; margin-top:2px;">
+                PDF, JPG, PNG or CSV (Soil Health Card format)
+              </div>
+              <input type="file" id="soil-report-file" style="display:none;" accept=".pdf,.png,.jpg,.jpeg,.csv" onchange="handleSoilReportUpload(event)" />
+            </div>
+
+            <!-- Instant Sample Button -->
+            <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+              <button type="button" onclick="triggerAiSoilScan('Thanjavur_Alluvial_Lab_Report.pdf')" style="background:none; border:none; color:#2F855A; font-size:11px; font-weight:800; cursor:pointer; text-decoration:underline;">
+                ⚡ Load Sample Soil Lab Report (Fast Test)
+              </button>
+            </div>
+
+            <!-- AI Scanning State (Hidden by default) -->
+            <div id="ai-scanning-box" style="display:none; background:#F0FDF4; border:1px solid #86EFAC; border-radius:12px; padding:14px; margin-top:10px; text-align:center;">
+              <div style="font-size:24px; margin-bottom:6px;">🧪</div>
+              <div style="font-size:13px; font-weight:800; color:#166534;">AI Scanning Soil Parameters...</div>
+              <div style="font-size:11px; color:#15803D; margin-top:2px;">Analyzing NPK balance, organic carbon, pH (6.8), and micronutrient density</div>
+            </div>
+
+            <!-- AI Suggestion Card (Hidden by default) -->
+            <div id="ai-suggestion-card" style="display:none; background:#F0FDF4; border:2px solid #22C55E; border-radius:14px; padding:16px; margin-top:12px; box-shadow:0 4px 12px rgba(34,197,94,0.15);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:3px 10px; border-radius:12px;">
+                  ✨ AI RECOMMENDATION
+                </span>
+                <span style="font-size:11px; font-weight:700; color:#15803D;">Match Confidence: 98.2%</span>
+              </div>
+
+              <div style="font-size:13.5px; font-weight:800; color:#14532D; margin-bottom:10px; line-height:1.4;">
+                🌱 Based on soil pH (6.8) and nutrients, <u>Turmeric</u> is highly recommended for optimal yield and export clearance.
+              </div>
+
+              <!-- Metrics Grid -->
+              <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-bottom:12px; font-size:10.5px;">
+                <div style="background:#FFF; padding:6px; border-radius:6px; text-align:center; border:1px solid #BBF7D0;">
+                  <div style="color:#64748B;">Soil pH</div>
+                  <div style="font-weight:800; color:#166534;">6.8 (Optimal)</div>
+                </div>
+                <div style="background:#FFF; padding:6px; border-radius:6px; text-align:center; border:1px solid #BBF7D0;">
+                  <div style="color:#64748B;">Nitrogen (N)</div>
+                  <div style="font-weight:800; color:#166534;">280 kg/ha</div>
+                </div>
+                <div style="background:#FFF; padding:6px; border-radius:6px; text-align:center; border:1px solid #BBF7D0;">
+                  <div style="color:#64748B;">Phosphorus</div>
+                  <div style="font-weight:800; color:#166534;">24 kg/ha</div>
+                </div>
+                <div style="background:#FFF; padding:6px; border-radius:6px; text-align:center; border:1px solid #BBF7D0;">
+                  <div style="color:#64748B;">Potassium (K)</div>
+                  <div style="font-weight:800; color:#166534;">310 kg/ha</div>
+                </div>
+              </div>
+
+              <!-- Action Choices: Accept vs My Own Choice -->
+              <div style="display:flex; gap:10px;">
+                <button type="button" onclick="acceptAiCropSuggestion('Bhavani High-Yield Turmeric (PTS-10)')" id="btn-accept-ai" style="flex:1; background:#2F855A; color:#FFF; border:none; padding:9px 12px; border-radius:8px; font-weight:800; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(47,133,90,0.3);">
+                  ✓ Accept AI Suggestion
+                </button>
+                <button type="button" onclick="showManualCropDropdown()" id="btn-override-crop" style="background:#FFFFFF; color:#334155; border:1px solid #CBD5E1; padding:9px 12px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer;">
+                  ✏️ My Own Choice
+                </button>
+              </div>
+
+              <!-- Manual override dropdown -->
+              <div id="manual-crop-container" style="display:none; margin-top:12px; padding-top:12px; border-top:1px dashed #CBD5E1;">
+                <label style="display:block; font-size:10.5px; font-weight:800; color:#475569; margin-bottom:4px; text-transform:uppercase;">
+                  SELECT PREFERRED CROP:
+                </label>
+                <select id="modal-override-crop-select" onchange="selectManualCrop(this.value)" style="width:100%; padding:9px 12px; border-radius:8px; border:1.5px solid #2F855A; font-size:13px; font-weight:700; background:#FFF; color:#1E293B;">
+                  <option value="Bhavani High-Yield Turmeric (PTS-10)">Bhavani High-Yield Turmeric (PTS-10)</option>
+                  <option value="Ponni Rice / Sona Masoori Paddy">Ponni Rice / Sona Masoori Paddy</option>
+                  <option value="Bt Cotton (RCH-2 Micro-Ginned)">Bt Cotton (RCH-2 Micro-Ginned)</option>
+                  <option value="Robusta Export Banana (G-9)">Robusta Export Banana (G-9)</option>
+                  <option value="Co-0238 High-Recovery Sugarcane">Co-0238 High-Recovery Sugarcane</option>
+                  <option value="Hybrid Maize / Corn (NK-6240)">Hybrid Maize / Corn (NK-6240)</option>
+                </select>
+              </div>
+
+              <!-- Active Chosen Crop Badge -->
+              <div style="margin-top:10px; font-size:11.5px; font-weight:800; color:#166534; display:flex; align-items:center; gap:6px;">
+                <span>Selected Crop for Dashboard:</span>
+                <span id="display-selected-crop" style="background:#DCFCE7; color:#166534; padding:2px 8px; border-radius:6px; border:1px solid #86EFAC;">
+                  Bhavani High-Yield Turmeric (PTS-10)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" style="width:100%; background:linear-gradient(135deg, #1B4D3E 0%, #2F855A 100%); color:#FFFFFF; padding:13px; border-radius:12px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 14px rgba(27,77,62,0.35); transition:all 0.2s;">
+            🚀 Register Land & Initialize Crop Dashboard
+          </button>
+        </form>
+
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeLandModal() {
+  const m = document.getElementById('add-land-modal');
+  if (m) m.remove();
+}
+
+function fetchMockGpsLocation() {
+  const statusBox = document.getElementById('gps-status-box');
+  const statusText = document.getElementById('gps-status-text');
+  const hiddenGps = document.getElementById('new-land-gps');
+  const btn = document.getElementById('btn-fetch-gps');
+
+  if (btn) btn.innerHTML = '⏳ Pinning GPS...';
+  if (statusText) statusText.textContent = 'Querying satellite constellation (NavIC / GLONASS)...';
+
+  setTimeout(() => {
+    currentGpsLocation = '10.7874° N, 79.1382° E';
+    if (hiddenGps) hiddenGps.value = currentGpsLocation;
+    if (statusBox) {
+      statusBox.style.background = '#F0FDF4';
+      statusBox.style.borderColor = '#86EFAC';
+      statusBox.innerHTML = `
+        <span style="font-size:14px;">📍</span>
+        <strong style="color:#166534;">Pinned: 10.7874° N, 79.1382° E (Delta Agro-Zone, ±2.8m precision)</strong>
+      `;
+    }
+    if (btn) {
+      btn.innerHTML = '✓ GPS Locked';
+      btn.style.background = '#15803D';
+    }
+  }, 400);
+}
+
+function handleSoilReportDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer?.files?.[0];
+  if (file) {
+    triggerAiSoilScan(file.name);
+  } else {
+    triggerAiSoilScan('Soil_Health_Card_Thanjavur.pdf');
+  }
+}
+
+function handleSoilReportUpload(e) {
+  const file = e.target.files?.[0];
+  if (file) {
+    triggerAiSoilScan(file.name);
+  }
+}
+
+function triggerAiSoilScan(fileName) {
+  const scanningBox = document.getElementById('ai-scanning-box');
+  const dropArea = document.getElementById('soil-drop-area');
+  const suggestionCard = document.getElementById('ai-suggestion-card');
+
+  if (dropArea) {
+    dropArea.innerHTML = `
+      <div style="font-size:22px;">📄</div>
+      <div style="font-size:12.5px; font-weight:800; color:#1E293B;">${fileName || 'Soil_Test_Report.pdf'}</div>
+      <div style="font-size:11px; color:#22C55E; font-weight:700;">✓ Document Uploaded Successfully</div>
+    `;
+    dropArea.style.borderColor = '#22C55E';
+    dropArea.style.background = '#F0FDF4';
+  }
+
+  if (scanningBox) scanningBox.style.display = 'block';
+  if (suggestionCard) suggestionCard.style.display = 'none';
+
+  setTimeout(() => {
+    if (scanningBox) scanningBox.style.display = 'none';
+    if (suggestionCard) {
+      suggestionCard.style.display = 'block';
+      currentLandModalCrop = 'Bhavani High-Yield Turmeric (PTS-10)';
+      const displayCrop = document.getElementById('display-selected-crop');
+      if (displayCrop) displayCrop.textContent = currentLandModalCrop;
+    }
+  }, 2000);
+}
+
+function acceptAiCropSuggestion(cropName) {
+  currentLandModalCrop = cropName || 'Bhavani High-Yield Turmeric (PTS-10)';
+  const displayCrop = document.getElementById('display-selected-crop');
+  if (displayCrop) displayCrop.textContent = currentLandModalCrop;
+
+  const btnAccept = document.getElementById('btn-accept-ai');
+  if (btnAccept) {
+    btnAccept.style.background = '#15803D';
+    btnAccept.innerHTML = '✓ AI Suggestion Accepted!';
+  }
+  const manualContainer = document.getElementById('manual-crop-container');
+  if (manualContainer) manualContainer.style.display = 'none';
+}
+
+function showManualCropDropdown() {
+  const manualContainer = document.getElementById('manual-crop-container');
+  if (manualContainer) {
+    manualContainer.style.display = 'block';
+    const sel = document.getElementById('modal-override-crop-select');
+    if (sel) {
+      currentLandModalCrop = sel.value;
+      const displayCrop = document.getElementById('display-selected-crop');
+      if (displayCrop) displayCrop.textContent = currentLandModalCrop;
+    }
+  }
+}
+
+function selectManualCrop(cropName) {
+  currentLandModalCrop = cropName;
+  const displayCrop = document.getElementById('display-selected-crop');
+  if (displayCrop) displayCrop.textContent = cropName;
+
+  const btnAccept = document.getElementById('btn-accept-ai');
+  if (btnAccept) {
+    btnAccept.style.background = '#2F855A';
+    btnAccept.innerHTML = '✓ Accept AI Suggestion';
+  }
+}
+
+function handleCreateLandSubmit(e) {
+  e.preventDefault();
+
+  const landName = document.getElementById('new-land-name')?.value.trim() || 'New Land Parcel';
+  const sizeVal = parseFloat(document.getElementById('new-land-size')?.value || '3.5');
+  const unit = document.getElementById('new-land-unit')?.value || 'Acres';
+  const district = document.getElementById('new-land-district')?.value || 'Thanjavur Delta Basin';
+  const gps = currentGpsLocation || '10.7874° N, 79.1382° E';
+
+  const chosenCrop = currentLandModalCrop || 'Bhavani High-Yield Turmeric (PTS-10)';
+  const isTurmeric = chosenCrop.toLowerCase().includes('turmeric');
+  const isPaddy = chosenCrop.toLowerCase().includes('rice') || chosenCrop.toLowerCase().includes('paddy');
+  const isCotton = chosenCrop.toLowerCase().includes('cotton');
+  const isSugarcane = chosenCrop.toLowerCase().includes('sugarcane');
+
+  const newFarmId = 'farm-tn-' + Date.now().toString().slice(-4);
+  const newParcelCode = 'TN-LND-' + Math.floor(1000 + Math.random() * 9000);
+
+  const newFarm = {
+    id: newFarmId,
+    unique_parcel_code: newParcelCode,
+    land_name: landName,
+    area_acres: unit === 'Acres' ? sizeVal : (sizeVal * 2.471).toFixed(1),
+    area_ha: unit === 'Hectares' ? sizeVal : (sizeVal / 2.471).toFixed(1),
+    unit: unit,
+    district: district,
+    gps_location: gps,
+    crop_type: chosenCrop,
+    current_stage: isTurmeric ? 'Sowing & Rhizome Sprouting' : (isPaddy ? 'Transplanting & Nursery' : 'Early Vegetative Stage'),
+    mrl_status: 'Pre-Tested MRL Clear'
+  };
+
+  // Progress Bar Hook: Instantiate customized stage and weekly timeline
+  if (!state.farmWeeklyState) state.farmWeeklyState = {};
+
+  const totalWeeks = isTurmeric ? 18 : (isSugarcane ? 20 : (isPaddy ? 16 : 14));
+  const stageName = isTurmeric 
+    ? 'Rhizome Sprouting & Basal Nutrition' 
+    : (isPaddy ? 'Transplanting & Nursery Seedling Emergence' : (isCotton ? 'Seedling Emergence & Squaring' : 'Vegetative Tillering'));
+
+  state.farmWeeklyState[newFarmId] = {
+    week: 1,
+    totalWeeks: totalWeeks,
+    stageName: stageName,
+    tasks: [
+      { id: 'wt-' + newFarmId + '-01', title: 'Basal organic compost & bio-fertilizer field dosing', day: 'Day 1', done: false, type: 'fertilizer' },
+      { id: 'wt-' + newFarmId + '-02', title: 'Furrow irrigation calibration & soil moisture check', day: 'Day 3', done: false, type: 'irrigation' },
+      { id: 'wt-' + newFarmId + '-03', title: 'Rhizome/seed root emergence optical scan & GPS audit', day: 'Day 6', done: false, type: 'sensor' }
+    ]
+  };
+
+  // Add to state and set as active farm
+  if (!state.farms) state.farms = [];
+  state.farms.unshift(newFarm);
+  state.activeFarm = newFarm;
+
+  closeLandModal();
+  alert('✓ Land "' + landName + '" registered successfully with ' + chosenCrop + '!\nDashboard stage & weekly cycle initialized.');
+  renderApp();
+}
+
+window.openLandModal = openLandModal;
+window.closeLandModal = closeLandModal;
+window.fetchMockGpsLocation = fetchMockGpsLocation;
+window.handleSoilReportDrop = handleSoilReportDrop;
+window.handleSoilReportUpload = handleSoilReportUpload;
+window.triggerAiSoilScan = triggerAiSoilScan;
+window.acceptAiCropSuggestion = acceptAiCropSuggestion;
+window.showManualCropDropdown = showManualCropDropdown;
+window.selectManualCrop = selectManualCrop;
+window.handleCreateLandSubmit = handleCreateLandSubmit;
+
+
 function openClaimParcelModal() {
   const modalHtml = `
     <div class="modal-backdrop" id="claim-parcel-modal">
