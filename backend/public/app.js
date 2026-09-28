@@ -531,7 +531,7 @@ const I18N_TRANSLATIONS = {
     btn_not_done: '❌ Not Done',
     btn_reschedule: '⏳ Reschedule',
     btn_quick_reschedule_2d: '⚡ +2 Days Curative Shift',
-    btn_scan_barcode_dosing: '📷 Scan Barcode & Log Treatment (Mandatory Verification)',
+    btn_task_completed: '✓ Task Completed',
     immediate_action_prompt: 'Action Protocol',
     hero_farmer_greeting: 'Vanakkam',
     hero_farmer_subtitle: 'Crop Lifecycle & Farm Management',
@@ -913,7 +913,7 @@ const I18N_TRANSLATIONS = {
     btn_not_done: '❌ முடிக்கப்படவில்லை',
     btn_reschedule: '⏳ மறுதிட்டமிடு',
     btn_quick_reschedule_2d: '⚡ +2 நாட்கள் நோய் தடுப்பு மாற்றம்',
-    btn_scan_barcode_dosing: '📷 பார் குறியீடு / மருந்தளவு சரிபார் (கட்டாய சரிபார்ப்பு)',
+    btn_task_completed: '✓ பணி முடிந்தது',
     immediate_action_prompt: 'செயல்பாட்டு வழிகாட்டுதல்',
     hero_farmer_greeting: 'வணக்கம்',
     hero_farmer_subtitle: 'பயிர் சுழற்சி மற்றும் பண்ணை மேலாண்மை',
@@ -1428,11 +1428,6 @@ function renderRoleSidebar(role) {
           <span style="font-size:16px;">✏️</span>
           <span>${t('nav_edit_profile', 'Edit Profile')}</span>
         </a>
-        <div class="nav-section-title" style="margin-top:14px;">Session</div>
-        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
-          <span style="font-size:16px;">🚪</span>
-          <span>Logout</span>
-        </a>
       `;
     } else if (role === 'agent') {
       container.innerHTML = `
@@ -1453,11 +1448,6 @@ function renderRoleSidebar(role) {
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
           <span style="font-size:16px;">✏️</span>
           <span>${t('nav_edit_profile', 'Edit Profile')}</span>
-        </a>
-        <div class="nav-section-title" style="margin-top:14px;">Session</div>
-        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
-          <span style="font-size:16px;">🚪</span>
-          <span>Logout</span>
         </a>
       `;
     } else if (role === 'shop_owner' || role === 'shop') {
@@ -1481,13 +1471,8 @@ function renderRoleSidebar(role) {
         </a>
         <div class="nav-section-title" style="margin-top:14px;">Store Account</div>
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
-          <span style="font-size:16px;">👤</span>
+          <span style="font-size:16px;">✏️</span>
           <span>Edit Profile</span>
-        </a>
-        <div class="nav-section-title" style="margin-top:14px;">Session</div>
-        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
-          <span style="font-size:16px;">🚪</span>
-          <span>Logout</span>
         </a>
       `;
     } else if (role === 'exporter') {
@@ -1507,13 +1492,8 @@ function renderRoleSidebar(role) {
         </a>
         <div class="nav-section-title" style="margin-top:14px;">Account</div>
         <a href="javascript:void(0)" class="nav-item" onclick="openEditProfileModal()">
-          <span style="font-size:16px;">👤</span>
+          <span style="font-size:16px;">✏️</span>
           <span>Edit Profile</span>
-        </a>
-        <div class="nav-section-title" style="margin-top:14px;">Session</div>
-        <a href="javascript:void(0)" class="nav-item" onclick="handleLogout()" style="color:#FCA5A5 !important;">
-          <span style="font-size:16px;">🚪</span>
-          <span>Logout</span>
         </a>
       `;
     }
@@ -1885,11 +1865,11 @@ function renderAgentDashboard(container) {
             <div style="font-size:12px; color:#64748B;">
               ${verifiedFarms['farm-01'] ? 
                 '<span style="color:#166534; font-weight:700;">✓ Phenotype AI Match 98.4% &bull; MRL Status Clear &bull; Signed Cryptographically</span>' : 
-                'Hardware-locked camera requires physical presence within 100m parcel boundary.'}
+                'Geo-tagged parcel ready for AI crop health evaluation.'}
             </div>
 
-            <button onclick="openGpsCameraModal('farm-01', 'Arumugam Sundaram', 'Amaravathi Basin Plot C', 'Bhavani Turmeric (PTS-10)', 10.7870, 79.1370)" style="background:#2F855A; color:#FFF; border:none; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 3px 8px rgba(47,133,90,0.25);">
-              📸 ${verifiedFarms['farm-01'] ? 'Re-Inspect Parcel' : 'Open GPS-Locked Camera & Inspect'}
+            <button onclick="openFieldInspectionModal('farm-01', 'Arumugam Sundaram', 'Amaravathi Basin Plot C', 'Bhavani Turmeric (PTS-10)', 10.7870, 79.1370)" style="background:#1B4D3E; color:#FFF; border:none; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 3px 8px rgba(27,77,62,0.25);">
+              📸 ${verifiedFarms['farm-01'] ? 'Re-Inspect Parcel' : 'Start Field Inspection'}
             </button>
           </div>
         </div>
@@ -1908,15 +1888,19 @@ function renderAgentDashboard(container) {
               </div>
             </div>
             <div>
-              <span style="background:#FEF3C7; color:#92400E; font-size:11px; font-weight:800; padding:4px 10px; border-radius:6px;">
-                REQUIRES GPS VERIFICATION
+              <span style="background:${verifiedFarms['farm-02'] ? '#DCFCE7' : '#FEF3C7'}; color:${verifiedFarms['farm-02'] ? '#166534' : '#92400E'}; font-size:11px; font-weight:800; padding:4px 10px; border-radius:6px;">
+                ${verifiedFarms['farm-02'] ? '✓ INSPECTED & VERIFIED' : 'PENDING INSPECTION'}
               </span>
             </div>
           </div>
           <div style="margin-top:16px; padding-top:14px; border-top:1px solid #F1F5F9; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div style="font-size:12px; color:#64748B;">Geofence perimeter check required before camera activation.</div>
-            <button onclick="openGpsCameraModal('farm-02', 'Kavitha Ramachandran', 'Bhavani River Delta Block 2', 'Export Sona Masoori Rice', 11.3410, 77.7170)" style="background:#2F855A; color:#FFF; border:none; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px;">
-              📸 Open GPS-Locked Camera & Inspect
+            <div style="font-size:12px; color:#64748B;">
+              ${verifiedFarms['farm-02'] ? 
+                '<span style="color:#166534; font-weight:700;">✓ Phenotype AI Match 97.8% &bull; MRL Status Clear &bull; Signed Cryptographically</span>' : 
+                'Geo-tagged parcel ready for AI crop health evaluation.'}
+            </div>
+            <button onclick="openFieldInspectionModal('farm-02', 'Kavitha Ramachandran', 'Bhavani River Delta Block 2', 'Export Sona Masoori Rice', 11.3410, 77.7170)" style="background:#1B4D3E; color:#FFF; border:none; padding:10px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 3px 8px rgba(27,77,62,0.25);">
+              📸 ${verifiedFarms['farm-02'] ? 'Re-Inspect Parcel' : 'Start Field Inspection'}
             </button>
           </div>
         </div>
@@ -1926,13 +1910,13 @@ function renderAgentDashboard(container) {
   `;
 }
 
-// 3. STRICT GPS CAMERA & AI INSPECTION MODAL
-function openGpsCameraModal(farmId, farmerName, parcelName, targetCrop, targetLat, targetLng) {
+// =========================================================================
+// AI-DRIVEN FIELD INSPECTION SYSTEM (AGENT WORKSTATION)
+// =========================================================================
+
+function openFieldInspectionModal(farmId, farmerName, parcelName, targetCrop, targetLat, targetLng) {
   const existing = document.getElementById('agent-gps-camera-modal');
   if (existing) existing.remove();
-
-  const dist = window.AGENT_SIMULATED_DISTANCE;
-  const isWithinBounds = dist <= 100;
 
   const modalHtml = `
     <div class="modal-backdrop" id="agent-gps-camera-modal" style="position:fixed; inset:0; background:rgba(15,23,42,0.75); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:9999; padding:16px;">
@@ -1941,84 +1925,34 @@ function openGpsCameraModal(farmId, farmerName, parcelName, targetCrop, targetLa
         <!-- Header -->
         <div style="padding:18px 22px; border-bottom:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; background:#F8FAFC;">
           <div>
-            <div style="font-size:11px; font-weight:800; color:#2F855A; text-transform:uppercase;">Hardware Security Protocol</div>
-            <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:2px 0 0 0;">GPS-Locked Parcel Inspection</h3>
+            <div style="font-size:11px; font-weight:800; color:#1B4D3E; text-transform:uppercase; letter-spacing:0.5px;">Field Agent Workstation</div>
+            <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:2px 0 0 0;">AI-Driven Field Inspection</h3>
           </div>
-          <button onclick="document.getElementById('agent-gps-camera-modal').remove()" style="background:none; border:none; color:#94A3B8; font-size:22px; cursor:pointer;">&times;</button>
+          <button onclick="document.getElementById('agent-gps-camera-modal').remove()" style="background:none; border:none; color:#94A3B8; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
         </div>
 
         <div style="padding:22px;">
           <!-- Farm & Parcel Context -->
           <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:14px; margin-bottom:16px;">
             <div style="font-size:14px; font-weight:800; color:#1E293B;">${parcelName}</div>
-            <div style="font-size:12px; color:#64748B; margin-top:2px;">Farmer: <strong>${farmerName}</strong> &bull; Seed: <strong>${targetCrop}</strong></div>
-          </div>
-
-          <!-- GPS Validation Telemetry Block -->
-          <div style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:12px; padding:16px; margin-bottom:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <span style="font-size:12px; font-weight:800; color:#1E293B;">GEOLOCATION VALIDATION</span>
-              <span style="font-size:11px; font-weight:700; color:#64748B;">Max Permitted Radius: 100m</span>
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px; margin-bottom:12px;">
-              <div style="background:#F8FAFC; padding:8px 10px; border-radius:8px;">
-                <div style="color:#64748B; font-size:11px;">Target Parcel GPS:</div>
-                <div style="font-weight:700; color:#1E293B;">${targetLat.toFixed(4)}° N, ${targetLng.toFixed(4)}° E</div>
-              </div>
-              <div style="background:#F8FAFC; padding:8px 10px; border-radius:8px;">
-                <div style="color:#64748B; font-size:11px;">Device Hardware GPS:</div>
-                <div style="font-weight:700; color:#1E293B;">${(targetLat + (dist === 42 ? 0.0003 : 0.004)).toFixed(4)}° N, ${(targetLng + (dist === 42 ? 0.0002 : 0.003)).toFixed(4)}° E</div>
-              </div>
-            </div>
-
-            <!-- Calculated Distance & Status -->
-            <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; padding:8px 12px; border-radius:8px; background:${isWithinBounds ? '#F0FDF4' : '#FEF2F2'}; color:${isWithinBounds ? '#166534' : '#991B1B'}; font-weight:700;">
-              <span>Distance to Centroid: ${dist} meters</span>
-              <span>${isWithinBounds ? '✓ WITHIN BOUNDS' : '✗ OUT OF BOUNDS'}</span>
-            </div>
-
-            <!-- GPS Simulation Switcher (For Testing & Demo Verification) -->
-            <div style="margin-top:12px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#64748B; border-top:1px dashed #E2E8F0; padding-top:8px;">
-              <span>Test Boundary Condition:</span>
-              <div style="display:flex; gap:6px;">
-                <button type="button" onclick="setSimulatedGpsDistance(42, '${farmId}', '${farmerName}', '${parcelName}', '${targetCrop}', ${targetLat}, ${targetLng})" style="padding:4px 8px; border-radius:6px; border:1px solid #CBD5E1; font-size:10px; font-weight:700; cursor:pointer; background:${dist === 42 ? '#2F855A' : '#FFF'}; color:${dist === 42 ? '#FFF' : '#475569'};">
-                  Within Bounds (42m)
-                </button>
-                <button type="button" onclick="setSimulatedGpsDistance(450, '${farmId}', '${farmerName}', '${parcelName}', '${targetCrop}', ${targetLat}, ${targetLng})" style="padding:4px 8px; border-radius:6px; border:1px solid #CBD5E1; font-size:10px; font-weight:700; cursor:pointer; background:${dist === 450 ? '#DC2626' : '#FFF'}; color:${dist === 450 ? '#FFF' : '#475569'};">
-                  Out of Bounds (450m)
-                </button>
-              </div>
-            </div>
+            <div style="font-size:12px; color:#64748B; margin-top:2px;">Farmer: <strong>${farmerName}</strong> &bull; Crop / Variety: <strong>${targetCrop}</strong></div>
+            <div style="font-size:11.5px; color:#1B4D3E; font-weight:700; margin-top:4px;">📍 Geo-Coordinates: ${targetLat.toFixed(4)}° N, ${targetLng.toFixed(4)}° E</div>
           </div>
 
           <!-- Dynamic Inspection Flow Stage -->
           <div id="agent-camera-stage">
-            ${!isWithinBounds ? `
-              <!-- OUT OF BOUNDS ERROR BLOCK -->
-              <div style="background:#FEF2F2; border:2px solid #FCA5A5; border-radius:12px; padding:16px; color:#991B1B; margin-bottom:16px;">
-                <div style="font-weight:800; font-size:14px;">⚠️ Hardware Camera Verification Failed</div>
-                <div style="font-size:12.5px; margin-top:4px; line-height:1.4;">
-                  Device is not within parcel bounds (Distance: ${dist}m > 100m threshold). Anti-fraud geofencing has blocked camera capture.
-                </div>
+            <div style="border:2px solid #1B4D3E; border-radius:14px; padding:20px; background:#0F172A; text-align:center; color:#FFF; margin-bottom:16px;">
+              <div style="height:140px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <span style="font-size:42px;">📸</span>
+                <div style="font-size:14px; font-weight:800; color:#A7F3D0; margin-top:8px;">GEO-TAGGED CAMERA VIEWFINDER</div>
+                <div style="font-size:11px; color:#94A3B8; margin-top:3px;">GPS Position Locked &bull; Ready for Crop Canopy Evaluation</div>
               </div>
-              <button disabled style="width:100%; background:#CBD5E1; color:#94A3B8; padding:14px; border-radius:10px; border:none; font-weight:800; font-size:14px; cursor:not-allowed;">
-                🔒 Camera Access Blocked (Out of Bounds)
-              </button>
-            ` : `
-              <!-- WITHIN BOUNDS: UNLOCKED CAMERA VIEWPORT -->
-              <div style="border:2px solid #2F855A; border-radius:14px; padding:16px; background:#0F172A; text-align:center; color:#FFF; margin-bottom:16px;">
-                <div style="height:170px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                  <span style="font-size:42px;">📸</span>
-                  <div style="font-size:13px; font-weight:800; color:#A7F3D0; margin-top:8px;">LIVE HARDWARE VIEWFINDER</div>
-                  <div style="font-size:11px; color:#94A3B8; margin-top:2px;">GPS Embed: ${targetLat.toFixed(4)}° N, ${targetLng.toFixed(4)}° E</div>
-                </div>
-              </div>
+            </div>
 
-              <button onclick="triggerPhotoCaptureAndAiAnalysis('${farmId}', '${targetCrop}')" style="width:100%; background:#2F855A; color:#FFF; padding:14px; border-radius:10px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 12px rgba(47,133,90,0.3);">
-                📸 Capture Photo & Trigger AI Analysis
-              </button>
-            `}
+            <button onclick="triggerPhotoCaptureAndAiAnalysis('${farmId}', '${targetCrop}', '${parcelName}', '${farmerName}')" style="width:100%; background:#1B4D3E; color:#FFF; padding:14px; border-radius:10px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 12px rgba(27,77,62,0.3); display:flex; align-items:center; justify-content:center; gap:8px;">
+              <span>📸</span>
+              <span>Capture Geo-Tagged Photo</span>
+            </button>
           </div>
 
         </div>
@@ -2029,66 +1963,143 @@ function openGpsCameraModal(farmId, farmerName, parcelName, targetCrop, targetLa
   document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
-function setSimulatedGpsDistance(dist, farmId, farmerName, parcelName, targetCrop, targetLat, targetLng) {
-  window.AGENT_SIMULATED_DISTANCE = dist;
-  openGpsCameraModal(farmId, farmerName, parcelName, targetCrop, targetLat, targetLng);
+// Backwards compatibility alias
+function openGpsCameraModal(farmId, farmerName, parcelName, targetCrop, targetLat, targetLng) {
+  openFieldInspectionModal(farmId, farmerName, parcelName, targetCrop, targetLat, targetLng);
 }
 
-function triggerPhotoCaptureAndAiAnalysis(farmId, targetCrop) {
+function triggerPhotoCaptureAndAiAnalysis(farmId, targetCrop, parcelName, farmerName) {
   const stage = document.getElementById('agent-camera-stage');
   if (!stage) return;
 
-  // 1. Loading State
+  // 1. Loading State with Exact Text
   stage.innerHTML = `
     <div style="text-align:center; padding:36px 16px;">
-      <div style="font-size:36px; animation:spin 1s infinite linear;">🤖</div>
+      <div style="font-size:36px; animation:spin 1s infinite linear; display:inline-block;">🤖</div>
       <div style="font-size:16px; font-weight:800; color:#1E293B; margin-top:14px;">
-        AI analyzing crop health & seed verification...
+        AI is analyzing the crop image and geo-coordinates...
       </div>
       <div style="font-size:12px; color:#64748B; margin-top:4px;">
-        Comparing foliage morphology against contracted seed genetic traits (${targetCrop})...
+        Running canopy health algorithms, pest detection, and NDVI spectrum scan...
       </div>
-      <div style="margin-top:16px; height:6px; background:#E2E8F0; border-radius:4px; overflow:hidden; max-width:280px; margin-left:auto; margin-right:auto;">
-        <div style="height:100%; width:80%; background:#2F855A;"></div>
+      <div style="margin-top:18px; height:6px; background:#E2E8F0; border-radius:4px; overflow:hidden; max-width:280px; margin-left:auto; margin-right:auto;">
+        <div style="height:100%; width:85%; background:#1B4D3E; border-radius:4px;"></div>
       </div>
     </div>
   `;
 
-  // 2. Post-capture AI Suggestion Card
+  // 2. Dynamic AI Questionnaire after analysis
   setTimeout(() => {
     stage.innerHTML = `
-      <div style="background:#F0FDF4; border:2px solid #86EFAC; border-radius:14px; padding:18px; margin-bottom:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-          <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:3px 8px; border-radius:6px;">
-            AI CROP INSPECTION REPORT
-          </span>
-          <span style="font-size:11px; font-weight:800; color:#15803D;">Match Confidence: 98.4%</span>
+      <div style="background:#F0FDF4; border:1px solid #86EFAC; border-radius:12px; padding:14px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12px; font-weight:800; color:#166534;">✓ AI Scan Complete</span>
+          <span style="font-size:11px; font-weight:700; color:#15803D; background:#DCFCE7; padding:2px 8px; border-radius:6px;">Confidence: 98.4%</span>
         </div>
-
-        <h3 style="font-size:16px; font-weight:800; color:#14532D; margin:0 0 6px 0;">
-          ✓ Contracted Seed Verified: ${targetCrop}
-        </h3>
-        
-        <div style="font-size:13px; color:#15803D; line-height:1.5; margin-bottom:10px;">
-          Foliage morphology matches contracted APEDA export variety. Rhizome diameter: 3.4cm (Optimal). No root rot, yellowing, or leaf blotch pathogens detected.
-        </div>
-
-        <div style="background:#FFFFFF; border:1px solid #BBF7D0; border-radius:8px; padding:10px; font-size:12px; color:#166534; line-height:1.4;">
-          💡 <strong>Actionable AI Feedback:</strong> Soil nitrogen levels are in prime range. Maintain current furrow irrigation cycle and withhold synthetic nitrogen for next 14 days to preserve Codex MRL export certification.
+        <div style="font-size:12px; color:#15803D; margin-top:4px;">
+          Crop canopy analysis verified against APEDA export parameters.
         </div>
       </div>
 
-      <button onclick="approveAiInspection('${farmId}')" style="width:100%; background:#2F855A; color:#FFF; padding:14px; border-radius:10px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 12px rgba(47,133,90,0.3);">
-        ✅ Approve & Sign APEDA Digital Verification Stamp
+      <!-- DYNAMIC AI QUESTIONNAIRE (3 Questions with AI Badges & Agent Inputs) -->
+      <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:18px;">
+        
+        <!-- Question 1 -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px;">
+          <label style="display:block; font-size:13px; font-weight:800; color:#1E293B; margin-bottom:4px;">
+            1. What is the condition of the leaves?
+          </label>
+          <div style="margin-bottom:6px;">
+            <span style="display:inline-block; background:#DCFCE7; color:#166534; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; border:1px solid #BBF7D0;">
+              AI Suggestion: Leaves appear healthy / Dark Green
+            </span>
+          </div>
+          <select id="insp-q1" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:13px; font-weight:600; color:#1E293B; background:#FFF;">
+            <option value="Leaves appear healthy / Dark Green" selected>Leaves appear healthy / Dark Green</option>
+            <option value="Mild yellowing on tips (Nitrogen deficient)">Mild yellowing on tips (Nitrogen deficient)</option>
+            <option value="Leaf curling / Moisture stress">Leaf curling / Moisture stress</option>
+          </select>
+        </div>
+
+        <!-- Question 2 -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px;">
+          <label style="display:block; font-size:13px; font-weight:800; color:#1E293B; margin-bottom:4px;">
+            2. Are there any visible pests or insects?
+          </label>
+          <div style="margin-bottom:6px;">
+            <span style="display:inline-block; background:#DCFCE7; color:#166534; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; border:1px solid #BBF7D0;">
+              AI Expected: No pests detected
+            </span>
+          </div>
+          <select id="insp-q2" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:13px; font-weight:600; color:#1E293B; background:#FFF;">
+            <option value="No pests detected" selected>No pests detected</option>
+            <option value="Minor aphid presence (below threshold)">Minor aphid presence (below threshold)</option>
+            <option value="Stem borer activity visible">Stem borer activity visible</option>
+          </select>
+        </div>
+
+        <!-- Question 3 -->
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:12px 14px;">
+          <label style="display:block; font-size:13px; font-weight:800; color:#1E293B; margin-bottom:4px;">
+            3. How is the overall plant health?
+          </label>
+          <div style="margin-bottom:6px;">
+            <span style="display:inline-block; background:#DCFCE7; color:#166534; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; border:1px solid #BBF7D0;">
+              AI Analysis: Plant health optimal (NDVI 0.82)
+            </span>
+          </div>
+          <select id="insp-q3" style="width:100%; padding:9px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:13px; font-weight:600; color:#1E293B; background:#FFF;">
+            <option value="Plant health optimal (NDVI 0.82)" selected>Plant health optimal (NDVI 0.82)</option>
+            <option value="Moderate vigor (NDVI 0.65)">Moderate vigor (NDVI 0.65)</option>
+            <option value="Stressed / Low vigor (NDVI 0.45)">Stressed / Low vigor (NDVI 0.45)</option>
+          </select>
+        </div>
+
+        <!-- Optional Agent Notes -->
+        <div>
+          <textarea id="insp-notes" placeholder="Agent Observations / Field Notes (Optional)..." style="width:100%; height:55px; padding:8px 12px; border:1px solid #CBD5E1; border-radius:8px; font-size:12px; resize:none; font-family:inherit; box-sizing:border-box;"></textarea>
+        </div>
+      </div>
+
+      <button onclick="submitAiInspectionReport('${farmId}', '${targetCrop}', '${parcelName}', '${farmerName}')" style="width:100%; background:#1B4D3E; color:#FFF; padding:14px; border-radius:10px; border:none; font-weight:800; font-size:14px; cursor:pointer; box-shadow:0 4px 12px rgba(27,77,62,0.3); display:flex; align-items:center; justify-content:center; gap:8px;">
+        <span>✓</span>
+        <span>Submit Inspection Report</span>
       </button>
     `;
-  }, 1600);
+  }, 1200);
 }
 
-function approveAiInspection(farmId) {
+function submitAiInspectionReport(farmId, targetCrop, parcelName, farmerName) {
+  // 1. Mark parcel as inspected
   window.AGENT_VERIFIED_FARMS[farmId] = true;
-  document.getElementById('agent-gps-camera-modal')?.remove();
-  alert('✓ Farm inspection approved and stamped with APEDA cryptographic signature!');
+
+  // 2. Add entry to History of Lands
+  if (Array.isArray(window.AGENT_INSPECTED_LANDS)) {
+    window.AGENT_INSPECTED_LANDS.unshift({
+      id: 'INSP-2026-' + Math.floor(100 + Math.random() * 900),
+      landName: parcelName || 'Amaravathi Basin Plot C',
+      farmerName: farmerName || 'Arumugam Sundaram',
+      crop: targetCrop || 'Bhavani Turmeric (PTS-10)',
+      area: '4.2 Acres',
+      visitDate: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + ', ' + new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+      gps: '10.7870° N, 79.1370° E',
+      status: 'Passed AI Check',
+      mrlStatus: 'APEDA Verified &bull; Zero Residue',
+      stampId: 'APEDA-AI-STAMP-' + Math.floor(1000 + Math.random() * 9000)
+    });
+  }
+
+  // 3. Close modal & Notify
+  const modal = document.getElementById('agent-gps-camera-modal');
+  if (modal) modal.remove();
+
+  if (typeof showToast === 'function') {
+    showToast('✓ Inspection report submitted! Parcel marked as Inspected.');
+  } else {
+    alert('✓ Inspection report submitted! Parcel marked as Inspected.');
+  }
+
+  // 4. Update view
   renderApp();
 }
 
@@ -2120,8 +2131,48 @@ window.AGENT_LINKED_EXPORTERS = window.AGENT_LINKED_EXPORTERS || [
   }
 ];
 
+window.AGENT_INSPECTED_LANDS = window.AGENT_INSPECTED_LANDS || [
+    {
+      id: 'INSP-2026-901',
+      landName: 'Amaravathi Basin Plot A',
+      farmerName: 'Arumugam Sundaram',
+      crop: 'Bhavani Turmeric (PTS-10)',
+      area: '4.5 Acres',
+      visitDate: '26 Sep 2026, 11:30 AM',
+      gps: '10.7870° N, 79.1370° E',
+      status: 'Passed AI Check',
+      mrlStatus: 'Pre-Harvest MRL Clear (0.008 mg/kg)',
+      stampId: 'APEDA-STAMP-8492'
+    },
+    {
+      id: 'INSP-2026-884',
+      landName: 'Cauvery Delta Block 4',
+      farmerName: 'Palanisamy Velu',
+      crop: 'Sona Masoori Rice (Export Grade)',
+      area: '3.8 Acres',
+      visitDate: '22 Sep 2026, 03:15 PM',
+      gps: '10.7920° N, 79.1410° E',
+      status: 'Completed',
+      mrlStatus: 'APEDA Certified Safe',
+      stampId: 'APEDA-STAMP-7741'
+    },
+    {
+      id: 'INSP-2026-871',
+      landName: 'Bhavani River Delta Block 1',
+      farmerName: 'Kavitha Ramachandran',
+      crop: 'Export Grade Turmeric',
+      area: '2.1 Acres',
+      visitDate: '18 Sep 2026, 10:00 AM',
+      gps: '11.3410° N, 77.7170° E',
+      status: 'Passed AI Check',
+      mrlStatus: 'Zero Pesticide Residue',
+      stampId: 'APEDA-STAMP-6629'
+    }
+  ];
+
 function renderAgentLandsHistoryView(container) {
-  const history = [
+  const history = window.AGENT_INSPECTED_LANDS;
+  const dummyHistory = [
     {
       id: 'INSP-2026-901',
       landName: 'Amaravathi Basin Plot A',
@@ -2425,10 +2476,9 @@ function renderExporterDashboard(container) {
       <!-- CONTRACTED LANDS ACTION HEADER -->
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
         <div>
-          <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0 0 4px 0;">Contracted Lands</h2>
-          <p style="font-size:13px; color:#64748B; margin:0;">Farmer land parcels bound under APEDA export contracts</p>
+          <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Contracted Lands</h2>
         </div>
-        <button onclick="openAddContractedLandModal()" style="background:#2F855A; color:#FFF; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; box-shadow:0 4px 10px rgba(47, 133, 90, 0.25);">
+        <button onclick="openAddContractedLandModal()" style="background:#1B4D3E; color:#FFF; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; box-shadow:0 4px 10px rgba(27, 77, 62, 0.25);">
           + Add Contracted Land
         </button>
       </div>
@@ -3315,10 +3365,6 @@ function renderFarmerView(container) {
           <span class="card-label" style="font-size:13px; font-weight:800; color:var(--primary);">${state.language === 'ta' ? 'நிலங்கள்' : 'LAND'} (${state.farms.length})</span>
           <div style="font-size:11px; color:var(--slate); margin-top:2px;">${state.language === 'ta' ? 'மேற்பார்வையிட ஒரு நிலத்தைத் தேர்ந்தெடுக்கவும்' : 'Select a land parcel to manage cultivation & tasks'}</div>
         </div>
-        <button type="button" onclick="openLandModal()" class="agro-btn-primary" style="padding:6px 14px; font-size:12px; font-weight:800; display:inline-flex; align-items:center; gap:6px; border-radius:8px; cursor:pointer;">
-          <span>+</span>
-          <span>${t('btn_add_land', 'Add Land')}</span>
-        </button>
       </div>
 
       <div style="display:flex; gap:10px; overflow-x:auto; padding-bottom:6px;">
@@ -3366,6 +3412,27 @@ function renderFarmerView(container) {
           <span class="badge badge-forest" style="font-size:12px;">Stage: ${translateStage(farm.current_stage || wState?.stageName || 'Flowering')}</span>
         </div>
 
+        <!-- Harvest Forecast (Positioned immediately below active land details header) -->
+        <div style="margin-top:14px; margin-bottom:14px; background:var(--mint-soft); border:1px solid var(--mint-light); border-radius:14px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <span class="card-label" style="color:var(--primary); font-size:11px; font-weight:800; text-transform:uppercase;">${t('harvest_forecast', 'Harvest Forecast')}</span>
+            <div style="font-size:18px; font-weight:800; color:var(--ink); margin-top:2px;">
+              ${t('harvest_in_days', '⏳ Harvest in {days} Days', { days: farm.harvest_prediction?.days_remaining || 125 })}
+            </div>
+            <div style="font-size:11px; color:var(--slate);">
+              ${t('expected_harvest', 'Expected: {date}', { date: farm.harvest_prediction?.expected_harvest_date || '2027-01-12' })}
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px; font-weight:800; color:var(--primary);">
+              ${farm.harvest_prediction?.predicted_yield_tonnes || '24.5'} Tonnes
+            </div>
+            <div style="font-size:11px; font-weight:700; color:var(--slate);">
+              ${t('grade_a_export', 'Grade A Export')}: <strong>${farm.harvest_prediction?.grade_a_percentage || 75}%</strong> • ${t('mandi_domestic', 'Mandi')}: <strong>${farm.harvest_prediction?.grade_b_c_percentage || 25}%</strong>
+            </div>
+          </div>
+        </div>
+
         ${((farm.current_stage || wState?.stageName || '').toLowerCase().includes('harvest')) ? `
         <!-- REAL-TIME DYNAMIC EXPORT COMPLIANCE & QR DOCUMENT CARD (HARVEST STAGE EXCLUSIVE) -->
         <div style="background: linear-gradient(135deg, var(--mint-soft) 0%, #FFFFFF 100%); border: 1.5px solid var(--primary); border-radius: 14px; padding: 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -3409,7 +3476,7 @@ function renderFarmerView(container) {
               const newDate = t.scheduled_date || t.rescheduled_to;
               const displayDate = isRescheduled ? (state.language === 'ta' ? `புதிய தேதி: ${newDate}` : `Shifted: ${newDate}`) : `${t.day} • ${translateActivityType(t.type)}`;
               return `
-              <div class="weekly-task-chip ${t.done ? 'completed' : isRescheduled ? 'rescheduled' : 'active'}" onclick="${!t.done ? (t.type === 'pest' || t.type === 'fertilizer' ? `openTreatmentBarcodeModal('${farm.crop_type?.includes('Turmeric') ? 'Trichoderma Viride 1% WP' : (farm.crop_type?.includes('Sugar') ? 'Bio-Neem NSKE 5% Bio-Spray' : 'Bio-Neem 5% EC')}', 'Target Bio-Protection', '500 ml / Acre', '${farm.id}', '${t.id}', '8901234567890')` : `openCameraModal('${farm.id}', '${t.id}')`) : ''}" style="${!t.done ? 'cursor:pointer;' : ''}">
+              <div class="weekly-task-chip ${t.done ? 'completed' : isRescheduled ? 'rescheduled' : 'active'}" onclick="${!t.done ? `completeWeeklyTask('${farm.id}', '${t.id}')` : ''}" style="${!t.done ? 'cursor:pointer;' : ''}">
                 <div>
                   <div style="font-size:9px; color:var(--slate); text-transform:uppercase;">${displayDate}</div>
                   <div style="margin-top:2px;">${t.title}</div>
@@ -3430,34 +3497,42 @@ function renderFarmerView(container) {
               <div style="flex:1;">
                 <div class="prompt-text">
                   ${isDosingTask 
-                    ? `${farm.pesticide_fertilizer_dosing?.mixture || 'Bio-Neem NSKE 5%'} foliar spray scheduled — Scan bottle barcode before application`
+                    ? `${farm.pesticide_fertilizer_dosing?.mixture || 'Trichoderma Viride (Bio-Fungicide)'} foliar spray scheduled`
                     : (activeTask.status === 'RESCHEDULED' && (activeTask.scheduled_date || activeTask.rescheduled_to) !== todayStr)
                       ? (state.language === 'ta' ? `📅 பணி ${activeTask.scheduled_date || activeTask.rescheduled_to} புதிய தேதிக்கு மாற்றப்பட்டுள்ளது — நடவடிக்கை புதிய தேதியில் திட்டமிடப்பட்டுள்ளது` : `📅 Task rescheduled to ${activeTask.scheduled_date || activeTask.rescheduled_to} — Action scheduled strictly on new date`)
                       : (farm.immediate_action_prompt || (state.language === 'ta' ? 'இன்றைய பாசன பணி — 3 செ.மீ நீர் மட்டத்தை பராமரிக்கவும்' : 'Irrigation due today — Maintain 3cm standing water'))}
                 </div>
                 <div class="prompt-sub">
                   ${isDosingTask 
-                    ? (state.language === 'ta' ? 'APEDA கட்டாய ஏற்றுமதி விதிமுறை: கேமரா மூலம் பார் குறியீட்டை சரிபார்க்கவும். தடை செய்யப்பட்ட செயற்கை இரசாயனங்கள் அனுமதிக்கப்படாது.' : 'Mandatory APEDA export protocol: In-app camera barcode authentication required. Synthetic non-compliant chemicals are blocked.')
+                    ? (state.language === 'ta' ? 'அங்கீகரிக்கப்பட்ட உயிரி இடுபொருளை பரிந்துரைக்கப்பட்ட அளவின்படி தெளிக்கவும்.' : 'Recommended treatment based on active crop stage development.')
                     : (state.language === 'ta' ? 'பயிர் வளர்ச்சிக்கு தேவையான நடவடிக்கை. மண் ஈரப்பதம் தொடர்ந்து கண்காணிக்கப்படுகிறது.' : 'Action required for stage development. Soil moisture baseline active.')}
                 </div>
               </div>
             </div>
 
-            <div style="width:100%; margin-top:8px; padding-top:10px; border-top:1px solid rgba(27, 77, 62, 0.15); display:flex; flex-direction:column; gap:8px;">
-              ${isDosingTask ? `
-                <button onclick="openTreatmentBarcodeModal('${farm.pesticide_fertilizer_dosing?.mixture || 'Bio-Neem NSKE 5%'}', 'Stem Borer & Leaf Folder Control', '${farm.pesticide_fertilizer_dosing?.dosage || '500 ml / Acre'}', '${farm.id}', '${activeTask.id}', '8901234567890')" class="agro-btn-primary" style="padding:10px 14px; font-size:12.5px; width:100%; font-weight:700;">
-                  ${t('btn_scan_barcode_dosing', '📷 Scan Barcode & Log Treatment (Mandatory Verification)')}
-                </button>
-              ` : `
-                <button onclick="openCameraModal('${farm.id}', '${activeTask.id}')" class="agro-btn-primary" style="padding:10px 14px; font-size:12.5px; width:100%; font-weight:700;">
-                  ${t('btn_done_camera', '✓ Done / Completed (Camera Proof)')}
-                </button>
-              `}
-              <div>
-                <button onclick="openRescheduleModal('${farm.id}', '${activeTask.id}')" class="agro-btn-secondary" style="padding:9px 12px; font-size:12px; font-weight:700; width:100%;">
-                  ${t('btn_reschedule', '⏳ Reschedule')}
+            ${isDosingTask ? `
+              <!-- Embedded Product Details & Buy Product Button directly inside task card -->
+              <div style="width:100%; background:rgba(27,77,62,0.05); border:1px solid rgba(27,77,62,0.15); border-radius:10px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <div>
+                  <div style="font-weight:800; font-size:13px; color:var(--primary);">📦 ${farm.pesticide_fertilizer_dosing?.mixture || 'Trichoderma Viride (Bio-Fungicide)'}</div>
+                  <div style="font-size:11px; color:var(--slate); margin-top:2px;">Prevents root rot • Recommended Dosage: ${farm.pesticide_fertilizer_dosing?.dosage || '500 ml / Acre'}</div>
+                </div>
+                <button type="button" onclick="openProductPurchaseFlow()" class="agro-btn-primary" style="background:#1B4D3E; font-size:12px; font-weight:700; padding:6px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; cursor:pointer;">
+                  <span>🛒</span>
+                  <span>Buy Product</span>
                 </button>
               </div>
+            ` : ''}
+
+            <div style="width:100%; margin-top:8px; padding-top:10px; border-top:1px solid rgba(27, 77, 62, 0.15); display:flex; gap:10px; flex-wrap:wrap;">
+              <button onclick="completeWeeklyTask('${farm.id}', '${activeTask.id}')" class="agro-btn-primary" style="flex:1; min-width:140px; padding:10px 14px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;">
+                <span>✓</span>
+                <span>${state.language === 'ta' ? 'பணி முடிந்தது' : 'Task Completed'}</span>
+              </button>
+              <button onclick="openRescheduleModal('${farm.id}', '${activeTask.id}')" class="agro-btn-secondary" style="padding:10px 16px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;">
+                <span>⏳</span>
+                <span>${t('btn_reschedule', 'Reschedule')}</span>
+              </button>
             </div>
           </div>
         ` : `
@@ -3477,27 +3552,6 @@ function renderFarmerView(container) {
             </div>
           </div>
         `}
-
-        <!-- Harvest Countdown & Yield Forecast -->
-        <div style="margin-top:16px; background:var(--mint-soft); border:1px solid var(--mint-light); border-radius:14px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <div>
-            <span class="card-label" style="color:var(--primary);">${t('harvest_forecast', 'Harvest Forecast')}</span>
-            <div style="font-size:18px; font-weight:800; color:var(--ink); margin-top:2px;">
-              ${t('harvest_in_days', '⏳ Harvest in {days} Days', { days: farm.harvest_prediction?.days_remaining || 125 })}
-            </div>
-            <div style="font-size:11px; color:var(--slate);">
-              ${t('expected_harvest', 'Expected: {date}', { date: farm.harvest_prediction?.expected_harvest_date || '2027-01-12' })}
-            </div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:20px; font-weight:800; color:var(--primary);">
-              ${farm.harvest_prediction?.predicted_yield_tonnes || '24.5'} Tonnes
-            </div>
-            <div style="font-size:11px; font-weight:700; color:var(--slate);">
-              ${t('grade_a_export', 'Grade A Export')}: <strong>${farm.harvest_prediction?.grade_a_percentage || 75}%</strong> • ${t('mandi_domestic', 'Mandi')}: <strong>${farm.harvest_prediction?.grade_b_c_percentage || 25}%</strong>
-            </div>
-          </div>
-        </div>
 
         <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -3520,31 +3574,6 @@ function renderFarmerView(container) {
         <p style="font-size:13px; color:var(--primary); font-weight:700;">${state.language === 'ta' ? 'முதல் நிலத்தை பதிவு செய்ய கீழே வலதுபுறத்தில் உள்ள (+) பொத்தானை தட்டவும்.' : 'Tap the floating (+) button at the bottom-right to register your first parcel.'}</p>
       </div>
     `}
-
-    ${farm ? `
-      
-      <!-- NEW PESTICIDE RECOMMENDATION & BUY PRODUCT FLOW -->
-      <div class="agro-card" style="margin-top:18px; margin-bottom:18px; border-left:5px solid #E53E3E; background:linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);">
-        <div class="agro-card-header" style="margin-bottom:12px;">
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:20px;">🧪</span>
-              <div class="card-title" style="color:#C53030;">Today's Recommended Treatment</div>
-            </div>
-            <div style="font-size:11.5px; color:#E53E3E; margin-top:2px; font-weight:bold;">
-              Based on active crop stage: ${farm ? farm.current_stage || 'Flowering & Grain Filling' : 'Flowering'}
-            </div>
-          </div>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="background:#FFF; border:1px solid #FED7D7; padding:16px; border-radius:12px;">
-            <h3 style="font-size:18px; font-weight:bold; color:#2D3748; margin:0 0 8px 0;">Trichoderma Viride (Bio-Fungicide)</h3>
-            <p style="font-size:14px; color:#4A5568; margin:0 0 16px 0;">Prevents root rot. Apply 5ml per liter of water via foliar spray.</p>
-            <button onclick="openProductPurchaseFlow()" style="width:100%; background:#E53E3E; color:#FFF; font-weight:bold; padding:12px; border-radius:8px; border:none; cursor:pointer; font-size:16px; box-shadow: 0 4px 6px rgba(229,62,62,0.2);">Buy Product</button>
-          </div>
-        </div>
-      </div>
-      ` : ''}
     `;
   }
 
@@ -8355,7 +8384,7 @@ function simulateInventoryUpload() {
       list.innerHTML += `
         <div style="background:#F0FFF4; border:1px solid #9AE6B4; border-radius:12px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <div style="font-size:11px; font-weight:bold; color:#38A169; margin-bottom:4px;">dY"' NEWLY ADDED VIA INVOICE</div>
+            <div style="font-size:11px; font-weight:bold; color:#38A169; margin-bottom:4px;">✨ NEWLY ADDED VIA INVOICE</div>
             <h4 style="font-size:16px; font-weight:bold; color:#2D3748; margin:0 0 4px 0;">Neem Oil Extract (10000 PPM)</h4>
             <div style="color:#718096; font-size:13px;">Botanical Pesticide &bull; Stock: 120 units</div>
           </div>
@@ -8381,7 +8410,7 @@ function showPaymentOptions(shopName) {
         <label style="display:flex; align-items:center; padding:20px; background:#FFF; border:2px solid #3182CE; border-radius:12px; margin-bottom:12px; cursor:pointer;">
           <input type="radio" name="payment" value="online" checked style="margin-right:16px; transform:scale(1.2);" />
           <div style="flex:1;">
-            <div style="font-size:16px; font-weight:bold; color:#2D3748; margin-bottom:4px;">dY' Pay Online (Home Delivery)</div>
+            <div style="font-size:16px; font-weight:bold; color:#2D3748; margin-bottom:4px;">💳 Pay Online (Home Delivery)</div>
             <div style="font-size:13px; color:#718096;">UPI, NetBanking, Debit/Credit Cards</div>
           </div>
         </label>
@@ -8389,7 +8418,7 @@ function showPaymentOptions(shopName) {
         <label style="display:flex; align-items:center; padding:20px; background:#FFF; border:2px solid #E2E8F0; border-radius:12px; margin-bottom:24px; cursor:pointer;" onclick="this.style.borderColor='#2F855A'; this.previousElementSibling.style.borderColor='#E2E8F0';">
           <input type="radio" name="payment" value="token" style="margin-right:16px; transform:scale(1.2);" />
           <div style="flex:1;">
-            <div style="font-size:16px; font-weight:bold; color:#2D3748; margin-bottom:4px;">dYO^ Generate Token (Pay at Shop)</div>
+            <div style="font-size:16px; font-weight:bold; color:#2D3748; margin-bottom:4px;">🏪 Generate Token (Pay at Shop)</div>
             <div style="font-size:13px; color:#718096;">Reserve stock now, pay cash at ${shopName}</div>
           </div>
         </label>
