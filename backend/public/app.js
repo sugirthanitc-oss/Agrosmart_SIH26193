@@ -2536,109 +2536,117 @@ function renderExporterDashboard(container) {
         </button>
       </div>
 
-      <!-- CONTRACTED LANDS LIST WITH ACCORDION-STYLE INLINE TRACEABILITY PANEL -->
-      <div style="display:flex; flex-direction:column; gap:14px;">
+      <!-- CONTRACTED LANDS LIST WITH PROPERLY ISOLATED ACCORDION ITEMS -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
         ${lands.map(land => {
           const isSelected = selectedLandId === land.id;
           return `
-            <div onclick="selectContractedLand('${land.id}')" style="background:${isSelected ? '#F0FDF4' : '#FFF'}; border-radius:14px; padding:20px; border:${isSelected ? '2px solid #1B4D3E' : '1px solid #E2E8F0'}; box-shadow:${isSelected ? '0 6px 16px rgba(27, 77, 62, 0.15)' : '0 2px 6px rgba(0,0,0,0.02)'}; cursor:pointer; transition:all 0.18s ease;">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
-                <div>
-                  <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
-                    <span style="font-size:12px; font-weight:800; color:${isSelected ? '#1B4D3E' : '#2F855A'}; background:${isSelected ? '#DCFCE7' : '#E8F5E9'}; padding:3px 8px; border-radius:6px;">${land.id}</span>
-                    <span style="font-size:12px; color:#64748B;">Active Procurement Contract</span>
-                    ${isSelected ? '<span style="font-size:11px; font-weight:800; color:#FFFFFF; background:#1B4D3E; padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">✓ Selected for Traceability</span>' : ''}
+            <!-- Isolated Container for Land Card + its Accordion Panel -->
+            <div class="contracted-land-item-container flex flex-col mb-6" style="display:flex; flex-direction:column; width:100%; margin-bottom:${isSelected ? '24px' : '8px'};">
+              
+              <!-- Main Land Card -->
+              <div onclick="selectContractedLand('${land.id}')" style="background:${isSelected ? '#F0FDF4' : '#FFF'}; border-radius:14px; padding:20px; border:${isSelected ? '2px solid #1B4D3E' : '1px solid #E2E8F0'}; box-shadow:${isSelected ? '0 6px 16px rgba(27, 77, 62, 0.15)' : '0 2px 6px rgba(0,0,0,0.02)'}; cursor:pointer; transition:all 0.18s ease;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+                  <div>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                      <span style="font-size:12px; font-weight:800; color:${isSelected ? '#1B4D3E' : '#2F855A'}; background:${isSelected ? '#DCFCE7' : '#E8F5E9'}; padding:3px 8px; border-radius:6px;">${land.id}</span>
+                      <span style="font-size:12px; color:#64748B;">Active Procurement Contract</span>
+                      ${isSelected ? '<span style="font-size:11px; font-weight:800; color:#FFFFFF; background:#1B4D3E; padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;">✓ Selected for Traceability</span>' : ''}
+                    </div>
+                    <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:4px 0;">${land.parcelName} &bull; ${land.crop}</h3>
+                    <div style="font-size:13px; color:#475569; margin-top:4px;">📍 ${land.location} (GPS: ${land.gps})</div>
                   </div>
-                  <h3 style="font-size:17px; font-weight:800; color:#1E293B; margin:4px 0;">${land.parcelName} &bull; ${land.crop}</h3>
-                  <div style="font-size:13px; color:#475569; margin-top:4px;">📍 ${land.location} (GPS: ${land.gps})</div>
+                  <div style="text-align:right;">
+                    <div style="font-size:15px; font-weight:800; color:#1E293B;">${land.area}</div>
+                    <div style="font-size:12px; color:#64748B;">Est. Yield: ${land.expectedYield}</div>
+                    <div style="font-size:11px; color:#15803D; font-weight:700; margin-top:4px;">✓ ${land.mrlStatus}</div>
+                  </div>
                 </div>
-                <div style="text-align:right;">
-                  <div style="font-size:15px; font-weight:800; color:#1E293B;">${land.area}</div>
-                  <div style="font-size:12px; color:#64748B;">Est. Yield: ${land.expectedYield}</div>
-                  <div style="font-size:11px; color:#15803D; font-weight:700; margin-top:4px;">✓ ${land.mrlStatus}</div>
-                </div>
-              </div>
-              <div style="margin-top:16px; padding-top:12px; border-top:1px solid ${isSelected ? '#BBF7D0' : '#F1F5F9'}; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#64748B;">
-                <div>Farmer: <strong style="color:#1E293B;">${land.farmerName}</strong> (${land.farmerPhone})</div>
-                <div style="display:flex; align-items:center; gap:12px;">
-                  <span>Harvest Due: <strong style="color:#1E293B;">${land.harvestDate}</strong></span>
-                  <span style="font-size:11.5px; font-weight:700; color:${isSelected ? '#1B4D3E' : '#64748B'}; background:${isSelected ? '#DCFCE7' : 'rgba(0,0,0,0.04)'}; padding:2px 8px; border-radius:6px;">
-                    ${isSelected ? 'Traceability Active ▴' : 'View Traceability 🧪'}
-                  </span>
+                <div style="margin-top:16px; padding-top:12px; border-top:1px solid ${isSelected ? '#BBF7D0' : '#F1F5F9'}; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#64748B;">
+                  <div>Farmer: <strong style="color:#1E293B;">${land.farmerName}</strong> (${land.farmerPhone})</div>
+                  <div style="display:flex; align-items:center; gap:12px;">
+                    <span>Harvest Due: <strong style="color:#1E293B;">${land.harvestDate}</strong></span>
+                    <span style="font-size:11.5px; font-weight:700; color:${isSelected ? '#1B4D3E' : '#64748B'}; background:${isSelected ? '#DCFCE7' : 'rgba(0,0,0,0.04)'}; padding:2px 8px; border-radius:6px;">
+                      ${isSelected ? 'Traceability Active ▴' : 'View Traceability 🧪'}
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              <!-- INLINE ACCORDION TRACEABILITY PANEL (With Dynamic Height & Proper Closing Div) -->
+              ${isSelected ? `
+                <div id="agrochemical-traceability-panel" class="h-auto w-full mt-3 mb-6" style="margin-top:10px; margin-bottom:18px; height:auto; min-height:fit-content; background:#FFF; border-radius:16px; border:2px solid #1B4D3E; padding:22px; box-shadow:0 8px 24px rgba(27,77,62,0.12); animation:fadeIn 0.2s ease;">
+                  <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; border-bottom:1px solid #E2E8F0; padding-bottom:14px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                      <div style="display:flex; align-items:center; gap:8px;">
+                        <span style="font-size:20px;">🧪</span>
+                        <h3 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Agrochemical Traceability Log</h3>
+                        <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:2px 8px; border-radius:6px; white-space:nowrap;">
+                          APEDA Export Certified
+                        </span>
+                      </div>
+                      <div style="font-size:12.5px; color:#64748B; margin-top:4px;">
+                        Procurement & application trail for <strong>${land.parcelName}</strong> (${land.id}) &bull; Farmer: <strong>${land.farmerName}</strong> (${land.farmerPhone})
+                      </div>
+                    </div>
+                    <button onclick="selectContractedLand('${land.id}')" style="background:#F1F5F9; border:none; color:#64748B; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer;" title="Collapse Traceability Panel">
+                      ✕ Close Panel
+                    </button>
+                  </div>
+
+                  <!-- Traceability Table with Proper Column Widths & whitespace-nowrap -->
+                  <div style="overflow-x:auto;">
+                    <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+                      <thead>
+                        <tr style="background:#F8FAFC; border-bottom:2px solid #E2E8F0; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
+                          <th style="padding:10px 14px; width:28%;">Fertilizer Used</th>
+                          <th style="padding:10px 14px; width:28%;">Sourced From (Shop Name)</th>
+                          <th style="padding:10px 14px; width:22%; white-space:nowrap;">Date & Quantity</th>
+                          <th class="whitespace-nowrap" style="padding:10px 14px; width:22%; text-align:right; white-space:nowrap;">MRL Compliance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${(land.fertilizerHistory && land.fertilizerHistory.length > 0) ? land.fertilizerHistory.map((item, idx) => `
+                          <tr style="border-bottom:1px solid #F1F5F9; transition:background 0.15s ease;" onmouseenter="this.style.background='#F8FAFC'" onmouseleave="this.style.background='transparent'">
+                            <td style="padding:12px 14px; font-weight:700; color:#1E293B;">
+                              <span style="margin-right:6px;">🌱</span> ${item.productName}
+                            </td>
+                            <td style="padding:12px 14px; color:#475569;">
+                              🏪 ${item.shopName}
+                            </td>
+                            <td style="padding:12px 14px; color:#1B4D3E; font-weight:600; white-space:nowrap;">
+                              📅 ${item.purchaseDate} &bull; ⚖️ <strong>${item.quantityApplied}</strong>
+                            </td>
+                            <td class="whitespace-nowrap" style="padding:12px 14px; text-align:right; white-space:nowrap;">
+                              <span class="whitespace-nowrap" style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:4px 10px; border-radius:6px; border:1px solid #BBF7D0; white-space:nowrap; display:inline-block;">
+                                ✓ Passed Residue Audit
+                              </span>
+                            </td>
+                          </tr>
+                        `).join('') : `
+                          <tr>
+                            <td colspan="4" style="padding:24px; text-align:center; color:#94A3B8;">
+                              No agrochemical purchase or application logs found for this parcel.
+                            </td>
+                          </tr>
+                        `}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Footer cleanly contained inside the panel -->
+                  <div style="margin-top:16px; padding-top:12px; border-top:1px dashed #E2E8F0; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#64748B; flex-wrap:wrap; gap:8px;">
+                    <div>
+                      🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
+                    </div>
+                    <div style="font-weight:700; color:#1B4D3E; white-space:nowrap;">
+                      Audit ID: TRACE-${land.id.replace('LAND-', '')}-2026
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+
             </div>
-
-            <!-- INLINE ACCORDION TRACEABILITY PANEL (Renders directly underneath this active card) -->
-            ${isSelected ? `
-              <div id="agrochemical-traceability-panel" style="margin-top:-6px; margin-bottom:8px; background:#FFF; border-radius:16px; border:2px solid #1B4D3E; padding:22px; box-shadow:0 8px 24px rgba(27,77,62,0.12); animation:fadeIn 0.2s ease;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; border-bottom:1px solid #E2E8F0; padding-bottom:14px; flex-wrap:wrap; gap:10px;">
-                  <div>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <span style="font-size:20px;">🧪</span>
-                      <h3 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Agrochemical Traceability Log</h3>
-                      <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:2px 8px; border-radius:6px; white-space:nowrap;">
-                        APEDA Export Certified
-                      </span>
-                    </div>
-                    <div style="font-size:12.5px; color:#64748B; margin-top:4px;">
-                      Procurement & application trail for <strong>${land.parcelName}</strong> (${land.id}) &bull; Farmer: <strong>${land.farmerName}</strong> (${land.farmerPhone})
-                    </div>
-                  </div>
-                  <button onclick="selectContractedLand('${land.id}')" style="background:#F1F5F9; border:none; color:#64748B; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer;" title="Collapse Traceability Panel">
-                    ✕ Close Panel
-                  </button>
-                </div>
-
-                <!-- Traceability Table with Proper Column Widths & whitespace-nowrap -->
-                <div style="overflow-x:auto;">
-                  <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
-                    <thead>
-                      <tr style="background:#F8FAFC; border-bottom:2px solid #E2E8F0; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
-                        <th style="padding:10px 14px; width:28%;">Fertilizer Used</th>
-                        <th style="padding:10px 14px; width:28%;">Sourced From (Shop Name)</th>
-                        <th style="padding:10px 14px; width:22%; white-space:nowrap;">Date & Quantity</th>
-                        <th class="whitespace-nowrap" style="padding:10px 14px; width:22%; text-align:right; white-space:nowrap;">MRL Compliance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${(land.fertilizerHistory && land.fertilizerHistory.length > 0) ? land.fertilizerHistory.map((item, idx) => `
-                        <tr style="border-bottom:1px solid #F1F5F9; transition:background 0.15s ease;" onmouseenter="this.style.background='#F8FAFC'" onmouseleave="this.style.background='transparent'">
-                          <td style="padding:12px 14px; font-weight:700; color:#1E293B;">
-                            <span style="margin-right:6px;">🌱</span> ${item.productName}
-                          </td>
-                          <td style="padding:12px 14px; color:#475569;">
-                            🏪 ${item.shopName}
-                          </td>
-                          <td style="padding:12px 14px; color:#1B4D3E; font-weight:600; white-space:nowrap;">
-                            📅 ${item.purchaseDate} &bull; ⚖️ <strong>${item.quantityApplied}</strong>
-                          </td>
-                          <td class="whitespace-nowrap" style="padding:12px 14px; text-align:right; white-space:nowrap;">
-                            <span class="whitespace-nowrap" style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:4px 10px; border-radius:6px; border:1px solid #BBF7D0; white-space:nowrap; display:inline-block;">
-                              ✓ Passed Residue Audit
-                            </span>
-                          </td>
-                        </tr>
-                      `).join('') : `
-                        <tr>
-                          <td colspan="4" style="padding:24px; text-align:center; color:#94A3B8;">
-                            No agrochemical purchase or application logs found for this parcel.
-                          </td>
-                        </tr>
-                      `}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div style="margin-top:16px; padding-top:12px; border-top:1px dashed #E2E8F0; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#64748B; flex-wrap:wrap; gap:8px;">
-                  <div>
-                    🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
-                  </div>
-                  <div style="font-weight:700; color:#1B4D3E; white-space:nowrap;">
-                    Audit ID: TRACE-${land.id.replace('LAND-', '')}-2026
-                  </div>
-                </div>
-            ` : ''}
           `;
         }).join('')}
       </div>

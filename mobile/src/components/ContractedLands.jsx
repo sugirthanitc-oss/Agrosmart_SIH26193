@@ -231,12 +231,14 @@ export function ContractedLands({ token }) {
         </div>
       )}
 
-      {/* Contracted Lands Minimal List with Inline Accordion Traceability */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      {/* Contracted Lands Minimal List with Isolated Accordion Items */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {filteredLands.map((land) => {
           const isSelected = selectedLandId === land.id;
           return (
-            <React.Fragment key={land.id}>
+            <div key={land.id} className="contracted-land-item-container flex flex-col mb-6" style={{ display: 'flex', flexDirection: 'column', width: '100%', marginBottom: isSelected ? '24px' : '8px' }}>
+              
+              {/* Main Land Card */}
               <div
                 onClick={() => setSelectedLandId(prev => prev === land.id ? null : land.id)}
                 style={{
@@ -323,18 +325,23 @@ export function ContractedLands({ token }) {
                 </div>
               </div>
 
-              {/* INLINE EXPANDED ACCORDION TRACEABILITY PANEL (Directly underneath the active land card) */}
+              {/* INLINE EXPANDED ACCORDION TRACEABILITY PANEL (With Dynamic Height & Distinct Separation) */}
               {isSelected && (
-                <div style={{
-                  marginTop: '-6px',
-                  marginBottom: '8px',
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: '16px',
-                  border: '2px solid #1B4D3E',
-                  padding: '22px',
-                  boxShadow: '0 8px 24px rgba(27, 77, 62, 0.12)',
-                  animation: 'fadeIn 0.2s ease'
-                }}>
+                <div 
+                  className="h-auto w-full mt-3 mb-6"
+                  style={{
+                    marginTop: '10px',
+                    marginBottom: '18px',
+                    height: 'auto',
+                    minHeight: 'fit-content',
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: '16px',
+                    border: '2px solid #1B4D3E',
+                    padding: '22px',
+                    boxShadow: '0 8px 24px rgba(27, 77, 62, 0.12)',
+                    animation: 'fadeIn 0.2s ease'
+                  }}
+                >
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -421,6 +428,7 @@ export function ContractedLands({ token }) {
                     </table>
                   </div>
 
+                  {/* Footer cleanly contained inside the panel */}
                   <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px dashed #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#64748B', flexWrap: 'wrap', gap: '8px' }}>
                     <div>
                       🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
@@ -431,7 +439,8 @@ export function ContractedLands({ token }) {
                   </div>
                 </div>
               )}
-            </React.Fragment>
+
+            </div>
           );
         })}
       </div>
