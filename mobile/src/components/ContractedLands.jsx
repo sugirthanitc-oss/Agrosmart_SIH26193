@@ -231,217 +231,210 @@ export function ContractedLands({ token }) {
         </div>
       )}
 
-      {/* Contracted Lands Minimal List */}
+      {/* Contracted Lands Minimal List with Inline Accordion Traceability */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {filteredLands.map((land) => {
           const isSelected = selectedLandId === land.id;
           return (
-            <div
-              key={land.id}
-              onClick={() => setSelectedLandId(prev => prev === land.id ? null : land.id)}
-              style={{
-                backgroundColor: isSelected ? '#F0FDF4' : '#FFFFFF',
-                borderRadius: '14px',
-                padding: '20px',
-                border: isSelected ? '2px solid #1B4D3E' : '1px solid #E2E8F0',
-                boxShadow: isSelected ? '0 6px 16px rgba(27, 77, 62, 0.15)' : '0 2px 6px rgba(0,0,0,0.02)',
-                cursor: 'pointer',
-                transition: 'all 0.18s ease'
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                    <span style={{ 
-                      fontSize: '12px', 
-                      fontWeight: 800, 
-                      color: isSelected ? '#1B4D3E' : '#2F855A', 
-                      backgroundColor: isSelected ? '#DCFCE7' : '#E8F5E9', 
-                      padding: '3px 8px', 
-                      borderRadius: '6px' 
-                    }}>
-                      {land.id}
-                    </span>
-                    <span style={{ fontSize: '12px', color: '#64748B' }}>{land.contractStatus}</span>
-                    {isSelected && (
-                      <span style={{
-                        fontSize: '11px',
-                        fontWeight: 800,
-                        color: '#FFFFFF',
-                        backgroundColor: '#1B4D3E',
-                        padding: '2px 8px',
-                        borderRadius: '6px'
+            <React.Fragment key={land.id}>
+              <div
+                onClick={() => setSelectedLandId(prev => prev === land.id ? null : land.id)}
+                style={{
+                  backgroundColor: isSelected ? '#F0FDF4' : '#FFFFFF',
+                  borderRadius: '14px',
+                  padding: '20px',
+                  border: isSelected ? '2px solid #1B4D3E' : '1px solid #E2E8F0',
+                  boxShadow: isSelected ? '0 6px 16px rgba(27, 77, 62, 0.15)' : '0 2px 6px rgba(0,0,0,0.02)',
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ 
+                        fontSize: '12px', 
+                        fontWeight: 800, 
+                        color: isSelected ? '#1B4D3E' : '#2F855A', 
+                        backgroundColor: isSelected ? '#DCFCE7' : '#E8F5E9', 
+                        padding: '3px 8px', 
+                        borderRadius: '6px' 
                       }}>
-                        ✓ Selected for Traceability
+                        {land.id}
                       </span>
-                    )}
+                      <span style={{ fontSize: '12px', color: '#64748B' }}>{land.contractStatus}</span>
+                      {isSelected && (
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 800,
+                          color: '#FFFFFF',
+                          backgroundColor: '#1B4D3E',
+                          padding: '2px 8px',
+                          borderRadius: '6px'
+                        }}>
+                          ✓ Selected for Traceability
+                        </span>
+                      )}
+                    </div>
+                    <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#1E293B', margin: '4px 0' }}>
+                      {land.parcelName} • {land.crop}
+                    </h3>
+                    <div style={{ fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                      <MapPin size={14} color="#64748B" />
+                      <span>{land.location} (GPS: {land.gps})</span>
+                    </div>
                   </div>
-                  <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#1E293B', margin: '4px 0' }}>
-                    {land.parcelName} • {land.crop}
-                  </h3>
-                  <div style={{ fontSize: '13px', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                    <MapPin size={14} color="#64748B" />
-                    <span>{land.location} (GPS: {land.gps})</span>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '15px', fontWeight: 800, color: '#1E293B' }}>{land.area}</div>
+                    <div style={{ fontSize: '12px', color: '#64748B' }}>Est. Yield: {land.expectedYield}</div>
+                    <div style={{ fontSize: '11px', color: '#15803D', fontWeight: 700, marginTop: '4px' }}>
+                      ✓ {land.mrlStatus}
+                    </div>
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#1E293B' }}>{land.area}</div>
-                  <div style={{ fontSize: '12px', color: '#64748B' }}>Est. Yield: {land.expectedYield}</div>
-                  <div style={{ fontSize: '11px', color: '#15803D', fontWeight: 700, marginTop: '4px' }}>
-                    ✓ {land.mrlStatus}
+                <div style={{
+                  marginTop: '16px',
+                  paddingTop: '12px',
+                  borderTop: `1px solid ${isSelected ? '#BBF7D0' : '#F1F5F9'}`,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '12px',
+                  color: '#64748B'
+                }}>
+                  <div>
+                    Farmer: <strong style={{ color: '#1E293B' }}>{land.farmerName}</strong> ({land.farmerPhone})
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span>Expected Harvest: <strong style={{ color: '#1E293B' }}>{land.harvestDate}</strong></span>
+                    <span style={{
+                      fontSize: '11.5px',
+                      fontWeight: 700,
+                      color: isSelected ? '#1B4D3E' : '#64748B',
+                      backgroundColor: isSelected ? '#DCFCE7' : 'rgba(0,0,0,0.04)',
+                      padding: '2px 8px',
+                      borderRadius: '6px'
+                    }}>
+                      {isSelected ? 'Traceability Active ▴' : 'View Traceability 🧪'}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              <div style={{
-                marginTop: '16px',
-                paddingTop: '12px',
-                borderTop: `1px solid ${isSelected ? '#BBF7D0' : '#F1F5F9'}`,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                fontSize: '12px',
-                color: '#64748B'
-              }}>
-                <div>
-                  Farmer: <strong style={{ color: '#1E293B' }}>{land.farmerName}</strong> ({land.farmerPhone})
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span>Expected Harvest: <strong style={{ color: '#1E293B' }}>{land.harvestDate}</strong></span>
-                  <span style={{
-                    fontSize: '11.5px',
-                    fontWeight: 700,
-                    color: isSelected ? '#1B4D3E' : '#64748B',
-                    backgroundColor: isSelected ? '#DCFCE7' : 'rgba(0,0,0,0.04)',
-                    padding: '2px 8px',
-                    borderRadius: '6px'
+              {/* INLINE EXPANDED ACCORDION TRACEABILITY PANEL (Directly underneath the active land card) */}
+              {isSelected && (
+                <div style={{
+                  marginTop: '-6px',
+                  marginBottom: '8px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '16px',
+                  border: '2px solid #1B4D3E',
+                  padding: '22px',
+                  boxShadow: '0 8px 24px rgba(27, 77, 62, 0.12)',
+                  animation: 'fadeIn 0.2s ease'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    marginBottom: '16px',
+                    borderBottom: '1px solid #E2E8F0',
+                    paddingBottom: '14px',
+                    flexWrap: 'wrap',
+                    gap: '10px'
                   }}>
-                    {isSelected ? 'Traceability Active ▾' : 'View Traceability 🧪'}
-                  </span>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '20px' }}>🧪</span>
+                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#1E293B', margin: 0 }}>
+                          Agrochemical Traceability Log
+                        </h3>
+                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#166534', backgroundColor: '#DCFCE7', padding: '2px 8px', borderRadius: '6px', whiteSpace: 'nowrap' }}>
+                          APEDA Export Certified
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '4px' }}>
+                        Procurement & application history for <strong>{land.parcelName}</strong> ({land.id}) • Farmer: <strong>{land.farmerName}</strong> ({land.farmerPhone})
+                      </div>
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedLandId(null);
+                      }}
+                      style={{
+                        backgroundColor: '#F1F5F9',
+                        border: 'none',
+                        color: '#64748B',
+                        padding: '6px 14px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      ✕ Close Panel
+                    </button>
+                  </div>
+
+                  {/* Traceability Table with whitespace-nowrap and column widths */}
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+                      <thead>
+                        <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          <th style={{ padding: '10px 14px', width: '28%' }}>Fertilizer Used</th>
+                          <th style={{ padding: '10px 14px', width: '28%' }}>Sourced From (Shop Name)</th>
+                          <th style={{ padding: '10px 14px', width: '22%', whiteSpace: 'nowrap' }}>Date & Quantity</th>
+                          <th className="whitespace-nowrap" style={{ padding: '10px 14px', width: '22%', textAlign: 'right', whiteSpace: 'nowrap' }}>MRL Compliance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {land.fertilizerHistory && land.fertilizerHistory.length > 0 ? (
+                          land.fertilizerHistory.map((item, idx) => (
+                            <tr key={idx} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                              <td style={{ padding: '12px 14px', fontWeight: 700, color: '#1E293B' }}>
+                                🌱 {item.productName}
+                              </td>
+                              <td style={{ padding: '12px 14px', color: '#475569' }}>
+                                🏪 {item.shopName}
+                              </td>
+                              <td style={{ padding: '12px 14px', color: '#1B4D3E', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                📅 {item.purchaseDate} • ⚖️ <strong>{item.quantityApplied}</strong>
+                              </td>
+                              <td className="whitespace-nowrap" style={{ padding: '12px 14px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                                <span className="whitespace-nowrap" style={{ fontSize: '11px', fontWeight: 800, color: '#166534', backgroundColor: '#DCFCE7', padding: '4px 10px', borderRadius: '6px', border: '1px solid #BBF7D0', whiteSpace: 'nowrap', display: 'inline-block' }}>
+                                  ✓ Passed Residue Audit
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={4} style={{ padding: '24px', textAlign: 'center', color: '#94A3B8' }}>
+                              No agrochemical purchase or application logs found for this parcel.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px dashed #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#64748B', flexWrap: 'wrap', gap: '8px' }}>
+                    <div>
+                      🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
+                    </div>
+                    <div style={{ fontWeight: 700, color: '#1B4D3E', whiteSpace: 'nowrap' }}>
+                      Audit ID: TRACE-{land.id.replace('LAND-', '')}-2026
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </React.Fragment>
           );
         })}
       </div>
-
-      {/* DYNAMIC TRACEABILITY PANEL UI (Renders when a land is selected) */}
-      {selectedLand ? (
-        <div style={{
-          marginTop: '24px',
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          border: '2px solid #1B4D3E',
-          padding: '22px',
-          boxShadow: '0 8px 24px rgba(27, 77, 62, 0.12)'
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: '16px',
-            borderBottom: '1px solid #E2E8F0',
-            paddingBottom: '14px',
-            flexWrap: 'wrap',
-            gap: '10px'
-          }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '20px' }}>🧪</span>
-                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#1E293B', margin: 0 }}>
-                  Agrochemical Traceability Log
-                </h3>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: '#166534', backgroundColor: '#DCFCE7', padding: '2px 8px', borderRadius: '6px' }}>
-                  APEDA Export Certified
-                </span>
-              </div>
-              <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '4px' }}>
-                Procurement & application history for <strong>{selectedLand.parcelName}</strong> ({selectedLand.id}) • Farmer: <strong>{selectedLand.farmerName}</strong> ({selectedLand.farmerPhone})
-              </div>
-            </div>
-            <button
-              onClick={() => setSelectedLandId(null)}
-              style={{
-                backgroundColor: '#F1F5F9',
-                border: 'none',
-                color: '#64748B',
-                padding: '6px 14px',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              ✕ Close Panel
-            </button>
-          </div>
-
-          {/* Traceability Table */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ background: '#F8FAFC', borderBottom: '2px solid #E2E8F0', color: '#475569', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  <th style={{ padding: '10px 14px' }}>Fertilizer Used</th>
-                  <th style={{ padding: '10px 14px' }}>Sourced From (Shop Name)</th>
-                  <th style={{ padding: '10px 14px' }}>Date & Quantity</th>
-                  <th style={{ padding: '10px 14px', textAlign: 'right' }}>MRL Compliance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedLand.fertilizerHistory && selectedLand.fertilizerHistory.length > 0 ? (
-                  selectedLand.fertilizerHistory.map((item, idx) => (
-                    <tr key={idx} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                      <td style={{ padding: '12px 14px', fontWeight: 700, color: '#1E293B' }}>
-                        🌱 {item.productName}
-                      </td>
-                      <td style={{ padding: '12px 14px', color: '#475569' }}>
-                        🏪 {item.shopName}
-                      </td>
-                      <td style={{ padding: '12px 14px', color: '#1B4D3E', fontWeight: 600 }}>
-                        📅 {item.purchaseDate} • ⚖️ <strong>{item.quantityApplied}</strong>
-                      </td>
-                      <td style={{ padding: '12px 14px', textAlign: 'right' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#166534', backgroundColor: '#DCFCE7', padding: '3px 8px', borderRadius: '6px', border: '1px solid #BBF7D0' }}>
-                          ✓ Passed Residue Audit
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} style={{ padding: '24px', textAlign: 'center', color: '#94A3B8' }}>
-                      No agrochemical purchase or application logs found for this parcel.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px dashed #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#64748B', flexWrap: 'wrap', gap: '8px' }}>
-            <div>
-              🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
-            </div>
-            <div style={{ fontWeight: 700, color: '#1B4D3E' }}>
-              Audit ID: TRACE-{selectedLand.id.replace('LAND-', '')}-2026
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div style={{
-          marginTop: '18px',
-          padding: '16px',
-          border: '1px dashed #CBD5E1',
-          borderRadius: '12px',
-          textAlign: 'center',
-          color: '#64748B',
-          backgroundColor: '#F8FAFC',
-          fontSize: '13px'
-        }}>
-          💡 <strong>Tip:</strong> Click any contracted land card above to view its <strong>Agrochemical Traceability Log</strong> & chemical procurement history.
-        </div>
-      )}
 
       {/* ADD LAND MODAL (Strictly by Farmer Land ID) */}
       {isModalOpen && (

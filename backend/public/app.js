@@ -529,7 +529,7 @@ const I18N_TRANSLATIONS = {
     btn_collapse_timeline: 'Collapse Timeline',
     btn_done_camera: '✓ Done / Completed (Camera Proof)',
     btn_not_done: '❌ Not Done',
-    btn_reschedule: '⏳ Reschedule',
+    btn_reschedule: 'Reschedule',
     btn_quick_reschedule_2d: '⚡ +2 Days Curative Shift',
     btn_task_completed: '✓ Task Completed',
     immediate_action_prompt: 'Action Protocol',
@@ -911,7 +911,7 @@ const I18N_TRANSLATIONS = {
     btn_collapse_timeline: 'காலவரிசையை சுருக்கு',
     btn_done_camera: '✓ முடிந்தது (கேமரா சான்று)',
     btn_not_done: '❌ முடிக்கப்படவில்லை',
-    btn_reschedule: '⏳ மறுதிட்டமிடு',
+    btn_reschedule: 'மறுதிட்டமிடு',
     btn_quick_reschedule_2d: '⚡ +2 நாட்கள் நோய் தடுப்பு மாற்றம்',
     btn_task_completed: '✓ பணி முடிந்தது',
     immediate_action_prompt: 'செயல்பாட்டு வழிகாட்டுதல்',
@@ -2488,7 +2488,6 @@ function renderExporterDashboard(container) {
   const user = state.user || {};
   const lands = window.EXPORTER_CONTRACTED_LANDS || [];
   const selectedLandId = window.selectedContractedLandId || null;
-  const selectedLand = lands.find(l => l.id === selectedLandId);
 
   container.innerHTML = `
     <div style="padding:24px;">
@@ -2527,18 +2526,17 @@ function renderExporterDashboard(container) {
         </div>
       </div>
 
-      <!-- CONTRACTED LANDS ACTION HEADER -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
+      <!-- CONTRACTED LANDS ACTION HEADER (Without any redundant instruction text) -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
         <div>
           <h2 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Contracted Lands</h2>
-          <div style="font-size:12px; color:#64748B; margin-top:2px;">Click any land parcel below to view its complete agrochemical procurement & application log</div>
         </div>
         <button onclick="openAddContractedLandModal()" style="background:#1B4D3E; color:#FFF; border:none; padding:10px 18px; border-radius:10px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; box-shadow:0 4px 10px rgba(27, 77, 62, 0.25);">
           + Add Contracted Land
         </button>
       </div>
 
-      <!-- CONTRACTED LANDS LIST -->
+      <!-- CONTRACTED LANDS LIST WITH ACCORDION-STYLE INLINE TRACEABILITY PANEL -->
       <div style="display:flex; flex-direction:column; gap:14px;">
         ${lands.map(land => {
           const isSelected = selectedLandId === land.id;
@@ -2565,90 +2563,85 @@ function renderExporterDashboard(container) {
                 <div style="display:flex; align-items:center; gap:12px;">
                   <span>Harvest Due: <strong style="color:#1E293B;">${land.harvestDate}</strong></span>
                   <span style="font-size:11.5px; font-weight:700; color:${isSelected ? '#1B4D3E' : '#64748B'}; background:${isSelected ? '#DCFCE7' : 'rgba(0,0,0,0.04)'}; padding:2px 8px; border-radius:6px;">
-                    ${isSelected ? 'Traceability Active ▾' : 'View Traceability 🧪'}
+                    ${isSelected ? 'Traceability Active ▴' : 'View Traceability 🧪'}
                   </span>
                 </div>
               </div>
             </div>
+
+            <!-- INLINE ACCORDION TRACEABILITY PANEL (Renders directly underneath this active card) -->
+            ${isSelected ? `
+              <div id="agrochemical-traceability-panel" style="margin-top:-6px; margin-bottom:8px; background:#FFF; border-radius:16px; border:2px solid #1B4D3E; padding:22px; box-shadow:0 8px 24px rgba(27,77,62,0.12); animation:fadeIn 0.2s ease;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; border-bottom:1px solid #E2E8F0; padding-bottom:14px; flex-wrap:wrap; gap:10px;">
+                  <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="font-size:20px;">🧪</span>
+                      <h3 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Agrochemical Traceability Log</h3>
+                      <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:2px 8px; border-radius:6px; white-space:nowrap;">
+                        APEDA Export Certified
+                      </span>
+                    </div>
+                    <div style="font-size:12.5px; color:#64748B; margin-top:4px;">
+                      Procurement & application trail for <strong>${land.parcelName}</strong> (${land.id}) &bull; Farmer: <strong>${land.farmerName}</strong> (${land.farmerPhone})
+                    </div>
+                  </div>
+                  <button onclick="selectContractedLand('${land.id}')" style="background:#F1F5F9; border:none; color:#64748B; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer;" title="Collapse Traceability Panel">
+                    ✕ Close Panel
+                  </button>
+                </div>
+
+                <!-- Traceability Table with Proper Column Widths & whitespace-nowrap -->
+                <div style="overflow-x:auto;">
+                  <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+                    <thead>
+                      <tr style="background:#F8FAFC; border-bottom:2px solid #E2E8F0; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
+                        <th style="padding:10px 14px; width:28%;">Fertilizer Used</th>
+                        <th style="padding:10px 14px; width:28%;">Sourced From (Shop Name)</th>
+                        <th style="padding:10px 14px; width:22%; white-space:nowrap;">Date & Quantity</th>
+                        <th class="whitespace-nowrap" style="padding:10px 14px; width:22%; text-align:right; white-space:nowrap;">MRL Compliance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${(land.fertilizerHistory && land.fertilizerHistory.length > 0) ? land.fertilizerHistory.map((item, idx) => `
+                        <tr style="border-bottom:1px solid #F1F5F9; transition:background 0.15s ease;" onmouseenter="this.style.background='#F8FAFC'" onmouseleave="this.style.background='transparent'">
+                          <td style="padding:12px 14px; font-weight:700; color:#1E293B;">
+                            <span style="margin-right:6px;">🌱</span> ${item.productName}
+                          </td>
+                          <td style="padding:12px 14px; color:#475569;">
+                            🏪 ${item.shopName}
+                          </td>
+                          <td style="padding:12px 14px; color:#1B4D3E; font-weight:600; white-space:nowrap;">
+                            📅 ${item.purchaseDate} &bull; ⚖️ <strong>${item.quantityApplied}</strong>
+                          </td>
+                          <td class="whitespace-nowrap" style="padding:12px 14px; text-align:right; white-space:nowrap;">
+                            <span class="whitespace-nowrap" style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:4px 10px; border-radius:6px; border:1px solid #BBF7D0; white-space:nowrap; display:inline-block;">
+                              ✓ Passed Residue Audit
+                            </span>
+                          </td>
+                        </tr>
+                      `).join('') : `
+                        <tr>
+                          <td colspan="4" style="padding:24px; text-align:center; color:#94A3B8;">
+                            No agrochemical purchase or application logs found for this parcel.
+                          </td>
+                        </tr>
+                      `}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style="margin-top:16px; padding-top:12px; border-top:1px dashed #E2E8F0; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#64748B; flex-wrap:wrap; gap:8px;">
+                  <div>
+                    🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
+                  </div>
+                  <div style="font-weight:700; color:#1B4D3E; white-space:nowrap;">
+                    Audit ID: TRACE-${land.id.replace('LAND-', '')}-2026
+                  </div>
+                </div>
+            ` : ''}
           `;
         }).join('')}
       </div>
-
-      <!-- DYNAMIC TRACEABILITY PANEL UI (Renders when a land is selected) -->
-      ${selectedLand ? `
-        <div id="agrochemical-traceability-panel" style="margin-top:24px; background:#FFF; border-radius:16px; border:2px solid #1B4D3E; padding:22px; box-shadow:0 8px 24px rgba(27,77,62,0.12); animation:fadeIn 0.2s ease;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; border-bottom:1px solid #E2E8F0; padding-bottom:14px; flex-wrap:wrap; gap:10px;">
-            <div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:20px;">🧪</span>
-                <h3 style="font-size:18px; font-weight:800; color:#1E293B; margin:0;">Agrochemical Traceability Log</h3>
-                <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:2px 8px; border-radius:6px;">
-                  APEDA Export Certified
-                </span>
-              </div>
-              <div style="font-size:12.5px; color:#64748B; margin-top:4px;">
-                Procurement & application trail for <strong>${selectedLand.parcelName}</strong> (${selectedLand.id}) &bull; Farmer: <strong>${selectedLand.farmerName}</strong> (${selectedLand.farmerPhone})
-              </div>
-            </div>
-            <button onclick="selectContractedLand('${selectedLand.id}')" style="background:#F1F5F9; border:none; color:#64748B; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer;" title="Close Traceability Panel">
-              ✕ Close Panel
-            </button>
-          </div>
-
-          <!-- Traceability Table -->
-          <div style="overflow-x:auto;">
-            <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
-              <thead>
-                <tr style="background:#F8FAFC; border-bottom:2px solid #E2E8F0; color:#475569; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">
-                  <th style="padding:10px 14px;">Fertilizer Used</th>
-                  <th style="padding:10px 14px;">Sourced From (Shop Name)</th>
-                  <th style="padding:10px 14px;">Date & Quantity</th>
-                  <th style="padding:10px 14px; text-align:right;">MRL Compliance</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${(selectedLand.fertilizerHistory && selectedLand.fertilizerHistory.length > 0) ? selectedLand.fertilizerHistory.map((item, idx) => `
-                  <tr style="border-bottom:1px solid #F1F5F9; transition:background 0.15s ease;" onmouseenter="this.style.background='#F8FAFC'" onmouseleave="this.style.background='transparent'">
-                    <td style="padding:12px 14px; font-weight:700; color:#1E293B;">
-                      <span style="margin-right:6px;">🌱</span> ${item.productName}
-                    </td>
-                    <td style="padding:12px 14px; color:#475569;">
-                      🏪 ${item.shopName}
-                    </td>
-                    <td style="padding:12px 14px; color:#1B4D3E; font-weight:600;">
-                      📅 ${item.purchaseDate} &bull; ⚖️ <strong>${item.quantityApplied}</strong>
-                    </td>
-                    <td style="padding:12px 14px; text-align:right;">
-                      <span style="font-size:11px; font-weight:800; color:#166534; background:#DCFCE7; padding:3px 8px; border-radius:6px; border:1px solid #BBF7D0;">
-                        ✓ Passed Residue Audit
-                      </span>
-                    </td>
-                  </tr>
-                `).join('') : `
-                  <tr>
-                    <td colspan="4" style="padding:24px; text-align:center; color:#94A3B8;">
-                      No agrochemical purchase or application logs found for this parcel.
-                    </td>
-                  </tr>
-                `}
-              </tbody>
-            </table>
-          </div>
-
-          <div style="margin-top:16px; padding-top:12px; border-top:1px dashed #E2E8F0; display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#64748B; flex-wrap:wrap; gap:8px;">
-            <div>
-              🛡️ All listed agrochemicals verified against Codex Alimentarius & EU MRL (Maximum Residue Limit) protocols.
-            </div>
-            <div style="font-weight:700; color:#1B4D3E;">
-              Audit ID: TRACE-${selectedLand.id.replace('LAND-', '')}-2026
-            </div>
-          </div>
-        </div>
-      ` : `
-        <div style="margin-top:18px; padding:16px; border:1px dashed #CBD5E1; border-radius:12px; text-align:center; color:#64748B; background:#F8FAFC; font-size:13px;">
-          💡 <strong>Tip:</strong> Click any contracted land card above to open its <strong>Agrochemical Traceability Log</strong> & chemical procurement history.
-        </div>
-      `}
     </div>
   `;
 }
@@ -5657,7 +5650,7 @@ async function toggleInlineProgressionTimeline(farmId) {
             ${t('btn_done_camera', '✓ Completed')}
           </button>
           <button onclick="openRescheduleModal('${farmId}', 'act-001')" class="agro-btn-secondary" style="padding:6px 10px; font-size:11px;">
-            ${t('btn_reschedule', '⏳ Reschedule')}
+            ⏳ ${t('btn_reschedule', 'Reschedule')}
           </button>
         </div>
       </div>
@@ -5811,7 +5804,7 @@ async function openWeeklyProgressionModal(farmId) {
                 ${t('timeline_btn_completed_camera', '📷 Completed (Camera Proof)')}
               </button>
               <button onclick="closeModal(); openRescheduleModal('${farmId}', 'act-001')" class="agro-btn-secondary" style="padding:9px 12px; font-size:12px; font-weight:700;">
-                ${t('btn_reschedule', '⏳ Reschedule')}
+                ⏳ ${t('btn_reschedule', 'Reschedule')}
               </button>
             </div>
           </div>
