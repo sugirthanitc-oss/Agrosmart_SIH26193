@@ -7759,7 +7759,7 @@ function renderAuthModalContent() {
 
   const isLogin = activeAuthTab === 'login';
 
-  // Role metadata with titles, subtitles, and dynamic field configurations
+  // Strict Farmer-Only Role metadata configuration
   const roleConfigs = {
     farmer: {
       roleKey: 'farmer',
@@ -7774,51 +7774,6 @@ function renderAuthModalContent() {
       passLabel: 'Passcode / Security PIN *',
       demoId: '9842100004',
       demoName: 'Arumugam Sundaram',
-      demoPass: 'SecureAgro#2026'
-    },
-    agent: {
-      roleKey: 'agent',
-      tabLabel: 'Agent',
-      name: 'Field Agent',
-      icon: '📋',
-      title: 'Field Agent Operations Login',
-      subtitle: 'Verify farmer lands, quality checks & mandi liaison',
-      desc: 'Perform GPS-locked land surveys, inspect APEDA export standards and manage farmer portfolios.',
-      idLabel: 'Work ID / Badge Number *',
-      idPlaceholder: 'e.g. AGT-TN-101 or 9842100002',
-      passLabel: 'Password *',
-      demoId: '9842100002',
-      demoName: 'Selvam Murugan',
-      demoPass: 'SecureAgro#2026'
-    },
-    exporter: {
-      roleKey: 'exporter',
-      tabLabel: 'Exporter',
-      name: 'Exporter',
-      icon: '🚢',
-      title: 'Global Exporter Portal Login',
-      subtitle: 'Procure bulk agri-produce & international trade',
-      desc: 'Direct APEDA farmer contract farming, MRL compliance checks and international shipping clearance.',
-      idLabel: 'Trade License / IEC Number *',
-      idPlaceholder: 'e.g. EXP-TN-101 or 9842100001',
-      passLabel: 'Password *',
-      demoId: '9842100001',
-      demoName: 'Rajesh Exports (Kavitha S.)',
-      demoPass: 'SecureAgro#2026'
-    },
-    shop_owner: {
-      roleKey: 'shop_owner',
-      tabLabel: 'Shop',
-      name: 'Fertilizer & Pesticide Shop',
-      icon: '🏬',
-      title: 'Fertilizer & Pesticide Shop Login',
-      subtitle: 'Supply farm inputs, view orders & manage stock',
-      desc: 'Live inventory stock management, farmer order processing, invoice auto-stocking and sales telemetry.',
-      idLabel: 'Shop ID / GST License *',
-      idPlaceholder: 'e.g. SHP-TN-101 or 9842100003',
-      passLabel: 'Passcode / Security PIN *',
-      demoId: '9842100003',
-      demoName: 'Shanmugam Agri Clinic',
       demoPass: 'SecureAgro#2026'
     }
   };
@@ -7854,27 +7809,22 @@ function renderAuthModalContent() {
             <!-- 1. ROLE-BASED LOGIN FLOW (DEFAULT VIEW) -->
             <!-- ======================================================= -->
 
-            <!-- Role Tabs (4 Distinct Pills: Farmer, Agent, Exporter, Shop) -->
+            <!-- Farmer Portal Role Indicator -->
             <div style="margin-bottom:18px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                 <label style="font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; letter-spacing:0.6px;">
-                  SELECT YOUR ROLE
+                  PORTAL ACCESS
                 </label>
                 <span style="font-size:11px; font-weight:700; color:#2F855A; background:#E8F5E9; padding:2px 8px; border-radius:10px;">
-                  Active: ${currentConfig.name}
+                  Active: Farmer
                 </span>
               </div>
-              <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;">
-                ${Object.keys(roleConfigs).map(key => {
-                  const cfg = roleConfigs[key];
-                  const isActive = selectedAuthRole === key;
-                  return `
-                    <button type="button" onclick="changeAuthModalRole('${key}')" style="padding:10px 4px; border-radius:12px; border:${isActive ? '2px solid #2F855A' : '1px solid #E2E8F0'}; background:${isActive ? '#E8F5E9' : '#F8FAFC'}; color:${isActive ? '#1B4D3E' : '#64748B'}; font-weight:800; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; box-shadow:${isActive ? '0 3px 8px rgba(47,133,90,0.2)' : 'none'}; transition:all 0.2s;">
-                      <span style="font-size:18px;">${cfg.icon}</span>
-                      <span style="letter-spacing:0.2px;">${cfg.tabLabel}</span>
-                    </button>
-                  `;
-                }).join('')}
+              <div style="padding:12px 16px; border-radius:12px; border:2px solid #2F855A; background:#E8F5E9; color:#1B4D3E; display:flex; align-items:center; gap:12px;">
+                <span style="font-size:24px;">🌾</span>
+                <div>
+                  <div style="font-weight:900; font-size:13px;">Farmer Precision Agriculture Portal</div>
+                  <div style="font-size:11px; color:#2F855A; font-weight:600;">Authorized login for cultivators & farm operations</div>
+                </div>
               </div>
             </div>
 
@@ -7948,8 +7898,8 @@ function renderAuthModalContent() {
                 </p>
               </div>
 
-              <!-- 4 Large Clickable Cards -->
-              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+              <!-- Farmer Registration Card -->
+              <div style="display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:20px;">
                 ${Object.keys(roleConfigs).map(key => {
                   const cfg = roleConfigs[key];
                   const isSelected = selectedAuthRole === key;
@@ -8042,53 +7992,6 @@ function renderAuthModalContent() {
                         <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">PRIMARY CROP *</label>
                         <input type="text" id="reg-farmer-crop" required value="Bhavani Turmeric (PTS-10)" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
                       </div>
-                    </div>
-                  ` : ''}
-
-                  ${selectedAuthRole === 'agent' ? `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                      <div>
-                        <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">ASSIGNED DISTRICT *</label>
-                        <input type="text" id="reg-agent-district" required value="Erode & Salem Agri Districts" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                      </div>
-                      <div>
-                        <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">GOVERNMENT / AGENT BADGE ID *</label>
-                        <input type="text" id="reg-agent-badge" required value="AGT-TN-104" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                      </div>
-                    </div>
-                  ` : ''}
-
-                  ${selectedAuthRole === 'exporter' ? `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
-                      <div>
-                        <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">COMPANY NAME *</label>
-                        <input type="text" id="reg-exp-company" required value="Kongu Global Agro Exports Ltd." style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                      </div>
-                      <div>
-                        <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">IMPORT-EXPORT CODE (IEC) *</label>
-                        <input type="text" id="reg-exp-iec" required maxlength="10" value="0485019284" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                      </div>
-                    </div>
-                    <div>
-                      <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">DESTINATION PORTS *</label>
-                      <input type="text" id="reg-exp-ports" required value="Tuticorin & Chennai Ports (UAE / EU Terminal)" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                    </div>
-                  ` : ''}
-
-                  ${selectedAuthRole === 'shop_owner' ? `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px;">
-                      <div>
-                        <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">SHOP NAME *</label>
-                        <input type="text" id="reg-shop-name" required value="Kisan Agri Care & Bio-Fertilizers" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                      </div>
-                      <div>
-                        <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">GST / LICENSE NUMBER *</label>
-                        <input type="text" id="reg-shop-gst" required maxlength="15" value="33AAACK7741P1ZB" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
-                      </div>
-                    </div>
-                    <div>
-                      <label style="display:block; font-size:10px; font-weight:700; color:#475569; margin-bottom:4px; text-transform:uppercase;">SERVICE AREA / PIN CODE *</label>
-                      <input type="text" id="reg-shop-pincode" required value="638001 (Erode Central Hub)" style="width:100%; box-sizing:border-box; padding:8px 10px; border-radius:6px; border:1px solid #CBD5E1; font-size:12px; outline:none; background:#FFFFFF;" />
                     </div>
                   ` : ''}
                 </div>
@@ -8204,23 +8107,10 @@ async function handleAuthSubmit(event) {
       role: roleKey
     };
 
-    if (roleKey === 'farmer') {
-      payload.state = document.getElementById('reg-farmer-state')?.value || 'Tamil Nadu';
-      payload.district = document.getElementById('reg-farmer-district')?.value || 'Thanjavur';
-      payload.land_size = document.getElementById('reg-farmer-land-size')?.value || '4.5';
-      payload.primary_crop = document.getElementById('reg-farmer-crop')?.value || 'Bhavani Turmeric (PTS-10)';
-    } else if (roleKey === 'agent') {
-      payload.district = document.getElementById('reg-agent-district')?.value || 'Erode & Salem Agri Districts';
-      payload.badge_id = document.getElementById('reg-agent-badge')?.value || 'AGT-TN-104';
-    } else if (roleKey === 'exporter') {
-      payload.company_name = document.getElementById('reg-exp-company')?.value || 'Kongu Global Agro Exports Ltd.';
-      payload.iec = document.getElementById('reg-exp-iec')?.value || '0485019284';
-      payload.destination_ports = document.getElementById('reg-exp-ports')?.value || 'Tuticorin & Chennai Ports';
-    } else if (roleKey === 'shop_owner' || roleKey === 'shop') {
-      payload.shop_name = document.getElementById('reg-shop-name')?.value || 'Kisan Agri Care & Bio-Fertilizers';
-      payload.gst = document.getElementById('reg-shop-gst')?.value || '33AAACK7741P1ZB';
-      payload.service_area = document.getElementById('reg-shop-pincode')?.value || '638001';
-    }
+    payload.state = document.getElementById('reg-farmer-state')?.value || 'Tamil Nadu';
+    payload.district = document.getElementById('reg-farmer-district')?.value || 'Thanjavur';
+    payload.land_size = document.getElementById('reg-farmer-land-size')?.value || '4.5';
+    payload.primary_crop = document.getElementById('reg-farmer-crop')?.value || 'Bhavani Turmeric (PTS-10)';
 
     try {
       const res = await fetch('/api/auth/register', {
@@ -8232,7 +8122,7 @@ async function handleAuthSubmit(event) {
       if (res.ok && data.user) {
         state.token = data.token;
         state.user = data.user;
-        state.currentRole = data.user.role || roleKey;
+        state.currentRole = 'farmer';
       } else {
         throw new Error(data.error || 'Registration failed');
       }
@@ -8240,30 +8130,20 @@ async function handleAuthSubmit(event) {
       state.user = {
         name: name,
         phone: contact,
-        role: roleKey,
+        role: 'farmer',
         region: 'Tamil Nadu Operations Hub'
       };
       state.token = 'demo-offline-token';
-      state.currentRole = roleKey;
+      state.currentRole = 'farmer';
     }
   }
 
   // Close the Auth Modal immediately
   closeAuthModal();
 
-  // ATOMIC ROLE-BASED DASHBOARD ROUTING
-  // Explicitly routes user to their correct role-specific dashboard with zero page reload
-  if (state.currentRole === 'shop_owner' || state.currentRole === 'shop') {
-    state.currentRole = 'shop_owner';
-    state.currentTab = 'products';
-  } else if (state.currentRole === 'exporter') {
-    state.currentTab = 'contracted_lands';
-  } else if (state.currentRole === 'agent') {
-    state.currentTab = 'lands';
-  } else {
-    state.currentRole = 'farmer';
-    state.currentTab = 'menu';
-  }
+  // ATOMIC FARMER DASHBOARD ROUTING
+  state.currentRole = 'farmer';
+  state.currentTab = 'menu';
 
   // Synchronize Topbar Role Pills
   document.querySelectorAll('.role-pill-btn').forEach(btn => {

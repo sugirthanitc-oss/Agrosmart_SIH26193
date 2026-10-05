@@ -55,55 +55,18 @@ export class AuthController {
     let generatedExporterCode: string | undefined = undefined;
     let generatedFarmerIdCode: string | undefined = undefined;
 
-    // 2. Role-Specific Isolation & Validation
-    if (userRole === 'farmer') {
-      generatedFarmerIdCode = `TN-FARM-${Math.floor(1000 + Math.random() * 9000)}`;
-      if (exporter_code) {
-        const exp = db.getUserByExporterCode(exporter_code);
-        if (exp && exp.role === 'exporter') {
-          linkedExporterId = exp.id;
-        }
-      }
-    } else if (userRole === 'agent') {
-      // Mandatory Exporter Code for Field Agents
-      if (!exporter_code) {
-        return res.status(400).json({
-          error: 'AgentConstraintError: Field agents must enter a valid Exporter Code to link their account directly under an authorized exporter.'
-        });
-      }
+    // 2. Strict Farmer-Only Role Constraint
+    if (userRole !== 'farmer') {
+      return res.status(403).json({
+        error: 'RoleConstraintError: Platform operates strictly in Farmer-Centric mode. Only Farmer registrations are authorized.'
+      });
+    }
+
+    generatedFarmerIdCode = `TN-FARM-${Math.floor(1000 + Math.random() * 9000)}`;
+    if (exporter_code) {
       const exp = db.getUserByExporterCode(exporter_code);
-      if (!exp || exp.role !== 'exporter') {
-        return res.status(400).json({
-          error: `AgentConstraintError: Exporter code "${exporter_code}" not found. Please verify the code with your Exporter.`
-        });
-      }
-      linkedExporterId = exp.id;
-    } else if (userRole === 'exporter') {
-      if (!company_name || company_name.trim().length < 3) {
-        return res.status(400).json({ error: 'ValidationError: Company Name is required.' });
-      }
-      if (!company_reg_id) {
-        return res.status(400).json({ error: 'ValidationError: Company Registration ID is required.' });
-      }
-      if (!gst_number || !GST_REGEX.test(gst_number.trim().toUpperCase())) {
-        return res.status(400).json({
-          error: 'ValidationError: Invalid GST Number. Must be strictly 15 alphanumeric characters (e.g. 33AAAAA0000A1Z5).'
-        });
-      }
-      if (!export_id || !EXPORT_ID_REGEX.test(export_id.trim())) {
-        return res.status(400).json({
-          error: 'ValidationError: Export ID / IEC Number must be strictly 10 characters.'
-        });
-      }
-      generatedExporterCode = `EXP-TN-${Math.floor(1000 + Math.random() * 9000)}`;
-    } else if (userRole === 'shop_owner') {
-      if (!shop_name) {
-        return res.status(400).json({ error: 'ValidationError: Shop Name is required.' });
-      }
-      if (!gst_number || !GST_REGEX.test(gst_number.trim().toUpperCase())) {
-        return res.status(400).json({
-          error: 'ValidationError: Verified GST Number is required (strictly 15 characters, e.g. 33AABCM9102K1ZV).'
-        });
+      if (exp && exp.role === 'exporter') {
+        linkedExporterId = exp.id;
       }
     }
 
@@ -174,8 +137,8 @@ export class AuthController {
       return res.status(404).json({ error: 'No account found with these credentials. Please check or register.' });
     }
 
-    if (role && user.role !== role) {
-      return res.status(403).json({ error: `Account exists but is registered as role "${user.role.toUpperCase()}", not "${role.toUpperCase()}".` });
+    if (user.role !== 'farmer') {
+      return res.status(403).json({ error: 'Access denied: Platform is operating exclusively for Farmers.' });
     }
 
     // In demo environment, allow any password or specific match
@@ -214,27 +177,19 @@ export class AuthController {
 
     let user = db.getUserByPhone(phone);
     if (!user) {
-      const userRole: UserRole = role || 'farmer';
-      if (userRole === 'agent' && !linked_exporter_id) {
-        return res.status(400).json({
-          error: 'AgentAccountConstraintError: A field agent account cannot exist without a valid linked_exporter_id.'
-        });
-      }
-
       user = {
         id: `user-${uuidv4().substring(0, 8)}`,
         phone,
-        role: userRole,
-        name: name || (userRole === 'farmer' ? 'Arumugam Sundaram' : `${userRole.toUpperCase()} User`),
-        region: region || 'Thanjavur, Tamil Nadu',
-        language: language || 'ta',
-        farmer_id_code: userRole === 'farmer' ? `TN-FARM-${Math.floor(1000 + Math.random() * 9000)}` : undefined,
-        exporter_code: userRole === 'exporter' ? `EXP-TN-${Math.floor(1000 + Math.random() * 9000)}` : undefined,
-        linked_agent_id,
-        linked_exporter_id,
+        role: 'farmer',
+        name: name || 'Rajendra Singh',
+        region: region || 'Punjab, India',
+        language: language || 'en',
+        farmer_id_code: `TN-FARM-${Math.floor(1000 + Math.random() * 9000)}`,
         created_at: new Date().toISOString()
       };
       db.createUser(user);
+    } else if (user.role !== 'farmer') {
+      return res.status(403).json({ error: 'Access denied: Platform is operating exclusively for Farmers.' });
     }
 
     const token = generateToken({

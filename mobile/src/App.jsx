@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { AgroSmartFarmerDashboard } from './components/AgroSmartFarmerDashboard.jsx';
-import { FieldAgentVisitScreen } from './components/FieldAgentVisitScreen.jsx';
-import { ShopDashboard } from './components/ShopDashboard.jsx';
-import { ExporterDashboard } from './components/ExporterDashboard.jsx';
 import { OfflineSyncIndicator } from './components/OfflineSyncIndicator.jsx';
 import { RoleSwitchBar } from './components/RoleSwitchBar.jsx';
 import { AntigravityCoreModal } from './components/AntigravityCoreModal.jsx';
 import { Sparkles } from 'lucide-react';
 
 const DEMO_PERSONAS = {
-  farmer: { phone: '9800000004', name: 'Rajendra Singh', role: 'farmer' },
-  agent: { phone: '9800000002', name: 'Gurpreet Singh', role: 'agent' },
-  shop_owner: { phone: '9800000003', name: 'Kisan Retail & Wholesale', role: 'shop_owner' },
-  exporter: { phone: '9800000001', name: 'IndoGlobal Agri-Exports', role: 'exporter' }
+  farmer: { phone: '9800000004', name: 'Rajendra Singh', role: 'farmer' }
 };
 
 export default function App() {
@@ -23,14 +17,14 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [showAntigravityModal, setShowAntigravityModal] = useState(false);
 
-  // Auto-login with selected persona
+  // Auto-login with farmer persona
   useEffect(() => {
-    loginAsPersona(currentRole);
-  }, [currentRole]);
+    loginAsPersona('farmer');
+  }, []);
 
-  const loginAsPersona = async (role) => {
+  const loginAsPersona = async (role = 'farmer') => {
     setLoading(true);
-    const persona = DEMO_PERSONAS[role];
+    const persona = DEMO_PERSONAS.farmer;
     try {
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
@@ -38,7 +32,7 @@ export default function App() {
         body: JSON.stringify({
           phone: persona.phone,
           otp: '123456',
-          role: persona.role,
+          role: 'farmer',
           name: persona.name
         })
       });
@@ -60,7 +54,7 @@ export default function App() {
   const handleResetDemo = async () => {
     try {
       await fetch('/api/demo/reset-seed', { method: 'POST' });
-      alert('✓ Database reset to SIH 2026 hackathon demo state (Farm 1 Export + Farm 2 Shop Owner)');
+      alert('✓ Database reset to SIH 2026 hackathon demo state (Farmer Precision Farm 1)');
       window.location.reload();
     } catch (e) {
       alert('Demo state reset locally.');
@@ -98,36 +92,23 @@ export default function App() {
           }}
         >
           <Sparkles size={14} color="#8FC7FF" />
-          <span>Antigravity Core Simulator: Test All 3 Systems</span>
+          <span>Antigravity Core Simulator: Edge Precision Agriculture</span>
           <span style={{ background: 'rgba(255,255,255,0.2)', padding: '2px 6px', borderRadius: '8px', fontSize: '9px' }}>LIVE</span>
         </button>
       </div>
 
-      {/* Role-gated View Container */}
+      {/* Farmer View Container */}
       <div style={{ flex: 1 }}>
         {loading ? (
           <div style={{ padding: '40px', textAlign: 'center', color: 'var(--slate)' }}>
-            Loading AgroSmart...
+            Loading AgroSmart Farmer Operations...
           </div>
         ) : (
-          <>
-            {currentRole === 'farmer' && (
-              <AgroSmartFarmerDashboard user={user} token={token} isOffline={isOffline} />
-            )}
-            {currentRole === 'agent' && (
-              <FieldAgentVisitScreen user={user} token={token} />
-            )}
-            {currentRole === 'shop_owner' && (
-              <ShopDashboard user={user} />
-            )}
-            {currentRole === 'exporter' && (
-              <ExporterDashboard user={user} token={token} />
-            )}
-          </>
+          <AgroSmartFarmerDashboard user={user} token={token} isOffline={isOffline} />
         )}
       </div>
 
-      {/* Role Switching & Demo Reset Navigation */}
+      {/* Farmer Role Indicator & Demo Reset Navigation */}
       <RoleSwitchBar
         currentRole={currentRole}
         onSelectRole={setCurrentRole}
@@ -140,8 +121,7 @@ export default function App() {
         onClose={() => setShowAntigravityModal(false)}
         token={token}
         onStateMutated={() => {
-          // Re-trigger view reload
-          loginAsPersona(currentRole);
+          loginAsPersona('farmer');
         }}
       />
     </div>

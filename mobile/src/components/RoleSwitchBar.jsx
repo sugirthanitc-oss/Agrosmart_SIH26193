@@ -1,14 +1,7 @@
 import React from 'react';
-import { User, Tractor, ShieldCheck, ShoppingBag, Globe, RotateCcw } from 'lucide-react';
+import { Tractor, RotateCcw } from 'lucide-react';
 
-export function RoleSwitchBar({ currentRole, onSelectRole, onResetDemo }) {
-  const roles = [
-    { role: 'farmer', label: 'Farmer', icon: Tractor, accent: 'var(--sky)' },
-    { role: 'agent', label: 'Agent', icon: ShieldCheck, accent: 'var(--coral)' },
-    { role: 'shop_owner', label: 'Shop', icon: ShoppingBag, accent: 'var(--indigo)' },
-    { role: 'exporter', label: 'Exporter', icon: Globe, accent: 'var(--indigo-deep)' }
-  ];
-
+export function RoleSwitchBar({ currentRole = 'farmer', onSelectRole, onResetDemo }) {
   return (
     <div
       style={{
@@ -21,58 +14,57 @@ export function RoleSwitchBar({ currentRole, onSelectRole, onResetDemo }) {
         background: '#FFFFFF',
         borderTop: '1px solid rgba(79, 49, 214, 0.15)',
         display: 'flex',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '10px 8px',
+        padding: '10px 16px',
         zIndex: 900,
         boxShadow: '0 -4px 16px rgba(60, 34, 184, 0.08)'
       }}
     >
-      {roles.map(r => {
-        const Icon = r.icon;
-        const isActive = currentRole === r.role;
-        return (
-          <button
-            key={r.role}
-            onClick={() => onSelectRole(r.role)}
-            style={{
-              background: isActive ? 'var(--mist)' : 'none',
-              border: 'none',
-              borderRadius: '16px',
-              padding: '6px 12px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              cursor: 'pointer',
-              color: isActive ? r.accent : 'var(--slate)',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Icon size={20} color={isActive ? r.accent : 'var(--slate)'} />
-            <span style={{ fontSize: '11px', fontWeight: isActive ? 800 : 600, marginTop: '2px' }}>
-              {r.label}
-            </span>
-          </button>
-        );
-      })}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}
+      >
+        <div
+          style={{
+            background: 'var(--mist)',
+            borderRadius: '12px',
+            padding: '6px 12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: 'var(--sky)'
+          }}
+        >
+          <Tractor size={20} color="var(--sky)" />
+          <span style={{ fontSize: '12px', fontWeight: 800 }}>Farmer Portal</span>
+        </div>
+        <span style={{ fontSize: '11px', color: 'var(--slate)', fontWeight: 600 }}>
+          Rajendra Singh (Active)
+        </span>
+      </div>
 
       <button
         onClick={onResetDemo}
-        title="Reset SIH Demo Narrative"
+        title="Reset SIH Demo State"
         style={{
-          background: 'none',
-          border: 'none',
-          borderRadius: '16px',
-          padding: '6px 8px',
+          background: '#F1F5F9',
+          border: '1px solid #E2E8F0',
+          borderRadius: '12px',
+          padding: '6px 12px',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
+          gap: '6px',
           cursor: 'pointer',
-          color: 'var(--slate)'
+          color: 'var(--slate)',
+          transition: 'all 0.15s ease'
         }}
       >
-        <RotateCcw size={18} color="var(--slate)" />
-        <span style={{ fontSize: '9px', fontWeight: 700, marginTop: '2px' }}>
+        <RotateCcw size={16} color="var(--slate)" />
+        <span style={{ fontSize: '10px', fontWeight: 700 }}>
           Reset Demo
         </span>
       </button>
